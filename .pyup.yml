@@ -32,7 +32,7 @@ requirements:
       pin: True
   - requirements/dev.txt:
       # don't update dependencies, use global 'pin' default
-      update: False
+      update: all
   - requirements/prod.txt:
       # update insecure only, pin all
       update: insecure
@@ -47,8 +47,7 @@ label_prs: update
 # requires private repo permissions, even on public repos
 # default: empty
 assignees:
- - carl
- - carlsen
+ - cenkbircanoglu
 
 # configure the branch prefix the bot is using
 # default: pyup-
@@ -56,7 +55,7 @@ branch_prefix: pyup/
 
 # set a global prefix for PRs
 # default: empty
-pr_prefix: "Bug #12345"
+pr_prefix: "pyup"
 
 # allow to close stale PRs
 # default: True
