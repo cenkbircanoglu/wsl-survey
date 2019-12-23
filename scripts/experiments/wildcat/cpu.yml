@@ -1,7 +1,18 @@
 version: '3'
 services:
+  downloader:
+    volumes:
+      - './:/datasets'
+    image: cenkbircanoglu/wsl-survey
+      environment:
+          TRAINING_COMMAND: python /app/wsl_survey/datasets/voc2007/download.py /datasets/voc2007
+      shm_size: '8gb'
   trainer:
+    volumes:
+      - './:/datasets'
+    depends_on:
+      - downloader
     image: cenkbircanoglu/wsl-survey
     environment:
-      TRAINING_COMMAND: python /app/wsl_survey/wildcat/demo_voc2007.py dataset
+      TRAINING_COMMAND: python /app/wsl_survey/wildcat/demo_voc2007.py /datasets/voc2007
     shm_size: '8gb'
