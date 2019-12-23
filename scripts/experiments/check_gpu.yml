@@ -1,7 +1,0 @@
-version: '3'
-services:
-  trainer:
-    image: cenkbircanoglu/wsl-survey-gpu
-    environment:
-      TRAINING_COMMAND= python -c 'import torch;print(torch.cuda.is_available())'
-    shm_size: '8gb'

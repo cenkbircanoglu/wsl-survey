@@ -5,9 +5,6 @@
 import pytest
 
 
-from wsl_survey import wsl_survey
-
-
 @pytest.fixture
 def response():
     """Sample pytest fixture.
