@@ -10,7 +10,6 @@ from wsl_survey.datasets.voc2007.utils import read_object_labels, \
 
 
 class ClassificationDataset(data.Dataset):
-
     def __init__(self, root, set, transform=None, target_transform=None):
         self.root = root
         self.path_devkit = os.path.join(root, 'VOCdevkit')

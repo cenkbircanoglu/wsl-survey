@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 """Tests for `wsl_survey` package."""
 
 import pytest
