@@ -90,14 +90,9 @@ dist: clean ## builds source and wheel package
 install: clean ## install the package to the active Python's site-packages
 	python setup.py install
 
-docker-build: dist
-	docker build  . -f docker/cpu.Dockerfile -t wsl-survey:0.1.0
-	docker build  . -f docker/gpu.Dockerfile -t wsl-survey-gpu:0.1.0
-
-
 # DOCKER TASKS
 # Build the container
-docker-build: ## Build the container
+docker-build: dist ## Build the container
 	docker build -t $(APP_NAME) . -f docker/cpu.Dockerfile
 	#docker build -t $(APP_NAME)-gpu . -f docker/gpu.Dockerfile
 

@@ -106,14 +106,14 @@ class Engine(object):
                      display=True):
 
         # record loss
-        self.state['loss_batch'] = self.state['loss'].data[0]
+        self.state['loss_batch'] = self.state['loss'].data.item()
         self.state['meter_loss'].add(self.state['loss_batch'])
 
         if display and self.state['print_freq'] != 0 and self.state[
                 'iteration'] % self.state['print_freq'] == 0:
-            loss = self.state['meter_loss'].value()[0]
-            batch_time = self.state['batch_time'].value()[0]
-            data_time = self.state['data_time'].value()[0]
+            loss = self.state['meter_loss'].value().item()
+            batch_time = self.state['batch_time'].value().item()
+            data_time = self.state['data_time'].value().item()
             if training:
                 print('Epoch: [{0}][{1}/{2}]\t'
                       'Time {batch_time_current:.3f} ({batch_time:.3f})\t'

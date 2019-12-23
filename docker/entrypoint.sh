@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
-sh
+export PYTHONPATH='/app'
 $($TRAINING_COMMAND)
-python /app/wsl_survey/wildcat/demo_voc2007.py dataset
+#python /app/wsl_survey/wildcat/demo_voc2007.py dataset
 
 ## Fetch inputs
 #stored sync $TRAINING_TRAIN_DATASET /training/dataset/train
