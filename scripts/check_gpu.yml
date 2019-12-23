@@ -1,0 +1,8 @@
+version: '2.3'
+services:
+    check_gpu:
+        image: cenkbircanoglu/wsl-survey-gpu
+        environment:
+            NVIDIA_VISIBLE_DEVICES: all
+            COMMAND: python3 -c "import torch;print(torch.cuda.is_available())"
+        runtime: nvidia

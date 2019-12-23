@@ -1,0 +1,19 @@
+version: '2.3'
+services:
+    trainer:
+        volumes:
+            - ~/wsl/datasets:/datasets
+            - ~/wsl/models:/models
+        image: ${IMAGE}
+        environment:
+            NVIDIA_VISIBLE_DEVICES: all
+            COMMAND: >
+                python3 /app/wsl_survey/irn/main.py
+                    --dataset_dir=/test_dataset/labelled
+                    --image_dir=/test_dataset/images
+                    --checkpoints=/models/irn-test
+                    --irn_num_epoches=1
+                    --cam_num_epoches=1
+                    --voc_root=/test_dataset/voc_root
+        runtime: ${RUNTIME}
+        shm_size: '8gb'

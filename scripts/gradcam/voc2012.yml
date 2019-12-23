@@ -1,0 +1,16 @@
+version: '2.3'
+services:
+    trainer:
+        volumes:
+            - ~/wsl/datasets:/datasets
+            - ~/wsl/models:/models
+        image: ${IMAGE}
+        environment:
+            NVIDIA_VISIBLE_DEVICES: all
+            COMMAND: >
+                python3 /app/wsl_survey/gradcam/main.py
+                    --dataset_dir=/datasets/voc2012/labelled
+                    --image_dir=/datasets/voc2012/data/JPEGImages
+                    --checkpoints=/models/gradcam-voc2012
+        runtime: ${RUNTIME}
+        shm_size: '8gb'
