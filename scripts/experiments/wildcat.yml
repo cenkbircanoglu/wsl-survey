@@ -1,11 +1,7 @@
 version: '3'
 services:
   trainer:
-    image: wsl-survey
+    image: cenkbircanoglu/wsl-survey
     environment:
       TRAINING_COMMAND: python /app/wsl_survey/wildcat/demo_voc2007.py dataset
-      TRAINING_TRAIN_DATASET: /app/tests/files/catdog/train.zip
-      TRAINING_VAL_DATASET: /app/tests/files/catdog/val.zip
-      TRAINING_OUTPUT_MODEL: /app/tmp/catdog/output/model
-      TRAINING_OUTPUT_LOGS: /app/tmp/catdog/output/logs
     shm_size: '8gb'
