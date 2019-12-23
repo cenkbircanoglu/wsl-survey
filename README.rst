@@ -12,6 +12,11 @@ WSL Survey
 .. image:: https://travis-ci.com/cenkbircanoglu/wsl-survey.svg?branch=master
     :target: https://travis-ci.com/cenkbircanoglu/wsl-survey
 
+.. image:: https://coveralls.io/repos/github/cenkbircanoglu/wsl-survey/badge.svg?branch=master
+    :target: https://coveralls.io/github/cenkbircanoglu/wsl-survey?branch=master
+
+
+
 Weakly Supervised Learning Experiments
 
 
