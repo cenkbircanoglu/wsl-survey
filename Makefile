@@ -98,7 +98,7 @@ docker-build: dist ## Build the container
 
 docker-build-nc: ## Build the container without caching
 	docker build --no-cache -t $(APP_NAME) . -f docker/cpu.Dockerfile
-	docker build -t $(APP_NAME)-gpu . -f docker/gpu.Dockerfile
+	docker build --no-cache -t $(APP_NAME)-gpu . -f docker/gpu.Dockerfile
 
 docker-run: ## Run container
 	docker run -i -t --rm --name="$(APP_NAME)" $(APP_NAME)
@@ -131,12 +131,12 @@ docker-tag: docker-tag-latest docker-tag-version ## Generate container tags for 
 docker-tag-latest: ## Generate container `{version}` tag
 	@echo 'create tag latest'
 	docker tag $(APP_NAME) $(DOCKER_REPO)/$(APP_NAME):latest
-	docker tag $(APP_NAME) $(DOCKER_REPO)/$(APP_NAME)-gpu:latest
+	docker tag $(APP_NAME)-gpu $(DOCKER_REPO)/$(APP_NAME)-gpu:latest
 
 docker-tag-version: ## Generate container `latest` tag
 	@echo 'create tag $(VERSION)'
 	docker tag $(APP_NAME) $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
-	docker tag $(APP_NAME) $(DOCKER_REPO)/$(APP_NAME)-gpu:$(VERSION)
+	docker tag $(APP_NAME)-gpu $(DOCKER_REPO)/$(APP_NAME)-gpu:$(VERSION)
 
 # HELPERS
 

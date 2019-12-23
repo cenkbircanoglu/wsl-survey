@@ -2,7 +2,7 @@
 set -e
 
 export PYTHONPATH='/app'
-$($TRAINING_COMMAND)
+eval $TRAINING_COMMAND
 #python /app/wsl_survey/wildcat/demo_voc2007.py dataset
 
 ## Fetch inputs
