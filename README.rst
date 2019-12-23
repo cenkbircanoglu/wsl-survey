@@ -9,9 +9,8 @@ WSL Survey
      :target: https://pyup.io/repos/github/cenkbircanoglu/wsl_survey/
      :alt: Updates
 
-[![Build Status](https://travis-ci.com/cenkbircanoglu/wsl-survey.svg?branch=master)]
-(https://travis-ci.com/cenkbircanoglu/wsl-survey)
-
+.. image:: https://travis-ci.com/cenkbircanoglu/wsl-survey.svg?branch=master
+    :target: https://travis-ci.com/cenkbircanoglu/wsl-survey
 
 Weakly Supervised Learning Experiments
 
