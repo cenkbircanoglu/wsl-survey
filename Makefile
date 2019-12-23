@@ -94,11 +94,11 @@ install: clean ## install the package to the active Python's site-packages
 # Build the container
 docker-build: dist ## Build the container
 	docker build -t $(APP_NAME) . -f docker/cpu.Dockerfile
-	#docker build -t $(APP_NAME)-gpu . -f docker/gpu.Dockerfile
+	docker build -t $(APP_NAME)-gpu . -f docker/gpu.Dockerfile
 
 docker-build-nc: ## Build the container without caching
 	docker build --no-cache -t $(APP_NAME) . -f docker/cpu.Dockerfile
-	#docker build -t $(APP_NAME)-gpu . -f docker/gpu.Dockerfile
+	docker build -t $(APP_NAME)-gpu . -f docker/gpu.Dockerfile
 
 docker-run: ## Run container
 	docker run -i -t --rm --name="$(APP_NAME)" $(APP_NAME)

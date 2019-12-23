@@ -1,0 +1,7 @@
+version: '3'
+services:
+  trainer:
+    image: cenkbircanoglu/wsl-survey-gpu
+    environment:
+      TRAINING_COMMAND: python /app/wsl_survey/wildcat/demo_voc2007.py dataset
+    shm_size: '8gb'
