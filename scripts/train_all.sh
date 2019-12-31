@@ -19,5 +19,4 @@ docker-compose -f scripts/gradcam/coco2017.yml run trainer
 docker-compose -f scripts/irn/voc2007.yml run trainer
 docker-compose -f scripts/irn/voc2012.yml run trainer
 docker-compose -f scripts/irn/coco2014.yml run trainer
-
 docker-compose -f scripts/irn/coco2017.yml run trainer
