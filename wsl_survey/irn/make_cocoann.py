@@ -12,7 +12,7 @@ VOC2012_JSON_FOLDER = ""
 
 def run(args):
     infer_dataset = dataloader.VOC12ImageDataset(os.path.join(
-        args.dataset_dir, 'val.txt'),
+        args.dataset_dir, 'train.txt'),
                                                  image_dir=args.image_dir)
 
     infer_data_loader = DataLoader(infer_dataset,

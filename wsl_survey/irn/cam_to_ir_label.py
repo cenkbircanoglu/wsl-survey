@@ -56,7 +56,7 @@ def _work(infer_dataset, args, ir_label_out_dir, cam_out_dir):
 
 def run(args, ir_label_out_dir=None, cam_out_dir=None):
     dataset = dataloader.VOC12ImageDataset(os.path.join(
-        args.dataset_dir, 'val.txt'),
+        args.dataset_dir, 'train.txt'),
                                            image_dir=args.image_dir,
                                            img_normal=None,
                                            to_torch=False)

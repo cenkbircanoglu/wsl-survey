@@ -190,7 +190,7 @@ def run(args, irn_weights_name=None, ins_seg_out_dir=None):
     model.load_state_dict(torch.load(irn_weights_name), strict=False)
     model.eval()
     dataset = dataloader.VOC12ClassificationDatasetMSF(
-        os.path.join(args.dataset_dir, 'val.txt'),
+        os.path.join(args.dataset_dir, 'train.txt'),
         image_dir=args.image_dir,
         scales=(1.0, ))
 

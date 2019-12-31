@@ -73,7 +73,7 @@ def run(args, irn_weights_name=None, sem_seg_out_dir=None):
     model.eval()
 
     dataset = dataloader.VOC12ClassificationDatasetMSF(
-        os.path.join(args.dataset_dir, 'val.txt'),
+        os.path.join(args.dataset_dir, 'train.txt'),
         image_dir=args.image_dir,
         scales=(1.0, ))
 

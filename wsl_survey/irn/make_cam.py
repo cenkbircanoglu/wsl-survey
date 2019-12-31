@@ -86,7 +86,7 @@ def run(args, cam_weights_name=None, cam_out_dir=None):
     model.eval()
 
     dataset = dataloader.VOC12ClassificationDatasetMSF(
-        os.path.join(args.dataset_dir, 'val.txt'),
+        os.path.join(args.dataset_dir, 'train.txt'),
         image_dir=args.image_dir,
         scales=args.cam_scales)
 
