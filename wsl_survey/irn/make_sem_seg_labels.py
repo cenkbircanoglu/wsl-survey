@@ -15,7 +15,7 @@ if use_cuda:
     cudnn.enabled = True
 
 
-def _work(model, dataset, args, sem_seg_out_dir):
+def _work(model, dataset, args, sem_seg_out_dir, cam_out_dir):
     data_loader = DataLoader(dataset,
                              shuffle=False,
                              num_workers=args.num_workers,
@@ -33,7 +33,7 @@ def _work(model, dataset, args, sem_seg_out_dir):
                 edge, dp = model(pack['img'][0].cuda(non_blocking=True))
             else:
                 edge, dp = model(pack['img'][0])
-            cam_dict = np.load(args.cam_out_dir + '/' + img_name + '.npy',
+            cam_dict = np.load(cam_out_dir + '/' + img_name + '.npy',
                                allow_pickle=True).item()
 
             cam_downsized_values = cam_dict['cam']
@@ -51,7 +51,7 @@ def _work(model, dataset, args, sem_seg_out_dir):
             rw_up = F.interpolate(
                 rw, scale_factor=4, mode='bilinear',
                 align_corners=False)[...,
-                                     0, :orig_img_size[0], :orig_img_size[1]]
+                    0, :orig_img_size[0], :orig_img_size[1]]
             rw_up = rw_up / torch.max(rw_up)
 
             rw_up_bg = F.pad(rw_up, (0, 0, 0, 0, 1, 0),
@@ -67,7 +67,7 @@ def _work(model, dataset, args, sem_seg_out_dir):
                 print("%d " % ((5 * iter + 1) // (len(dataset) // 20)), end='')
 
 
-def run(args, irn_weights_name=None, sem_seg_out_dir=None):
+def run(args, irn_weights_name=None, sem_seg_out_dir=None, cam_out_dir=None):
     model = EdgeDisplacement()
     model.load_state_dict(torch.load(irn_weights_name), strict=False)
     model.eval()
@@ -75,10 +75,10 @@ def run(args, irn_weights_name=None, sem_seg_out_dir=None):
     dataset = dataloader.VOC12ClassificationDatasetMSF(
         os.path.join(args.dataset_dir, 'train.txt'),
         image_dir=args.image_dir,
-        scales=(1.0, ))
+        scales=(1.0,))
 
     print("[", end='')
-    _work(model, dataset, args, sem_seg_out_dir)
+    _work(model, dataset, args, sem_seg_out_dir, cam_out_dir)
     print("]")
     if use_cuda:
         torch.cuda.empty_cache()

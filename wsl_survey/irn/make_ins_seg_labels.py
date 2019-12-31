@@ -116,7 +116,7 @@ def detect_instance(score_map, mask, class_id, max_fragment_size=0):
     }
 
 
-def _work(model, dataset, args, ins_seg_out_dir):
+def _work(model, dataset, args, ins_seg_out_dir, cam_out_dir):
     data_loader = DataLoader(dataset,
                              shuffle=False,
                              num_workers=args.num_workers,
@@ -136,7 +136,7 @@ def _work(model, dataset, args, ins_seg_out_dir):
                 edge, dp = model(pack['img'][0])
             dp = dp.cpu().numpy()
 
-            cam_dict = np.load(args.cam_out_dir + '/' + img_name + '.npy',
+            cam_dict = np.load(cam_out_dir + '/' + img_name + '.npy',
                                allow_pickle=True).item()
 
             cams = cam_dict['cam']
@@ -185,7 +185,7 @@ def _work(model, dataset, args, ins_seg_out_dir):
                 print("%d " % ((5 * iter + 1) // (len(dataset) // 20)), end='')
 
 
-def run(args, irn_weights_name=None, ins_seg_out_dir=None):
+def run(args, irn_weights_name=None, ins_seg_out_dir=None, cam_out_dir=None):
     model = EdgeDisplacement()
     model.load_state_dict(torch.load(irn_weights_name), strict=False)
     model.eval()
@@ -195,5 +195,5 @@ def run(args, irn_weights_name=None, ins_seg_out_dir=None):
         scales=(1.0, ))
 
     print("[ ", end='')
-    _work(model, dataset, args, ins_seg_out_dir)
+    _work(model, dataset, args, ins_seg_out_dir, cam_out_dir)
     print("]")

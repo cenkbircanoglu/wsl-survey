@@ -30,7 +30,7 @@ if __name__ == '__main__':
                         type=str)
     parser.add_argument("--cam_crop_size", default=512, type=int)
     parser.add_argument("--cam_batch_size", default=16, type=int)
-    parser.add_argument("--cam_num_epoches", default=4, type=int)
+    parser.add_argument("--cam_num_epoches", default=5, type=int)
     parser.add_argument("--cam_learning_rate", default=0.1, type=float)
     parser.add_argument("--cam_weight_decay", default=1e-4, type=float)
     parser.add_argument("--cam_eval_thres", default=0.15, type=float)
@@ -47,7 +47,7 @@ if __name__ == '__main__':
                         default="wsl_survey.net.resnet50_irn",
                         type=str)
     parser.add_argument("--irn_crop_size", default=512, type=int)
-    parser.add_argument("--irn_batch_size", default=32, type=int)
+    parser.add_argument("--irn_batch_size", default=16, type=int)
     parser.add_argument("--irn_num_epoches", default=3, type=int)
     parser.add_argument("--irn_learning_rate", default=0.1, type=float)
     parser.add_argument("--irn_weight_decay", default=1e-4, type=float)
@@ -134,13 +134,14 @@ if __name__ == '__main__':
         timer = pyutils.Timer('make_ins_seg_labels:')
         make_ins_seg_labels.run(args,
                                 irn_weights_name=irn_weights_name,
-                                ins_seg_out_dir=ins_seg_out_dir)
+                                ins_seg_out_dir=ins_seg_out_dir,
+                                cam_out_dir=cam_out_dir)
 
     if args.eval_ins_seg_pass is True:
         import eval_ins_seg
 
         timer = pyutils.Timer('eval_ins_seg:')
-        eval_ins_seg.run(args)
+        eval_ins_seg.run(args, ins_seg_out_dir=ins_seg_out_dir)
 
     if args.make_sem_seg_pass is True:
         import make_sem_seg_labels
@@ -148,10 +149,11 @@ if __name__ == '__main__':
         timer = pyutils.Timer('make_sem_seg_labels:')
         make_sem_seg_labels.run(args,
                                 irn_weights_name=irn_weights_name,
-                                sem_seg_out_dir=sem_seg_out_dir)
+                                sem_seg_out_dir=sem_seg_out_dir,
+                                cam_out_dir=cam_out_dir)
 
     if args.eval_sem_seg_pass is True:
         import eval_sem_seg
 
         timer = pyutils.Timer('eval_sem_seg:')
-        eval_sem_seg.run(args)
+        eval_sem_seg.run(args, sem_seg_out_dir=sem_seg_out_dir)

@@ -61,7 +61,7 @@ parser.add_argument('--test_only',
                     help='Test mode with the saved model')
 parser.add_argument("--onehot", type=bool, default=False)
 parser.add_argument("--num_workers", type=int, default=20)
-parser.add_argument("--epochs", type=int, default=100)
+parser.add_argument("--epochs", type=int, default=250)
 parser.add_argument("--feature_size", type=int, default=500)
 parser.add_argument("--batch_size", type=int, default=64)
 
