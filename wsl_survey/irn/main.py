@@ -30,7 +30,7 @@ if __name__ == '__main__':
                         type=str)
     parser.add_argument("--cam_crop_size", default=512, type=int)
     parser.add_argument("--cam_batch_size", default=16, type=int)
-    parser.add_argument("--cam_num_epoches", default=5, type=int)
+    parser.add_argument("--cam_num_epoches", default=50, type=int)
     parser.add_argument("--cam_learning_rate", default=0.1, type=float)
     parser.add_argument("--cam_weight_decay", default=1e-4, type=float)
     parser.add_argument("--cam_eval_thres", default=0.15, type=float)
@@ -48,7 +48,7 @@ if __name__ == '__main__':
                         type=str)
     parser.add_argument("--irn_crop_size", default=512, type=int)
     parser.add_argument("--irn_batch_size", default=32, type=int)
-    parser.add_argument("--irn_num_epoches", default=3, type=int)
+    parser.add_argument("--irn_num_epoches", default=30, type=int)
     parser.add_argument("--irn_learning_rate", default=0.1, type=float)
     parser.add_argument("--irn_weight_decay", default=1e-4, type=float)
 
@@ -125,7 +125,8 @@ if __name__ == '__main__':
         import train_irn
 
         timer = pyutils.Timer('train_irn:')
-        train_irn.run(args, irn_weights_name=irn_weights_name)
+        train_irn.run(args, irn_weights_name=irn_weights_name,
+                      ir_label_out_dir=ir_label_out_dir)
 
     if args.make_ins_seg_pass is True:
         import make_ins_seg_labels

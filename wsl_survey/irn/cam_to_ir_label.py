@@ -20,7 +20,7 @@ def _work(infer_dataset, args, ir_label_out_dir, cam_out_dir):
                            allow_pickle=True).item()
 
         cams = cam_dict['high_res']
-        keys = np.pad(cam_dict['keys'] + 1, (1, 0), mode='constant')
+        keys = np.pad(cam_dict['keys'].cpu() + 1, (1, 0), mode='constant')
 
         # 1. find confident fg & bg
         fg_conf_cam = np.pad(cams, ((1, 0), (0, 0), (0, 0)),

@@ -20,7 +20,7 @@ def run(args, cam_out_dir=None):
         cams = np.pad(cams, ((1, 0), (0, 0), (0, 0)),
                       mode='constant',
                       constant_values=args.cam_eval_thres)
-        keys = np.pad(cam_dict['keys'] + 1, (1, 0), mode='constant')
+        keys = np.pad(cam_dict['keys'].cpu() + 1, (1, 0), mode='constant')
         cls_labels = np.argmax(cams, axis=0)
         cls_labels = keys[cls_labels]
         preds.append(cls_labels.copy())

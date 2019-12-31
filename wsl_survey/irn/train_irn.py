@@ -12,7 +12,7 @@ from wsl_survey.irn import dataloader, indexing, pyutils, torchutils
 use_cuda = torch.cuda.is_available()
 
 
-def run(args, irn_weights_name=None):
+def run(args, irn_weights_name=None, ir_label_out_dir=None):
     path_index = indexing.PathIndex(radius=10,
                                     default_size=(args.irn_crop_size // 4,
                                                   args.irn_crop_size // 4))
@@ -21,7 +21,7 @@ def run(args, irn_weights_name=None):
 
     train_dataset = dataloader.VOC12AffinityDataset(
         os.path.join(args.dataset_dir, 'train.txt'),
-        label_dir=args.ir_label_out_dir,
+        label_dir=ir_label_out_dir,
         image_dir=args.image_dir,
         indices_from=path_index.src_indices,
         indices_to=path_index.dst_indices,

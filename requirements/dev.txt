@@ -28,4 +28,5 @@ scikit-image
 git+git://github.com/waspinator/coco.git@2.1.0
 pydensecrf
 imageio
+chainercv
 
