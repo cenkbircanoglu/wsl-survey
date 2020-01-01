@@ -91,6 +91,6 @@ if __name__ == '__main__':
     train_dataset = ClassificationDataset('datasets/test/labelled',
                                           'datasets/test/images',
                                           split_type='train',
-                                          one_hot=False)
+                                          one_hot=True)
     for img, target in train_dataset:
-        print(type(target))
+        print(target)

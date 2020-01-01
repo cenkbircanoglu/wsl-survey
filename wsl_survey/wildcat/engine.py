@@ -110,7 +110,7 @@ class Engine(object):
         self.state['meter_loss'].add(self.state['loss_batch'])
 
         if display and self.state['print_freq'] != 0 and self.state[
-                'iteration'] % self.state['print_freq'] == 0:
+            'iteration'] % self.state['print_freq'] == 0:
             loss = self.state['meter_loss'].value().item()
             batch_time = self.state['batch_time'].value().item()
             data_time = self.state['data_time'].value().item()
@@ -119,28 +119,28 @@ class Engine(object):
                       'Time {batch_time_current:.3f} ({batch_time:.3f})\t'
                       'Data {data_time_current:.3f} ({data_time:.3f})\t'
                       'Loss {loss_current:.4f} ({loss:.4f})'.format(
-                          self.state['epoch'],
-                          self.state['iteration'],
-                          len(data_loader),
-                          batch_time_current=self.state['batch_time_current'],
-                          batch_time=batch_time,
-                          data_time_current=self.state['data_time_batch'],
-                          data_time=data_time,
-                          loss_current=self.state['loss_batch'],
-                          loss=loss))
+                    self.state['epoch'],
+                    self.state['iteration'],
+                    len(data_loader),
+                    batch_time_current=self.state['batch_time_current'],
+                    batch_time=batch_time,
+                    data_time_current=self.state['data_time_batch'],
+                    data_time=data_time,
+                    loss_current=self.state['loss_batch'],
+                    loss=loss))
             else:
                 print('Test: [{0}/{1}]\t'
                       'Time {batch_time_current:.3f} ({batch_time:.3f})\t'
                       'Data {data_time_current:.3f} ({data_time:.3f})\t'
                       'Loss {loss_current:.4f} ({loss:.4f})'.format(
-                          self.state['iteration'],
-                          len(data_loader),
-                          batch_time_current=self.state['batch_time_current'],
-                          batch_time=batch_time,
-                          data_time_current=self.state['data_time_batch'],
-                          data_time=data_time,
-                          loss_current=self.state['loss_batch'],
-                          loss=loss))
+                    self.state['iteration'],
+                    len(data_loader),
+                    batch_time_current=self.state['batch_time_current'],
+                    batch_time=batch_time,
+                    data_time_current=self.state['data_time_batch'],
+                    data_time=data_time,
+                    loss_current=self.state['loss_batch'],
+                    loss=loss))
 
     def on_forward(self,
                    training,
@@ -225,14 +225,14 @@ class Engine(object):
             self.save_checkpoint(
                 {
                     'epoch':
-                    epoch + 1,
+                        epoch + 1,
                     'arch':
-                    self._state('arch'),
+                        self._state('arch'),
                     'state_dict':
-                    model.module.state_dict()
-                    if self.state['use_gpu'] else model.state_dict(),
+                        model.module.state_dict()
+                        if self.state['use_gpu'] else model.state_dict(),
                     'best_score':
-                    self.state['best_score'],
+                        self.state['best_score'],
                 }, is_best)
 
             print(' *** best={best:.3f}'.format(best=self.state['best_score']))
@@ -256,9 +256,7 @@ class Engine(object):
 
             self.state['input'] = input
             self.state['target'] = target
-
             self.on_start_batch(True, model, criterion, data_loader, optimizer)
-
             if self.state['use_gpu']:
                 self.state['target'] = self.state['target'].cuda()
 
@@ -338,7 +336,7 @@ class Engine(object):
         """Sets the learning rate to the initial LR decayed by 10 every 30 epochs"""
         # lr = args.lr * (0.1 ** (epoch // 30))
         if self.state['epoch'] is not 0 and self.state['epoch'] in self.state[
-                'epoch_step']:
+            'epoch_step']:
             print('update learning rate')
             for param_group in optimizer.state_dict()['param_groups']:
                 param_group['lr'] = param_group['lr'] * 0.1
@@ -405,7 +403,7 @@ class MulticlassEngine(Engine):
                                    self.state['target'])
 
         if display and self.state['print_freq'] != 0 and self.state[
-                'iteration'] % self.state['print_freq'] == 0:
+            'iteration'] % self.state['print_freq'] == 0:
             top1 = self.state['classacc'].value()[0]
             loss = self.state['meter_loss'].value()[0]
             batch_time = self.state['batch_time'].value()[0]
@@ -416,31 +414,31 @@ class MulticlassEngine(Engine):
                       'Data {data_time_current:.3f} ({data_time:.3f})\t'
                       'Loss {loss_current:.4f} ({loss:.4f})\t'
                       'Prec@1 {top1:.3f}'.format(
-                          self.state['epoch'],
-                          self.state['iteration'],
-                          len(data_loader),
-                          batch_time_current=self.state['batch_time_current'],
-                          batch_time=batch_time,
-                          data_time_current=self.state['data_time_batch'],
-                          data_time=data_time,
-                          loss_current=self.state['loss_batch'],
-                          loss=loss,
-                          top1=top1))
+                    self.state['epoch'],
+                    self.state['iteration'],
+                    len(data_loader),
+                    batch_time_current=self.state['batch_time_current'],
+                    batch_time=batch_time,
+                    data_time_current=self.state['data_time_batch'],
+                    data_time=data_time,
+                    loss_current=self.state['loss_batch'],
+                    loss=loss,
+                    top1=top1))
             else:
                 print('Test: [{0}/{1}]\t'
                       'Time {batch_time_current:.3f} ({batch_time:.3f})\t'
                       'Data {data_time_current:.3f} ({data_time:.3f})\t'
                       'Loss {loss_current:.4f} ({loss:.4f})\t'
                       'Prec@1 {top1:.3f}'.format(
-                          self.state['iteration'],
-                          len(data_loader),
-                          batch_time_current=self.state['batch_time_current'],
-                          batch_time=batch_time,
-                          data_time_current=self.state['data_time_batch'],
-                          data_time=data_time,
-                          loss_current=self.state['loss_batch'],
-                          loss=loss,
-                          top1=top1))
+                    self.state['iteration'],
+                    len(data_loader),
+                    batch_time_current=self.state['batch_time_current'],
+                    batch_time=batch_time,
+                    data_time_current=self.state['data_time_batch'],
+                    data_time=data_time,
+                    loss_current=self.state['loss_batch'],
+                    loss=loss,
+                    top1=top1))
 
 
 class MulticlassTop5Engine(Engine):
@@ -510,7 +508,7 @@ class MulticlassTop5Engine(Engine):
                                    self.state['target'])
 
         if display and self.state['print_freq'] != 0 and self.state[
-                'iteration'] % self.state['print_freq'] == 0:
+            'iteration'] % self.state['print_freq'] == 0:
             top1 = self.state['classacc'].value()[0]
             top5 = self.state['classacc'].value()[1]
             loss = self.state['meter_loss'].value()[0]
@@ -523,17 +521,17 @@ class MulticlassTop5Engine(Engine):
                       'Loss {loss_current:.4f} ({loss:.4f})\t'
                       'Prec@1 {top1:.3f}\t'
                       'Prec@5 {top5:.3f}'.format(
-                          self.state['epoch'],
-                          self.state['iteration'],
-                          len(data_loader),
-                          batch_time_current=self.state['batch_time_current'],
-                          batch_time=batch_time,
-                          data_time_current=self.state['data_time_batch'],
-                          data_time=data_time,
-                          loss_current=self.state['loss_batch'],
-                          loss=loss,
-                          top1=top1,
-                          top5=top5))
+                    self.state['epoch'],
+                    self.state['iteration'],
+                    len(data_loader),
+                    batch_time_current=self.state['batch_time_current'],
+                    batch_time=batch_time,
+                    data_time_current=self.state['data_time_batch'],
+                    data_time=data_time,
+                    loss_current=self.state['loss_batch'],
+                    loss=loss,
+                    top1=top1,
+                    top5=top5))
             else:
                 print('Test: [{0}/{1}]\t'
                       'Time {batch_time_current:.3f} ({batch_time:.3f})\t'
@@ -541,16 +539,16 @@ class MulticlassTop5Engine(Engine):
                       'Loss {loss_current:.4f} ({loss:.4f})\t'
                       'Prec@1 {top1:.3f}\t'
                       'Prec@5 {top5:.3f}'.format(
-                          self.state['iteration'],
-                          len(data_loader),
-                          batch_time_current=self.state['batch_time_current'],
-                          batch_time=batch_time,
-                          data_time_current=self.state['data_time_batch'],
-                          data_time=data_time,
-                          loss_current=self.state['loss_batch'],
-                          loss=loss,
-                          top1=top1,
-                          top5=top5))
+                    self.state['iteration'],
+                    len(data_loader),
+                    batch_time_current=self.state['batch_time_current'],
+                    batch_time=batch_time,
+                    data_time_current=self.state['data_time_batch'],
+                    data_time=data_time,
+                    loss_current=self.state['loss_batch'],
+                    loss=loss,
+                    top1=top1,
+                    top5=top5))
 
 
 class MultiLabelMAPEngine(Engine):
@@ -604,8 +602,6 @@ class MultiLabelMAPEngine(Engine):
                        display=True):
 
         self.state['target_gt'] = self.state['target'].clone()
-        self.state['target'][self.state['target'] == 0] = 1
-        self.state['target'][self.state['target'] == -1] = 0
 
         input = self.state['input']
         self.state['input'] = input[0]
@@ -632,7 +628,7 @@ class MultiLabelMAPEngine(Engine):
                                    self.state['target_gt'])
 
         if display and self.state['print_freq'] != 0 and self.state[
-                'iteration'] % self.state['print_freq'] == 0:
+            'iteration'] % self.state['print_freq'] == 0:
             loss = self.state['meter_loss'].value()[0]
             batch_time = self.state['batch_time'].value()[0]
             data_time = self.state['data_time'].value()[0]
@@ -641,25 +637,25 @@ class MultiLabelMAPEngine(Engine):
                       'Time {batch_time_current:.3f} ({batch_time:.3f})\t'
                       'Data {data_time_current:.3f} ({data_time:.3f})\t'
                       'Loss {loss_current:.4f} ({loss:.4f})'.format(
-                          self.state['epoch'],
-                          self.state['iteration'],
-                          len(data_loader),
-                          batch_time_current=self.state['batch_time_current'],
-                          batch_time=batch_time,
-                          data_time_current=self.state['data_time_batch'],
-                          data_time=data_time,
-                          loss_current=self.state['loss_batch'],
-                          loss=loss))
+                    self.state['epoch'],
+                    self.state['iteration'],
+                    len(data_loader),
+                    batch_time_current=self.state['batch_time_current'],
+                    batch_time=batch_time,
+                    data_time_current=self.state['data_time_batch'],
+                    data_time=data_time,
+                    loss_current=self.state['loss_batch'],
+                    loss=loss))
             else:
                 print('Test: [{0}/{1}]\t'
                       'Time {batch_time_current:.3f} ({batch_time:.3f})\t'
                       'Data {data_time_current:.3f} ({data_time:.3f})\t'
                       'Loss {loss_current:.4f} ({loss:.4f})'.format(
-                          self.state['iteration'],
-                          len(data_loader),
-                          batch_time_current=self.state['batch_time_current'],
-                          batch_time=batch_time,
-                          data_time_current=self.state['data_time_batch'],
-                          data_time=data_time,
-                          loss_current=self.state['loss_batch'],
-                          loss=loss))
+                    self.state['iteration'],
+                    len(data_loader),
+                    batch_time_current=self.state['batch_time_current'],
+                    batch_time=batch_time,
+                    data_time_current=self.state['data_time_batch'],
+                    data_time=data_time,
+                    loss_current=self.state['loss_batch'],
+                    loss=loss))
