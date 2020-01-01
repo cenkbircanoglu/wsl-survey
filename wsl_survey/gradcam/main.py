@@ -123,7 +123,7 @@ if args.test_only:
     assert os.path.isdir('checkpoint'), 'Error: No checkpoint directory found!'
     _, file_name = get_network(args)
     print('| Loading ' + file_name + ".t7...")
-    checkpoint = torch.load(args.checkpoints + '/' + file_name + '.t7')
+    checkpoint = torch.load(os.path.join(args.checkpoints, file_name + '.t7'))
     model = checkpoint['model']
 
     if use_gpu:
@@ -176,7 +176,8 @@ def train_model(model,
     print('| Training Epochs = %d' % num_epochs)
     print('| Initial Learning Rate = %f' % args.lr)
     print('| Optimizer = SGD')
-    output_file = "./logs/" + args.net_type + ".csv"
+    output_file = os.path.join(args.checkpoints, "logs",
+                               args.net_type + ".csv")
     output_folder = os.path.dirname(output_file)
     os.makedirs(output_folder, exist_ok=True)
     with open(output_file, 'w') as csvfile:
@@ -254,7 +255,6 @@ def train_model(model,
                             'acc': epoch_acc,
                             'epoch': epoch,
                         }
-                        os.makedirs('checkpoint', exist_ok=True)
                         save_point = args.checkpoints
                         os.makedirs(save_point, exist_ok=True)
                         torch.save(state, save_point + file_name + '.t7')
@@ -281,7 +281,7 @@ def exp_lr_scheduler(optimizer,
                      init_lr=args.lr,
                      weight_decay=args.weight_decay,
                      lr_decay_epoch=args.lr_decay_epoch):
-    lr = init_lr * (0.5**(epoch // lr_decay_epoch))
+    lr = init_lr * (0.5 ** (epoch // lr_decay_epoch))
 
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr

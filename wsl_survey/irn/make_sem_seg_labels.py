@@ -38,7 +38,7 @@ def _work(model, dataset, args, sem_seg_out_dir, cam_out_dir):
                                allow_pickle=True).item()
 
             cam_downsized_values = cam_dict['cam']
-            keys = np.pad(cam_dict['keys'] + 1, (1, 0), mode='constant')
+            keys = np.pad(cam_dict['keys'].cpu() + 1, (1, 0), mode='constant')
 
             if use_cuda:
                 cam_downsized_values = cam_downsized_values.cuda()
@@ -55,7 +55,7 @@ def _work(model, dataset, args, sem_seg_out_dir, cam_out_dir):
                                      0, :orig_img_size[0], :orig_img_size[1]]
             rw_up = rw_up / torch.max(rw_up)
 
-            rw_up_bg = F.pad(rw_up, (0, 0, 0, 0, 1, 0),
+            rw_up_bg = F.pad(rw_up.cpu(), (0, 0, 0, 0, 1, 0),
                              value=args.sem_seg_bg_thres)
             rw_pred = torch.argmax(rw_up_bg, dim=0).cpu().numpy()
 
