@@ -6,6 +6,7 @@ import torch
 import torch.nn.functional as F
 from torch.backends import cudnn
 from torch.utils.data import DataLoader
+from tqdm import tqdm
 
 from wsl_survey.irn import dataloader, indexing
 from wsl_survey.irn.net.resnet50_irn import EdgeDisplacement
@@ -25,7 +26,7 @@ def _work(model, dataset, args, sem_seg_out_dir, cam_out_dir):
         if use_cuda:
             model.cuda()
 
-        for iter, pack in enumerate(data_loader):
+        for iter, pack in tqdm(enumerate(data_loader)):
             img_name = pack['name'][0]
             orig_img_size = np.asarray(pack['size'])
 

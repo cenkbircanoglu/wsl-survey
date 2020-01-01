@@ -27,7 +27,7 @@ def find_centroids_with_refinement(displacement, iterations=300):
     centroid_x = np.repeat(np.expand_dims(np.arange(width), 0), height,
                            axis=0).astype(np.float32)
 
-    for i in tqdm(range(iterations)):
+    for i in range(iterations):
         # 2. find numbers after the decimals
         uy = np.ceil(centroid_y).astype(np.int32)
         dy = np.floor(centroid_y).astype(np.int32)
@@ -125,7 +125,7 @@ def _work(model, dataset, args, ins_seg_out_dir, cam_out_dir):
         if use_cuda:
             model.cuda()
 
-        for iter, pack in enumerate(data_loader):
+        for iter, pack in tqdm(enumerate(data_loader)):
             img_name = pack['name'][0]
             size = np.asarray(pack['size'])
 
