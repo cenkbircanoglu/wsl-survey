@@ -38,7 +38,7 @@ parser.add_argument('--lr_decay_epoch',
                     type=int,
                     help='learning decay epoch')
 parser.add_argument('--net_type', default='resnet', type=str, help='model')
-parser.add_argument('--depth', default=50, type=int, help='depth of model')
+parser.add_argument('--depth', default=154, type=int, help='depth of model')
 parser.add_argument('--weight_decay',
                     default=5e-4,
                     type=float,
