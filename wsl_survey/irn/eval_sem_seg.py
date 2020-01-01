@@ -15,8 +15,8 @@ def run(args, sem_seg_out_dir):
 
     preds = []
     for id in dataset.ids:
-        cls_labels = imageio.imread(
-            os.path.join(sem_seg_out_dir, id + '.png')).astype(np.uint8)
+        cls_labels = imageio.imread(os.path.join(sem_seg_out_dir,
+                                                 id + '.png')).astype(np.uint8)
         cls_labels[cls_labels == 255] = 0
         preds.append(cls_labels.copy())
 

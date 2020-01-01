@@ -65,9 +65,7 @@ def cluster_centroids(centroids, displacement, thres=2.5):
 
     weak_dp_region = dp_strength < thres
 
-    dp_label = measure.label(weak_dp_region,
-                                     connectivity=1,
-                                     background=0)
+    dp_label = measure.label(weak_dp_region, connectivity=1, background=0)
     dp_label_1d = dp_label.reshape(-1)
 
     centroids_1d = centroids[0] * width + centroids[1]
@@ -98,7 +96,7 @@ def detect_instance(score_map, mask, class_id, max_fragment_size=0):
         if np.sum(ag_mask) < 1:
             continue
         segments = pyutils.to_one_hot(
-            skimage.measure.label(ag_mask, connectivity=1, background=0))[1:]
+            measure.label(ag_mask, connectivity=1, background=0))[1:]
         # connected components analysis
 
         for seg_mask in segments:

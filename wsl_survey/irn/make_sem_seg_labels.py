@@ -51,7 +51,7 @@ def _work(model, dataset, args, sem_seg_out_dir, cam_out_dir):
             rw_up = F.interpolate(
                 rw, scale_factor=4, mode='bilinear',
                 align_corners=False)[...,
-                    0, :orig_img_size[0], :orig_img_size[1]]
+                                     0, :orig_img_size[0], :orig_img_size[1]]
             rw_up = rw_up / torch.max(rw_up)
 
             rw_up_bg = F.pad(rw_up, (0, 0, 0, 0, 1, 0),
@@ -75,7 +75,7 @@ def run(args, irn_weights_name=None, sem_seg_out_dir=None, cam_out_dir=None):
     dataset = dataloader.VOC12ClassificationDatasetMSF(
         os.path.join(args.dataset_dir, 'train.txt'),
         image_dir=args.image_dir,
-        scales=(1.0,))
+        scales=(1.0, ))
 
     print("[", end='')
     _work(model, dataset, args, sem_seg_out_dir, cam_out_dir)

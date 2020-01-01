@@ -125,7 +125,8 @@ if __name__ == '__main__':
         import train_irn
 
         timer = pyutils.Timer('train_irn:')
-        train_irn.run(args, irn_weights_name=irn_weights_name,
+        train_irn.run(args,
+                      irn_weights_name=irn_weights_name,
                       ir_label_out_dir=ir_label_out_dir)
 
     if args.make_ins_seg_pass is True:
