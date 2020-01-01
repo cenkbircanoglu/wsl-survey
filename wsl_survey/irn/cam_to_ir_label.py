@@ -3,6 +3,7 @@ import os
 import imageio
 import numpy as np
 from torch.utils.data import DataLoader
+from tqdm import tqdm
 
 from wsl_survey.irn import imutils, dataloader
 
@@ -13,7 +14,7 @@ def _work(infer_dataset, args, ir_label_out_dir, cam_out_dir):
                                    num_workers=0,
                                    pin_memory=False)
 
-    for iter, pack in enumerate(infer_data_loader):
+    for iter, pack in tqdm(enumerate(infer_data_loader)):
         img_name = pack['name'][0]
         img = pack['img'][0].numpy()
         cam_dict = np.load(os.path.join(cam_out_dir, img_name + '.npy'),

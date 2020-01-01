@@ -3,6 +3,7 @@ import os
 import chainercv
 import numpy as np
 from chainercv.datasets import VOCInstanceSegmentationDataset
+from tqdm import tqdm
 
 
 def run(args, ins_seg_out_dir=None):
@@ -18,7 +19,7 @@ def run(args, ins_seg_out_dir=None):
     pred_class = []
     pred_mask = []
     pred_score = []
-    for id in dataset.ids:
+    for id in tqdm(dataset.ids):
         ins_out = np.load(os.path.join(ins_seg_out_dir, id + '.npy'),
                           allow_pickle=True).item()
         pred_class.append(ins_out['class'])

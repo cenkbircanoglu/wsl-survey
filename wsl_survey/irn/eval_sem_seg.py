@@ -4,6 +4,7 @@ import imageio
 import numpy as np
 from chainercv.datasets import VOCSemanticSegmentationDataset
 from chainercv.evaluations import calc_semantic_segmentation_confusion
+from tqdm import tqdm
 
 
 def run(args, sem_seg_out_dir):
@@ -14,7 +15,7 @@ def run(args, sem_seg_out_dir):
     ]
 
     preds = []
-    for id in dataset.ids:
+    for id in tqdm(dataset.ids):
         cls_labels = imageio.imread(os.path.join(sem_seg_out_dir,
                                                  id + '.png')).astype(np.uint8)
         cls_labels[cls_labels == 255] = 0

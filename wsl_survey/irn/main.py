@@ -30,7 +30,7 @@ if __name__ == '__main__':
                         type=str)
     parser.add_argument("--cam_crop_size", default=512, type=int)
     parser.add_argument("--cam_batch_size", default=16, type=int)
-    parser.add_argument("--cam_num_epoches", default=50, type=int)
+    parser.add_argument("--cam_num_epoches", default=5, type=int)
     parser.add_argument("--cam_learning_rate", default=0.1, type=float)
     parser.add_argument("--cam_weight_decay", default=1e-4, type=float)
     parser.add_argument("--cam_eval_thres", default=0.15, type=float)
@@ -48,7 +48,7 @@ if __name__ == '__main__':
                         type=str)
     parser.add_argument("--irn_crop_size", default=512, type=int)
     parser.add_argument("--irn_batch_size", default=16, type=int)
-    parser.add_argument("--irn_num_epoches", default=30, type=int)
+    parser.add_argument("--irn_num_epoches", default=3, type=int)
     parser.add_argument("--irn_learning_rate", default=0.1, type=float)
     parser.add_argument("--irn_weight_decay", default=1e-4, type=float)
 
@@ -97,12 +97,14 @@ if __name__ == '__main__':
         import train_cam
 
         timer = pyutils.Timer('train_cam:')
+        print('train_cam')
         train_cam.run(args, cam_weights_name=cam_weights_name)
 
     if args.make_cam_pass is True:
         import make_cam
 
         timer = pyutils.Timer('make_cam:')
+        print('make_cam')
         make_cam.run(args,
                      cam_weights_name=cam_weights_name,
                      cam_out_dir=cam_out_dir)
@@ -111,12 +113,14 @@ if __name__ == '__main__':
         import eval_cam
 
         timer = pyutils.Timer('eval_cam:')
+        print('eval_cam')
         eval_cam.run(args, cam_out_dir=cam_out_dir)
 
     if args.cam_to_ir_label_pass is True:
         import cam_to_ir_label
 
         timer = pyutils.Timer('cam_to_ir_label:')
+        print('cam_to_ir_label')
         cam_to_ir_label.run(args,
                             ir_label_out_dir=ir_label_out_dir,
                             cam_out_dir=cam_out_dir)
@@ -125,6 +129,7 @@ if __name__ == '__main__':
         import train_irn
 
         timer = pyutils.Timer('train_irn:')
+        print('train_irn')
         train_irn.run(args,
                       irn_weights_name=irn_weights_name,
                       ir_label_out_dir=ir_label_out_dir)
@@ -133,6 +138,7 @@ if __name__ == '__main__':
         import make_ins_seg_labels
 
         timer = pyutils.Timer('make_ins_seg_labels:')
+        print('make_ins_seg_labels')
         make_ins_seg_labels.run(args,
                                 irn_weights_name=irn_weights_name,
                                 ins_seg_out_dir=ins_seg_out_dir,
@@ -142,12 +148,14 @@ if __name__ == '__main__':
         import eval_ins_seg
 
         timer = pyutils.Timer('eval_ins_seg:')
+        print('eval_ins_seg')
         eval_ins_seg.run(args, ins_seg_out_dir=ins_seg_out_dir)
 
     if args.make_sem_seg_pass is True:
         import make_sem_seg_labels
 
         timer = pyutils.Timer('make_sem_seg_labels:')
+        print('make_sem_seg_labels')
         make_sem_seg_labels.run(args,
                                 irn_weights_name=irn_weights_name,
                                 sem_seg_out_dir=sem_seg_out_dir,
@@ -157,4 +165,5 @@ if __name__ == '__main__':
         import eval_sem_seg
 
         timer = pyutils.Timer('eval_sem_seg:')
+        print('eval_sem_seg')
         eval_sem_seg.run(args, sem_seg_out_dir=sem_seg_out_dir)

@@ -3,6 +3,7 @@ import os
 import numpy as np
 from chainercv.datasets import VOCSemanticSegmentationDataset
 from chainercv.evaluations import calc_semantic_segmentation_confusion
+from tqdm import tqdm
 
 
 def run(args, cam_out_dir=None):
@@ -13,7 +14,7 @@ def run(args, cam_out_dir=None):
     ]
 
     preds = []
-    for id in dataset.ids:
+    for id in tqdm(dataset.ids):
         cam_dict = np.load(os.path.join(cam_out_dir, id + '.npy'),
                            allow_pickle=True).item()
         cams = cam_dict['high_res']

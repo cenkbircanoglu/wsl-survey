@@ -6,6 +6,7 @@ import torch
 import torch.nn.functional as F
 from torch.backends import cudnn
 from torch.utils.data import DataLoader
+from tqdm import tqdm
 
 from wsl_survey.irn import dataloader, indexing, imutils, pyutils
 from wsl_survey.irn.net.resnet50_irn import EdgeDisplacement
@@ -26,7 +27,7 @@ def find_centroids_with_refinement(displacement, iterations=300):
     centroid_x = np.repeat(np.expand_dims(np.arange(width), 0), height,
                            axis=0).astype(np.float32)
 
-    for i in range(iterations):
+    for i in tqdm(range(iterations)):
         # 2. find numbers after the decimals
         uy = np.ceil(centroid_y).astype(np.int32)
         dy = np.floor(centroid_y).astype(np.int32)
