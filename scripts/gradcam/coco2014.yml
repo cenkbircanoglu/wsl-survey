@@ -14,3 +14,17 @@ services:
                     --checkpoints=/models/gradcam-coco2014
         runtime: ${RUNTIME}
         shm_size: '8gb'
+    evaluator:
+        volumes:
+            - ~/wsl/datasets:/datasets
+            - ~/wsl/models:/models
+        image: ${IMAGE}
+        environment:
+            NVIDIA_VISIBLE_DEVICES: all
+            COMMAND: >
+                python3 /app/wsl_survey/gradcam/evaluate.py
+                    --dataset_dir=/datasets/coco2014/labelled
+                    --image_dir=/datasets/coco2014/data/images
+                    --checkpoints=/models/gradcam-coco2014
+        runtime: ${RUNTIME}
+        shm_size: '8gb'

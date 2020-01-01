@@ -23,18 +23,28 @@ DISP_INTERVAL = 50
 
 def get_arguments():
     parser = argparse.ArgumentParser(description='ACoL')
+    parser.add_argument("--image_dir",
+                        type=str,
+                        default='',
+                        help='Directory of training images')
+    parser.add_argument('--image_size',
+                        '-i',
+                        default=224,
+                        type=int,
+                        metavar='N',
+                        help='image size (default: 224)')
+    parser.add_argument("--dataset_dir", type=str)
     parser.add_argument("--batch_size", type=int, default=1)
     parser.add_argument("--input_size", type=int, default=256)
     parser.add_argument("--crop_size", type=int, default=224)
-    parser.add_argument("--dataset", type=str)
     parser.add_argument("--num_classes", type=int, default=20)
     parser.add_argument("--arch", type=str, default='vgg_v1')
     parser.add_argument("--threshold", type=float, default=0.6)
     parser.add_argument("--lr", type=float, default=LR)
     parser.add_argument("--decay_points", type=str, default='none')
-    parser.add_argument("--epoch", type=int, default=EPOCH)
+    parser.add_argument("--epochs", type=int, default=EPOCH)
     parser.add_argument("--tencrop", type=str, default='False')
-    parser.add_argument("--onehot", type=str, default='True')
+    parser.add_argument("--onehot", type=bool, default=False)
     parser.add_argument("--num_gpu", type=int, default=1)
     parser.add_argument("--num_workers", type=int, default=20)
     parser.add_argument("--disp_interval", type=int, default=DISP_INTERVAL)
@@ -42,6 +52,7 @@ def get_arguments():
     parser.add_argument("--restore_from", type=str, default='')
     parser.add_argument("--global_counter", type=int, default=0)
     parser.add_argument("--current_epoch", type=int, default=0)
+    parser.add_argument("--checkpoints", type=str)
 
     return parser.parse_args()
 
@@ -79,12 +90,13 @@ def val(args, model=None, current_epoch=0):
     top1.reset()
     top5.reset()
     val_loader = data_loader(args, split_type='val')
-
+    save_bins_path = os.path.join(args.checkpoints, 'save_bins')
+    os.makedirs(save_bins_path, exist_ok=True)
     if model is None:
         model, _ = get_model(args, val_loader.dataset.get_number_classes())
     model.eval()
 
-    save_atten = SAVE_ATTEN(save_dir='../save_bins/')
+    save_atten = SAVE_ATTEN(save_dir=save_bins_path)
 
     global_counter = 0
     prob = None
@@ -99,8 +111,8 @@ def val(args, model=None, current_epoch=0):
             label = label_input.view(-1)
         else:
             label = label_in
-
-        img, label = img.cuda(), label.cuda()
+        if use_gpu:
+            img, label = img.cuda(), label.cuda()
         img_var, label_var = Variable(img), Variable(label)
 
         logits = model(img_var, label_var)

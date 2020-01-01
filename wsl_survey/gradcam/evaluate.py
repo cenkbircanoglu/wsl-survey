@@ -107,7 +107,7 @@ with open(output_file, 'wb') as csvfile:
         tot = 0
         for f in files:
             file_path = subdir + os.sep + f
-            if (is_image(f)):
+            if is_image(f):
                 image = Image.open(file_path)  # .convert('RGB')
                 if test_transform is not None:
                     image = test_transform(image)
