@@ -171,7 +171,7 @@ def _work(model, dataset, args, ins_seg_out_dir, cam_out_dir):
             instance_shape = pyutils.to_one_hot(
                 instance_shape,
                 maximum_val=num_instances * num_classes + 1)[1:]
-            instance_class_id = np.repeat(keys, num_instances)
+            instance_class_id = np.repeat(keys.cpu(), num_instances)
 
             detected = detect_instance(rw_up.cpu().numpy(),
                                        instance_shape,
