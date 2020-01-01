@@ -9,9 +9,9 @@ RUN apt-get install -y libsm6 libxext6 libxrender-dev libglib2.0-0 \
         libswscale-dev python-dev python-numpy libtbb2 libtbb-dev \
         libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
 RUN pip install cython
-RUN pip install scipy torchnet==0.0.4 torchvision==0.4.2 tqdm==4.41.0 \
+RUN pip install scipy torchnet==0.0.4 torchvision tqdm==4.41.0 \
     xmltodict==0.12.0 matplotlib==3.1.2 tensorboard==2.1.0 terminaltables==3.1.0 \
-    colorama==0.4.3 opencv-python==4.1.2.30 scikit-learn==0.22.0  pydensecrf imageio chainercv scikit-image
+    colorama==0.4.3 opencv-python==4.1.2.30 scikit-learn==0.22.0  pydensecrf imageio chainercv scikit-image>=0.15.0
 
 ADD ./dist/wsl_survey-0.1.0-py2.py3-none-any.whl /app/
 ADD ./datasets/test /test_dataset

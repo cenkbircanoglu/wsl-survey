@@ -1,7 +1,7 @@
 import os
 
 import numpy as np
-import skimage
+from skimage import measure
 import torch
 import torch.nn.functional as F
 from torch.backends import cudnn
@@ -65,7 +65,7 @@ def cluster_centroids(centroids, displacement, thres=2.5):
 
     weak_dp_region = dp_strength < thres
 
-    dp_label = skimage.measure.label(weak_dp_region,
+    dp_label = measure.label(weak_dp_region,
                                      connectivity=1,
                                      background=0)
     dp_label_1d = dp_label.reshape(-1)
