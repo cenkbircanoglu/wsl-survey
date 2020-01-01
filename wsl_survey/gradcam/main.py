@@ -255,9 +255,8 @@ def train_model(model,
                             'acc': epoch_acc,
                             'epoch': epoch,
                         }
-                        save_point = args.checkpoints
-                        os.makedirs(save_point, exist_ok=True)
-                        torch.save(state, save_point + file_name + '.t7')
+                        torch.save(state, os.path.join(args.checkpoints,
+                                                       file_name + '.t7'))
 
                     val_acc = epoch_acc
 
