@@ -235,7 +235,7 @@ def train_model(model,
                         sys.stdout.write('\r')
 
                 epoch_loss = running_loss / len(loader.dataset)
-                epoch_acc = running_corrects / len(loader.dataset)
+                epoch_acc = float(running_corrects) / len(loader.dataset)
 
                 if phase == 'train':
                     train_acc = epoch_acc
