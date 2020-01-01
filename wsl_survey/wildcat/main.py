@@ -78,7 +78,7 @@ if __name__ == '__main__':
                         metavar='N',
                         help='number of data loading workers (default: 4)')
     parser.add_argument('--epochs',
-                        default=250,
+                        default=100,
                         type=int,
                         metavar='N',
                         help='number of total epochs to run')

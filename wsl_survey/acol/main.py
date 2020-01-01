@@ -36,7 +36,7 @@ def get_arguments():
     parser.add_argument("--arch", type=str, default='vgg_v0')
     parser.add_argument("--lr", type=float, default=LR)
     parser.add_argument("--decay_points", type=str, default='none')
-    parser.add_argument("--epochs", type=int, default=250)
+    parser.add_argument("--epochs", type=int, default=100)
     parser.add_argument("--num_gpu", type=int, default=2)
     parser.add_argument("--num_workers", type=int, default=4)
     parser.add_argument("--disp_interval", type=int, default=100)
