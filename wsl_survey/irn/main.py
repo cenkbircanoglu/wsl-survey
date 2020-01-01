@@ -19,7 +19,7 @@ if __name__ == '__main__':
                         help='path to dataset (e.g. ../data/')
     parser.add_argument("--checkpoints", type=str)
     parser.add_argument("--num_workers", default=os.cpu_count() // 2, type=int)
-    parser.add_argument("--chainer_eval_set", default="val", type=str)
+    parser.add_argument("--chainer_eval_set", default="train", type=str)
 
     parser.add_argument("--image_size", default=512, type=int)
     parser.add_argument("--batch_size", default=16, type=int)

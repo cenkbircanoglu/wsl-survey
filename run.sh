@@ -1,6 +1,7 @@
 make dist
 make docker-build
 make docker-tag
+make docker-release
 export IMAGE=cenkbircanoglu/wsl-survey-gpu
 export RUNTIME=nvidia
 docker-compose -f scripts/irn/voc2007.yml run trainer
