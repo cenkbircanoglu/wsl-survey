@@ -255,7 +255,7 @@ class Engine(object):
             self.state['data_time'].add(self.state['data_time_batch'])
 
             self.state['input'] = input
-            self.state['target'] = target
+            self.state['target'] = target - 1.0
             self.on_start_batch(True, model, criterion, data_loader, optimizer)
             if self.state['use_gpu']:
                 self.state['target'] = self.state['target'].cuda()
@@ -602,6 +602,8 @@ class MultiLabelMAPEngine(Engine):
                        display=True):
 
         self.state['target_gt'] = self.state['target'].clone()
+        self.state['target'][self.state['target'] == 0] = 1
+        self.state['target'][self.state['target'] == -1] = 0
 
         input = self.state['input']
         self.state['input'] = input[0]
