@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 def run(args, sem_seg_out_dir):
     dataset = VOCSemanticSegmentationDataset(split=args.chainer_eval_set,
-                                             data_dir=args.voc12_root)
+                                             data_dir=args.voc_root)
     labels = [
         dataset.get_example_by_keys(i, (1, ))[0] for i in range(len(dataset))
     ]

@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 def run(args, ins_seg_out_dir=None):
     dataset = VOCInstanceSegmentationDataset(split=args.chainer_eval_set,
-                                             data_dir=args.voc12_root)
+                                             data_dir=args.voc_root)
     gt_masks = [
         dataset.get_example_by_keys(i, (1, ))[0] for i in range(len(dataset))
     ]
