@@ -12,5 +12,6 @@ services:
                     --dataset_dir=/datasets/coco2014/labelled
                     --image_dir=/datasets/coco2014/data/images
                     --checkpoints=/models/irn-coco2014
+                    --eval_cam_pass=False
         runtime: ${RUNTIME}
         shm_size: '8gb'
