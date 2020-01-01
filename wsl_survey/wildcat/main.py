@@ -42,7 +42,7 @@ def train(args):
         'evaluate': args.evaluate,
         'resume': args.resume,
         'use_gpu': use_gpu,
-        'difficult_examples': True,
+        'difficult_examples': False,
         'save_model_path': args.checkpoints
     }
 
