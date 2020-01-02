@@ -5,15 +5,14 @@ import shutil
 import numpy as np
 import torch
 from torch.autograd import Variable
-from tqdm import tqdm
 
 from wsl_survey.acol import my_optim
-from wsl_survey.datasets.classification_dataset import data_loader
 from wsl_survey.acol.models import initialize_model
 from wsl_survey.acol.utils import AverageMeter
 from wsl_survey.acol.utils import metrics
 from wsl_survey.acol.utils.restore import restore
 from wsl_survey.acol.utils.save_atten import SAVE_ATTEN
+from wsl_survey.datasets.classification_dataset import data_loader
 
 LR = 0.001
 # LR=0.1
@@ -46,13 +45,15 @@ def get_arguments():
     parser.add_argument("--tencrop", type=str, default='False')
     parser.add_argument("--onehot", type=bool, default=False)
     parser.add_argument("--num_gpu", type=int, default=1)
-    parser.add_argument("--num_workers", type=int, default=20)
+    parser.add_argument("--num_workers", type=int, default=4)
     parser.add_argument("--disp_interval", type=int, default=DISP_INTERVAL)
     parser.add_argument("--resume", type=str, default='True')
     parser.add_argument("--restore_from", type=str, default='')
     parser.add_argument("--global_counter", type=int, default=0)
     parser.add_argument("--current_epoch", type=int, default=0)
     parser.add_argument("--checkpoints", type=str)
+    parser.add_argument("--output", type=str,
+                        default='checkpoints/models/acol-voc2007/outputs')
 
     return parser.parse_args()
 
@@ -101,8 +102,10 @@ def val(args, model=None, current_epoch=0):
     global_counter = 0
     prob = None
     gt = None
-    for idx, dat in tqdm(enumerate(val_loader)):
-        img_path, img, label_in = dat
+    for idx, dat in enumerate(val_loader):
+        img_and_path, label_in = dat
+        img, img_path = img_and_path[0], img_and_path[1]
+
         global_counter += 1
         if args.tencrop == 'True':
             bs, ncrops, c, h, w = img.size()
@@ -129,16 +132,17 @@ def val(args, model=None, current_epoch=0):
         top5.update(prec5_1[0], img.size()[0])
 
         # model.module.save_erased_img(img_path)
-        last_featmaps = model.module.get_localization_maps()
+        last_featmaps = model.get_localization_maps()
         np_last_featmaps = last_featmaps.cpu().data.numpy()
-
+        os.makedirs(args.output, exist_ok=True)
         # Save 100 sample masked images by heatmaps
         if idx < 100 / args.batch_size:
             save_atten.get_masked_img(img_path,
                                       np_last_featmaps,
                                       label_in.numpy(),
-                                      size=(0, 0),
-                                      maps_in_dir=False)
+                                      img_size=(0, 0),
+                                      maps_in_dir=False, save_dir=args.output,
+                                      image_dir=args.image_dir)
 
         # save_atten.get_masked_img(img_path, np_last_featmaps, label_in.numpy(),size=(0,0),
         #                           maps_in_dir=True, save_dir='../heatmaps',only_map=True )

@@ -15,7 +15,7 @@ from wsl_survey.acol.utils.restore import restore
 # Default parameters
 from wsl_survey.datasets.classification_dataset import data_loader
 
-LR = 0.001
+LR = 0.0001
 DISP_INTERVAL = 20
 
 

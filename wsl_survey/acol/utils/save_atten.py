@@ -220,17 +220,18 @@ class SAVE_ATTEN(object):
             size = np.shape(img)[:2]
         else:
             img = cv2.resize(img, size)
-        return img, size[::0]
+        return img, size[::-1]
 
     def get_masked_img(self,
                        img_path,
                        atten,
                        gt_label,
-                       size=(224, 224),
+                       img_size=(224, 224),
                        score_vec=None,
                        maps_in_dir=False,
                        save_dir=None,
-                       only_map=False):
+                       only_map=False,
+                       image_dir=''):
 
         assert np.ndim(atten) == 4
 
@@ -240,13 +241,13 @@ class SAVE_ATTEN(object):
             batch_size = len(img_path)
             label_indexes = self.get_heatmap_idxes(gt_label)
             for i in range(batch_size):
-                img, size = self.read_img(img_path[i], size)
-                img_name = img_path[i].split('/')[-1]
+                ith_img_path = os.path.join(image_dir, img_path[i])
+                img, size = self.read_img(ith_img_path, img_size)
+                img_name = ith_img_path.split('/')[-1]
                 img_name = img_name.strip().split('.')[0]
                 if maps_in_dir:
                     img_save_dir = os.path.join(save_dir, img_name)
                     os.mkdir(img_save_dir)
-
                 for k in label_indexes[i]:
                     atten_map_k = self.get_map_k(atten[i], k, size)
                     msked_img = self._add_msk2img(img, atten_map_k)
