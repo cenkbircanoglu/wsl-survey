@@ -43,9 +43,9 @@ class Net(nn.Module):
         return x
 
     def train(self, mode=True):
-        for p in self.backbone_model.conv1.parameters():
+        for p in self.resnet101.conv1.parameters():
             p.requires_grad = False
-        for p in self.backbone_model.bn1.parameters():
+        for p in self.resnet101.bn1.parameters():
             p.requires_grad = False
 
     def trainable_parameters(self):
