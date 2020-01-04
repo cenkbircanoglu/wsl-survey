@@ -14,7 +14,15 @@ python3 wsl_survey/acol/evaluate.py \
 
 
 python3 wsl_survey/acol/evaluate.py \
-    --dataset_dir=/Users/cenk.bircanoglu/wsl/wsl_survey/datasets/voc2007/labelled \
-    --image_dir=/Users/cenk.bircanoglu/wsl/wsl_survey/datasets/voc2007/images \
-    --checkpoints=/Users/cenk.bircanoglu/wsl/wsl_survey/checkpoints/models/acol-voc2007 \
-    --epochs=1
+    --dataset_dir=datasets/voc2007/labelled \
+    --image_dir=datasets/voc2007/data/JPEGImages \
+    --arch=vgg_v1  \
+    --checkpoints=checkpoints/models/acol-voc2007 \
+    --output=checkpoints/models/acol-voc2007/outputs
+
+python3 wsl_survey/acol/evaluate.py \
+    --dataset_dir=datasets/voc2012/labelled \
+    --image_dir=datasets/voc2012/data/JPEGImages \
+    --arch=vgg_v1  \
+    --checkpoints=checkpoints/models/acol-voc2012 \
+    --output=checkpoints/models/acol-voc2012/outputs
