@@ -28,26 +28,26 @@ class Net(nn.Module):
             nn.ReLU(inplace=True),
         )
         self.fc_edge2 = nn.Sequential(
-            nn.Conv2d(256, 32, 1, bias=False),
+            nn.Conv2d(64, 32, 1, bias=False),
             nn.GroupNorm(4, 32),
             nn.ReLU(inplace=True),
         )
         self.fc_edge3 = nn.Sequential(
-            nn.Conv2d(512, 32, 1, bias=False),
+            nn.Conv2d(128, 32, 1, bias=False),
             nn.GroupNorm(4, 32),
             nn.Upsample(scale_factor=2, mode='bilinear', align_corners=False),
             nn.ReLU(inplace=True),
         )
         self.fc_edge4 = nn.Sequential(
-            nn.Conv2d(1024, 32, 1, bias=False),
+            nn.Conv2d(256, 32, 1, bias=False),
             nn.GroupNorm(4, 32),
             nn.Upsample(scale_factor=4, mode='bilinear', align_corners=False),
             nn.ReLU(inplace=True),
         )
         self.fc_edge5 = nn.Sequential(
-            nn.Conv2d(2048, 32, 1, bias=False),
+            nn.Conv2d(512, 32, 1, bias=False),
             nn.GroupNorm(4, 32),
-            nn.Upsample(scale_factor=4, mode='bilinear', align_corners=False),
+            nn.Upsample(scale_factor=8, mode='bilinear', align_corners=False),
             nn.ReLU(inplace=True),
         )
         self.fc_edge6 = nn.Conv2d(160, 1, 1, bias=True)
@@ -59,25 +59,26 @@ class Net(nn.Module):
             nn.ReLU(inplace=True),
         )
         self.fc_dp2 = nn.Sequential(
-            nn.Conv2d(256, 128, 1, bias=False),
+            nn.Conv2d(64, 128, 1, bias=False),
             nn.GroupNorm(16, 128),
             nn.ReLU(inplace=True),
         )
         self.fc_dp3 = nn.Sequential(
-            nn.Conv2d(512, 256, 1, bias=False),
+            nn.Conv2d(128, 256, 1, bias=False),
             nn.GroupNorm(16, 256),
+            nn.Upsample(scale_factor=2, mode='bilinear', align_corners=False),
             nn.ReLU(inplace=True),
         )
         self.fc_dp4 = nn.Sequential(
-            nn.Conv2d(1024, 256, 1, bias=False),
+            nn.Conv2d(256, 256, 1, bias=False),
             nn.GroupNorm(16, 256),
-            nn.Upsample(scale_factor=2, mode='bilinear', align_corners=False),
+            nn.Upsample(scale_factor=4, mode='bilinear', align_corners=False),
             nn.ReLU(inplace=True),
         )
         self.fc_dp5 = nn.Sequential(
-            nn.Conv2d(2048, 256, 1, bias=False),
+            nn.Conv2d(512, 256, 1, bias=False),
             nn.GroupNorm(16, 256),
-            nn.Upsample(scale_factor=2, mode='bilinear', align_corners=False),
+            nn.Upsample(scale_factor=8, mode='bilinear', align_corners=False),
             nn.ReLU(inplace=True),
         )
         self.fc_dp6 = nn.Sequential(
@@ -120,7 +121,6 @@ class Net(nn.Module):
         x3 = self.stage3(x2).detach()
         x4 = self.stage4(x3).detach()
         x5 = self.stage5(x4).detach()
-
         edge1 = self.fc_edge1(x1)
         edge2 = self.fc_edge2(x2)
         edge3 = self.fc_edge3(x3)[..., :edge2.size(2), :edge2.size(3)]
@@ -252,3 +252,13 @@ class EdgeDisplacement(Net):
         dp_out = dp_out[0]
 
         return edge_out, dp_out
+
+
+if __name__ == '__main__':
+    from wsl_survey.segmentation.irn.misc import indexing
+
+    path_index = indexing.PathIndex(radius=10, default_size=(
+        512 // 4, 512 // 4))
+    model = AffinityDisplacementLoss(path_index)
+    x = torch.randn((2, 3, 512, 512))
+    y = model(x, True)

@@ -10,8 +10,7 @@ class Net(nn.Module):
         super(Net, self).__init__()
 
         # backbone
-        self.resnet101 = resnet.resnext50_32x4d(pretrained=True,
-                                                strides=[2, 2, 2, 1])
+        self.resnet101 = resnet.resnext50_32x4d(pretrained=True)
 
         self.stage1 = nn.Sequential(self.resnet101.conv1, self.resnet101.bn1,
                                     self.resnet101.relu,
@@ -48,7 +47,7 @@ class Net(nn.Module):
         self.fc_edge5 = nn.Sequential(
             nn.Conv2d(2048, 32, 1, bias=False),
             nn.GroupNorm(4, 32),
-            nn.Upsample(scale_factor=4, mode='bilinear', align_corners=False),
+            nn.Upsample(scale_factor=8, mode='bilinear', align_corners=False),
             nn.ReLU(inplace=True),
         )
         self.fc_edge6 = nn.Conv2d(160, 1, 1, bias=True)
@@ -78,7 +77,7 @@ class Net(nn.Module):
         self.fc_dp5 = nn.Sequential(
             nn.Conv2d(2048, 256, 1, bias=False),
             nn.GroupNorm(16, 256),
-            nn.Upsample(scale_factor=2, mode='bilinear', align_corners=False),
+            nn.Upsample(scale_factor=4, mode='bilinear', align_corners=False),
             nn.ReLU(inplace=True),
         )
         self.fc_dp6 = nn.Sequential(
@@ -127,6 +126,7 @@ class Net(nn.Module):
         edge3 = self.fc_edge3(x3)[..., :edge2.size(2), :edge2.size(3)]
         edge4 = self.fc_edge4(x4)[..., :edge2.size(2), :edge2.size(3)]
         edge5 = self.fc_edge5(x5)[..., :edge2.size(2), :edge2.size(3)]
+
         edge_out = self.fc_edge6(
             torch.cat([edge1, edge2, edge3, edge4, edge5], dim=1))
 
@@ -253,3 +253,13 @@ class EdgeDisplacement(Net):
         dp_out = dp_out[0]
 
         return edge_out, dp_out
+
+
+if __name__ == '__main__':
+    from wsl_survey.segmentation.irn.misc import indexing
+
+    path_index = indexing.PathIndex(radius=10, default_size=(
+        512 // 4, 512 // 4))
+    model = AffinityDisplacementLoss(path_index)
+    x = torch.randn((2, 3, 512, 512))
+    y = model(x, True)
