@@ -30,3 +30,10 @@ def run(args):
                                                                gt_masks,
                                                                gt_labels,
                                                                iou_thresh=0.5))
+    print('0.7iou:',
+          chainercv.evaluations.eval_instance_segmentation_voc(pred_mask,
+                                                               pred_class,
+                                                               pred_score,
+                                                               gt_masks,
+                                                               gt_labels,
+                                                               iou_thresh=0.7))
