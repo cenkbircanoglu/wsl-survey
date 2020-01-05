@@ -21,7 +21,7 @@ class Net(nn.Module):
         self.stage3 = nn.Sequential(self.backbone_model.layer3)
         self.stage4 = nn.Sequential(self.backbone_model.layer4)
 
-        self.classifier = nn.Conv2d(2048, 20, 1, bias=False)
+        self.classifier = nn.Conv2d(512, 20, 1, bias=False)
 
         self.backbone = nn.ModuleList(
             [self.stage1, self.stage2, self.stage3, self.stage4])
