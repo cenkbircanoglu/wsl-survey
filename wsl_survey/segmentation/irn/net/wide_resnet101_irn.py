@@ -263,5 +263,4 @@ if __name__ == '__main__':
     model = AffinityDisplacementLoss(path_index)
     x = torch.randn((2, 3, 512, 512))
     y = model(x, True)
-    print(y)
 

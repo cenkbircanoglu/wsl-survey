@@ -136,7 +136,6 @@ class Net(nn.Module):
         dp3 = self.fc_dp3(x3)
         dp4 = self.fc_dp4(x4)[..., :dp3.size(2), :dp3.size(3)]
         dp5 = self.fc_dp5(x5)[..., :dp3.size(2), :dp3.size(3)]
-        print(dp1.shape, dp2.shape, dp3.shape, dp4.shape, dp5.shape)
         dp_up3 = self.fc_dp6(torch.cat([dp3, dp4, dp5], dim=1))[...,
                  :dp2.size(2), :dp2.size(3)]
         dp_out = self.fc_dp7(torch.cat([dp1, dp2, dp_up3], dim=1))
@@ -262,5 +261,4 @@ if __name__ == '__main__':
     model = AffinityDisplacementLoss(path_index)
     x = torch.randn((2, 3, 512, 512))
     y = model(x, True)
-    print(y)
 
