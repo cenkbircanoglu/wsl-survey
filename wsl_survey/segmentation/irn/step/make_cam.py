@@ -1,14 +1,9 @@
 import importlib
 import os
 
-import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import torch.nn.functional as F
-from skimage.color import rgb2gray
-from skimage.morphology import convex_hull_image
-from skimage.morphology import disk
-from skimage.morphology import erosion, opening, dilation, closing
 from torch import multiprocessing, cuda
 from torch.backends import cudnn
 from torch.utils.data import DataLoader
@@ -19,30 +14,6 @@ from wsl_survey.segmentation.irn.voc12 import dataloader
 
 cudnn.enabled = True
 use_gpu = torch.cuda.is_available()
-
-
-def plot_comparison(original, filtered, filter_name):
-    fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(8, 4), sharex=True,
-                                   sharey=True)
-    ax1.imshow(original, cmap=plt.cm.gray)
-    ax1.set_title('original')
-    ax1.axis('off')
-    ax2.imshow(filtered, cmap=plt.cm.gray)
-    ax2.set_title(filter_name)
-    ax2.axis('off')
-
-
-def apply_morphology(img):
-    img = np.pad(img, ((1, 0), (0, 0), (0, 0)), mode='constant')
-    selem = disk(4)
-    img = rgb2gray(img)
-    eroded = erosion(img, selem)
-    dilated = dilation(img, selem)
-    opened = opening(img, selem)
-    closed = closing(img, selem)
-    hull1 = convex_hull_image(img == 0)
-
-    return img, eroded, dilated, opened, closed, hull1
 
 
 def _work_cpu(process_id, model, dataset, args):
@@ -84,37 +55,10 @@ def _work_cpu(process_id, model, dataset, args):
 
             highres_cam = highres_cam[valid_cat]
             highres_cam /= F.adaptive_max_pool2d(highres_cam, (1, 1)) + 1e-5
-            grayscaled, eroded, dilated, opened, closed, hull1 = apply_morphology(highres_cam.cpu().numpy())
             # save cams
             np.save(os.path.join(args.cam_out_dir, img_name + '.npy'),
                     {"keys": valid_cat, "cam": strided_cam.cpu(),
                      "high_res": highres_cam.cpu().numpy()})
-
-            os.makedirs(os.path.join(args.cam_out_dir, 'grayscaled'), exist_ok=True)
-            os.makedirs(os.path.join(args.cam_out_dir, 'eroded'), exist_ok=True)
-            os.makedirs(os.path.join(args.cam_out_dir, 'dilated'), exist_ok=True)
-            os.makedirs(os.path.join(args.cam_out_dir, 'opened'), exist_ok=True)
-            os.makedirs(os.path.join(args.cam_out_dir, 'closed'), exist_ok=True)
-            os.makedirs(os.path.join(args.cam_out_dir, 'hull1'), exist_ok=True)
-
-            np.save(os.path.join(args.cam_out_dir, 'grayscaled', img_name + '.npy'),
-                    {"keys": valid_cat, "cam": strided_cam.cpu(),
-                     "high_res": grayscaled})
-            np.save(os.path.join(args.cam_out_dir, 'eroded', img_name + '.npy'),
-                    {"keys": valid_cat, "cam": strided_cam.cpu(),
-                     "high_res": eroded})
-            np.save(os.path.join(args.cam_out_dir, 'dilated', img_name + '.npy'),
-                    {"keys": valid_cat, "cam": strided_cam.cpu(),
-                     "high_res": dilated})
-            np.save(os.path.join(args.cam_out_dir, 'opened', img_name + '.npy'),
-                    {"keys": valid_cat, "cam": strided_cam.cpu(),
-                     "high_res": opened})
-            np.save(os.path.join(args.cam_out_dir, 'closed', img_name + '.npy'),
-                    {"keys": valid_cat, "cam": strided_cam.cpu(),
-                     "high_res": closed})
-            np.save(os.path.join(args.cam_out_dir, 'hull1', img_name + '.npy'),
-                    {"keys": valid_cat, "cam": strided_cam.cpu(),
-                     "high_res": hull1})
 
             if process_id == args.num_workers - 1 and iter % (
                 len(databin) // 20) == 0:
@@ -179,7 +123,8 @@ def run(args):
         model.load_state_dict(torch.load(args.cam_weights_name + '.pth'),
                               strict=True)
     else:
-        model.load_state_dict(torch.load(args.cam_weights_name + '.pth', map_location=torch.device('cpu')),
+        model.load_state_dict(torch.load(args.cam_weights_name + '.pth',
+                                         map_location=torch.device('cpu')),
                               strict=True)
     model.eval()
     dataset = dataloader.VOC12ClassificationDatasetMSF(args.train_list,
