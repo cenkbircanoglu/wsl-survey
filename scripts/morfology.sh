@@ -2,9 +2,7 @@ export MODEL=resnet152
 export eroded=7
 export cam_eval_thres=0.11
 
-python3 wsl_survey/segmentation/irn/morph/apply_morph.py --kernel_size=$KERNEL_SIZE
-
-python3 wsl_survey/segmentation/irn/main.py \
+nohup python3 wsl_survey/segmentation/irn/main.py \
     --voc12_root=./datasets/voc2012/VOCdevkit/VOC2012 \
     --chainer_eval_set=train \
     --class_label_dict_path=./data/voc12/cls_labels.npy \
@@ -20,13 +18,13 @@ python3 wsl_survey/segmentation/irn/main.py \
     --cam_network=net.${MODEL}_cam \
     --irn_network=net.${MODEL}_irn \
     --log_name=./outputs/voc12/logs/$MODEL \
-    --eval_cam_pass=True \
-    --cam_to_ir_label_pass=True \
     --train_irn_pass=True \
     --make_ins_seg_pass=True \
     --eval_ins_seg_pass=True \
     --make_sem_seg_pass=True \
     --eval_sem_seg_pass=True \
-    --num_workers=4 \
-    --cam_eval_thres=0.11
+    --num_workers=8 \
+    --cam_eval_thres=0.11 \
+    --cam_batch_size=8 \
+    --irn_batch_size=8 &
 

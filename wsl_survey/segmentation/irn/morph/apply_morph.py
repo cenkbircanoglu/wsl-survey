@@ -70,7 +70,7 @@ def apply(folder):
     os.makedirs(gaussian_folder, exist_ok=True)
 
     paths = os.listdir(folder)
-    with  Pool(processes=32) as pool:
+    with Pool(processes=196) as pool:
         with tqdm(total=len(paths)) as pbar:
             for i, _ in tqdm(
                 enumerate(
@@ -88,8 +88,8 @@ if __name__ == '__main__':
     parser.add_argument("--kernel_size", type=int)
     args = parser.parse_args()
     kernel_size = args.kernel_size
-    apply('/Users/cenk.bircanoglu/wsl/wsl_survey/results/resnet152/cam')
-    apply('/Users/cenk.bircanoglu/wsl/wsl_survey/results/resnet152/cam_val')
+    apply('./outputs/voc12/results/resnet152/cam')
+    apply('./outputs/voc12/results/resnet152/cam_val')
     # apply('/Users/cenk.bircanoglu/wsl/wsl_survey/results/resnet101/cam')
     # apply('/Users/cenk.bircanoglu/wsl/wsl_survey/results/resnet101/cam_val')
     # apply('/Users/cenk.bircanoglu/wsl/wsl_survey/results/resnet154/cam')
