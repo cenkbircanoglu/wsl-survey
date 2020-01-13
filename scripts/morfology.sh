@@ -1,8 +1,10 @@
 export MODEL=resnet152
-export eroded=7
-export cam_eval_thres=0.11
 
-nohup python3 wsl_survey/segmentation/irn/main.py \
+python3 wsl_survey/segmentation/irn/morph/apply_morph.py --kernel_size=3
+
+for MORP in eroded dilated opened closed gaussian
+do
+python3 wsl_survey/segmentation/irn/main.py \
     --voc12_root=./datasets/voc2012/VOCdevkit/VOC2012 \
     --chainer_eval_set=train \
     --class_label_dict_path=./data/voc12/cls_labels.npy \
@@ -14,7 +16,7 @@ nohup python3 wsl_survey/segmentation/irn/main.py \
     --cam_out_dir=./outputs/voc12/results/$MODEL/cam \
     --sem_seg_out_dir=./outputs/voc12/results/$MODEL/sem_seg \
     --ins_seg_out_dir=./outputs/voc12/results/$MODEL/ins_seg \
-    --ir_label_out_dir=./outputs/voc12/results/$MODEL/irn_label \
+    --ir_label_out_dir=./outputs/voc12/results/$MODEL/irn_label_${MORP} \
     --cam_network=net.${MODEL}_cam \
     --irn_network=net.${MODEL}_irn \
     --log_name=./outputs/voc12/logs/$MODEL \
@@ -24,7 +26,6 @@ nohup python3 wsl_survey/segmentation/irn/main.py \
     --make_sem_seg_pass=True \
     --eval_sem_seg_pass=True \
     --num_workers=8 \
-    --cam_eval_thres=0.11 \
     --cam_batch_size=8 \
     --irn_batch_size=8 &
-
+done

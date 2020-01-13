@@ -2,28 +2,18 @@ import os
 from functools import partial
 from multiprocessing.pool import Pool
 
-import numpy as np
-from numpy import newaxis
+import imageio
+from PIL import Image
 from scipy import ndimage
 from skimage.morphology import erosion, opening, closing, dilation
 from skimage.morphology import square
 from tqdm import tqdm
 
 
-def apply_morphology(imgs):
+def apply_morphology(img):
     selem = square(kernel_size)
-    erodeds, dilateds, openeds, closeds, gaussians = [], [], [], [], []
-    for img in imgs:
-        erodeds.append(erosion(img, selem)[newaxis, ...])
-        dilateds.append(dilation(img, selem)[newaxis, ...])
-        openeds.append(opening(img, selem)[newaxis, ...])
-        closeds.append(closing(img, selem)[newaxis, ...])
-        gaussians.append(
-            ndimage.gaussian_filter(img, sigma=(kernel_size, kernel_size), order=0)[newaxis, ...])
-    return np.concatenate(erodeds, axis=0), np.concatenate(dilateds,
-                                                           axis=0), np.concatenate(
-        openeds, axis=0), np.concatenate(closeds, axis=0), np.concatenate(
-        gaussians, axis=0)
+    return erosion(img, selem), dilation(img, selem), opening(img, selem), closing(img, selem), ndimage.gaussian_filter(
+        img, sigma=(kernel_size, kernel_size), order=0)
 
 
 def create_morph(img_name, folder):
@@ -32,37 +22,26 @@ def create_morph(img_name, folder):
     opened_folder = folder + '_opened'
     closed_folder = folder + '_closed'
     gaussian_folder = folder + '_gaussian'
+    im = Image.open(os.path.join(folder, img_name))
 
-    cam_dict = np.load(os.path.join(folder, img_name),
-                       allow_pickle=True).item()
+    eroded, dilated, opened, closed, gaussians = apply_morphology(im)
+    assert eroded.shape == dilated.shape == opened.shape == closed.shape == gaussians.shape
 
-    eroded, dilated, opened, closed, gaussians = apply_morphology(
-        cam_dict['high_res'])
-    assert cam_dict[
-               'high_res'].shape == eroded.shape == dilated.shape == opened.shape == closed.shape == gaussians.shape
-
-    cam_dict['high_res'] = eroded
-    np.save(os.path.join(eroded_folder, img_name), cam_dict)
-    # cam_dict['high_res'] = dilated
-    # np.save(os.path.join(dilated_folder, img_name), cam_dict)
-    # cam_dict['high_res'] = opened
-    # np.save(os.path.join(opened_folder, img_name), cam_dict)
-    # cam_dict['high_res'] = closed
-    # np.save(os.path.join(closed_folder, img_name), cam_dict)
-    # cam_dict['high_res'] = gaussians
-    # np.save(os.path.join(gaussian_folder, img_name), cam_dict)
+    imageio.imsave(os.path.join(eroded_folder, img_name), eroded)
+    imageio.imsave(os.path.join(dilated_folder, img_name), dilated)
+    imageio.imsave(os.path.join(opened_folder, img_name), opened)
+    imageio.imsave(os.path.join(closed_folder, img_name), closed)
+    imageio.imsave(os.path.join(gaussian_folder, img_name), gaussians)
     return True
 
 
 def apply(folder):
-    grayscaled_folder = folder + '_grayscaled'
     eroded_folder = folder + '_eroded'
     dilated_folder = folder + '_dilated'
     opened_folder = folder + '_opened'
     closed_folder = folder + '_closed'
     gaussian_folder = folder + '_gaussian'
 
-    os.makedirs(grayscaled_folder, exist_ok=True)
     os.makedirs(eroded_folder, exist_ok=True)
     os.makedirs(dilated_folder, exist_ok=True)
     os.makedirs(opened_folder, exist_ok=True)
@@ -70,7 +49,8 @@ def apply(folder):
     os.makedirs(gaussian_folder, exist_ok=True)
 
     paths = os.listdir(folder)
-    with Pool(processes=196) as pool:
+    create_morph(paths[0], folder)
+    with Pool(processes=4) as pool:
         with tqdm(total=len(paths)) as pbar:
             for i, _ in tqdm(
                 enumerate(
@@ -85,11 +65,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     # Environment
-    parser.add_argument("--kernel_size", type=int)
+    parser.add_argument("--kernel_size", default=3, type=int)
     args = parser.parse_args()
     kernel_size = args.kernel_size
-    apply('./outputs/voc12/results/resnet152/cam')
-    apply('./outputs/voc12/results/resnet152/cam_val')
+    apply('./outputs/voc12/results/$MODEL/irn_label')
+    apply('./outputs/voc12/results/$MODEL/irn_label_val')
     # apply('/Users/cenk.bircanoglu/wsl/wsl_survey/results/resnet101/cam')
     # apply('/Users/cenk.bircanoglu/wsl/wsl_survey/results/resnet101/cam_val')
     # apply('/Users/cenk.bircanoglu/wsl/wsl_survey/results/resnet154/cam')
