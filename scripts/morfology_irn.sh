@@ -1,6 +1,6 @@
 export MODEL=resnet152
 
-python3 wsl_survey/segmentation/irn/morph/apply_morph.py --kernel_size=3
+python3 wsl_survey/segmentation/irn/morph/apply_morph_ir_label.py --kernel_size=3
 
 for MORP in eroded dilated opened closed gaussian
 do

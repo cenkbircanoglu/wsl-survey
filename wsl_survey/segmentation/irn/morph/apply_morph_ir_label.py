@@ -49,7 +49,6 @@ def apply(folder):
     os.makedirs(gaussian_folder, exist_ok=True)
 
     paths = os.listdir(folder)
-    create_morph(paths[0], folder)
     with Pool(processes=4) as pool:
         with tqdm(total=len(paths)) as pbar:
             for i, _ in tqdm(
