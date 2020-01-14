@@ -69,7 +69,18 @@ class CAM(Net):
 
         x = F.conv2d(x, self.classifier.weight)
         x = F.relu(x)
-
         x = x[0] + x[1].flip(-1)
 
         return x
+
+
+if __name__ == '__main__':
+    import torch
+
+    #x = torch.randn((2,3,3))
+    #print(x)
+    #print(x.flip(-1))
+    cam = CAM()
+    x = torch.randn((3, 3, 512, 512))
+    y = cam(x)
+    print(y.shape)

@@ -93,6 +93,7 @@ def run(args):
                 label = label.cuda(non_blocking=True)
 
             x = model(img)
+            print(img.shape, x.shape, label.shape)
             loss = F.multilabel_soft_margin_loss(x, label)
 
             avg_meter.add({'loss1': loss.item()})

@@ -1,8 +1,7 @@
+import numpy as np
 import os
 from functools import partial
 from multiprocessing.pool import Pool
-
-import numpy as np
 from numpy import newaxis
 from scipy import ndimage
 from skimage.morphology import erosion, opening, closing, dilation
@@ -36,20 +35,25 @@ def create_morph(img_name, folder):
     cam_dict = np.load(os.path.join(folder, img_name),
                        allow_pickle=True).item()
 
-    eroded, dilated, opened, closed, gaussians = apply_morphology(
-        cam_dict['high_res'])
+    eroded, dilated, opened, closed, gaussians = apply_morphology(cam_dict['high_res'])
+    eroded1, dilated1, opened1, closed1, gaussians1 = apply_morphology(cam_dict['cam'])
     assert cam_dict[
                'high_res'].shape == eroded.shape == dilated.shape == opened.shape == closed.shape == gaussians.shape
 
     cam_dict['high_res'] = eroded
+    cam_dict['cam'] = eroded1
     np.save(os.path.join(eroded_folder, img_name), cam_dict)
     cam_dict['high_res'] = dilated
+    cam_dict['cam'] = dilated1
     np.save(os.path.join(dilated_folder, img_name), cam_dict)
     cam_dict['high_res'] = opened
+    cam_dict['cam'] = opened1
     np.save(os.path.join(opened_folder, img_name), cam_dict)
     cam_dict['high_res'] = closed
+    cam_dict['cam'] = closed1
     np.save(os.path.join(closed_folder, img_name), cam_dict)
     cam_dict['high_res'] = gaussians
+    cam_dict['cam'] = gaussians1
     np.save(os.path.join(gaussian_folder, img_name), cam_dict)
     return True
 
