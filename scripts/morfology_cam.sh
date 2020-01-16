@@ -20,7 +20,7 @@ for KERNEL_SIZE in 1 3 5 7 9 11 13 15 17 19 21; do
       --cam_network=net.${MODEL}_cam \
       --irn_network=net.${MODEL}_irn \
       --log_name=./outputs/voc12/logs/$MODEL \
-      --train_cam_pass=True \
+      --eval_cam_pass=True \
       --num_workers=8
   done
 done
