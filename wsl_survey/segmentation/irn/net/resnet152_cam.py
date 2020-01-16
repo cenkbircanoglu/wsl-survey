@@ -61,7 +61,6 @@ class CAM(Net):
         super(CAM, self).__init__()
 
     def forward(self, x):
-        x = torch.unsqueeze(x, dim=0)
         x = self.stage1(x)
 
         x = self.stage2(x)
@@ -73,6 +72,6 @@ class CAM(Net):
         x = F.conv2d(x, self.classifier.weight)
         x = F.relu(x)
 
-        x = x[0] #+ x[1].flip(-1)
+        x = x[0] + x[1].flip(-1)
         #print(x.shape)
         return x

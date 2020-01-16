@@ -2,7 +2,7 @@ import os
 
 import imageio
 import numpy as np
-from skimage.morphology import dilation, disk
+from skimage.morphology import dilation, disk, square
 from torch import multiprocessing
 from torch.utils.data import DataLoader
 from tqdm import tqdm
@@ -44,7 +44,7 @@ def _work(process_id, infer_dataset, args):
         conf = fg_conf.copy()
         conf[fg_conf == 0] = 255
         conf[bg_conf + fg_conf == 0] = 0
-        conf = dilation(conf, disk(3))
+        conf = dilation(conf, square(3))
         imageio.imwrite(os.path.join(args.ir_label_out_dir, img_name + '.png'),
                         conf.astype(np.uint8))
 
