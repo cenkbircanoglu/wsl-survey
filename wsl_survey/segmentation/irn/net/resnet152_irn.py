@@ -52,8 +52,8 @@ class Net(nn.Module):
             nn.Upsample(scale_factor=4, mode='bilinear', align_corners=False),
             nn.ReLU(inplace=True),
         )
-        self.fc_edge6 = nn.Conv2d(160, 1, 1, bias=True)
-
+        # self.fc_edge6 = nn.Conv2d(160, 1, 1, bias=True)
+        self.fc_edge6 = nn.Conv2d(128, 1, 1, bias=True)
         # branch: displacement field
         self.fc_dp1 = nn.Sequential(
             nn.Conv2d(64, 64, 1, bias=False),
@@ -83,7 +83,8 @@ class Net(nn.Module):
             nn.ReLU(inplace=True),
         )
         self.fc_dp6 = nn.Sequential(
-            nn.Conv2d(768, 256, 1, bias=False),
+            #nn.Conv2d(768, 256, 1, bias=False),
+            nn.Conv2d(512, 256, 1, bias=False),
             nn.GroupNorm(16, 256),
             nn.Upsample(scale_factor=2, mode='bilinear', align_corners=False),
             nn.ReLU(inplace=True),
@@ -121,23 +122,25 @@ class Net(nn.Module):
         x2 = self.stage2(x1).detach()
         x3 = self.stage3(x2).detach()
         x4 = self.stage4(x3).detach()
-        x5 = self.stage5(x4).detach()
+        # x5 = self.stage5(x4).detach()
 
         edge1 = self.fc_edge1(x1)
         edge2 = self.fc_edge2(x2)
         edge3 = self.fc_edge3(x3)[..., :edge2.size(2), :edge2.size(3)]
         edge4 = self.fc_edge4(x4)[..., :edge2.size(2), :edge2.size(3)]
-        edge5 = self.fc_edge5(x5)[..., :edge2.size(2), :edge2.size(3)]
+        # edge5 = self.fc_edge5(x5)[..., :edge2.size(2), :edge2.size(3)]
         edge_out = self.fc_edge6(
-            torch.cat([edge1, edge2, edge3, edge4, edge5], dim=1))
+            torch.cat([edge1, edge2, edge3, edge4], dim=1))
+        # torch.cat([edge1, edge2, edge3, edge4, edge5], dim=1))
 
         dp1 = self.fc_dp1(x1)
         dp2 = self.fc_dp2(x2)
         dp3 = self.fc_dp3(x3)
         dp4 = self.fc_dp4(x4)[..., :dp3.size(2), :dp3.size(3)]
-        dp5 = self.fc_dp5(x5)[..., :dp3.size(2), :dp3.size(3)]
+        # dp5 = self.fc_dp5(x5)[..., :dp3.size(2), :dp3.size(3)]
 
-        dp_up3 = self.fc_dp6(torch.cat([dp3, dp4, dp5], dim=1))[...,
+        # dp_up3 = self.fc_dp6(torch.cat([dp3, dp4, dp5], dim=1))[...,
+        dp_up3 = self.fc_dp6(torch.cat([dp3, dp4], dim=1))[...,
                  :dp2.size(2), :dp2.size(3)]
         dp_out = self.fc_dp7(torch.cat([dp1, dp2, dp_up3], dim=1))
 
@@ -264,4 +267,3 @@ if __name__ == '__main__':
     model = AffinityDisplacementLoss(path_index)
     x = torch.randn((2, 3, 512, 512))
     y = model(x, True)
-
