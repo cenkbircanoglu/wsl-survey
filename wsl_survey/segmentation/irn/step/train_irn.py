@@ -184,8 +184,7 @@ if __name__ == '__main__':
     parser = make_parser()
     parser.set_defaults(
         voc12_root='./data/test1/VOC2012',
-        class_label_dict_path=
-        './data/test1/VOC2012/ImageSets/Segmentation/cls_labels.npy',
+        class_label_dict_path='./data/voc12/cls_labels.npy',
         train_list='./data/test1/VOC2012/ImageSets/Segmentation/train_aug.txt',
         ir_label_out_dir='./outputs/test1/results/resnet18/irn_label',
         infer_list='./data/test1/VOC2012/ImageSets/Segmentation/train.txt',

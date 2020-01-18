@@ -20,7 +20,7 @@ export OUTPUT_FOLDER=./outputs/test1/results/$MODEL/
 python3 wsl_survey/segmentation/irn/main.py \
     --voc12_root=$ROOT_FOLDER \
     --chainer_eval_set=val \
-    --class_label_dict_path=$SEGMENTATION_DATA_FOLDER/cls_labels.npy \
+    --class_label_dict_path=./data/voc12/cls_labels.npy \
     --train_list=$SEGMENTATION_DATA_FOLDER/train_aug.txt \
     --val_list=$SEGMENTATION_DATA_FOLDER/val.txt \
     --infer_list=$SEGMENTATION_DATA_FOLDER/val.txt \
@@ -56,7 +56,7 @@ export OUTPUT_FOLDER=./outputs/test1/results/distilled_$MODEL/
 python3 wsl_survey/segmentation/irn/main.py \
     --voc12_root=$ROOT_FOLDER \
     --chainer_eval_set=val \
-    --class_label_dict_path=$SEGMENTATION_DATA_FOLDER/cls_labels.npy \
+    --class_label_dict_path=./data/voc12/cls_labels.npy \
     --train_list=$SEGMENTATION_DATA_FOLDER/train_aug.txt \
     --val_list=$SEGMENTATION_DATA_FOLDER/val.txt \
     --infer_list=$SEGMENTATION_DATA_FOLDER/val.txt \
