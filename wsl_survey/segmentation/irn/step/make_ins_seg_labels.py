@@ -266,3 +266,20 @@ def run(args):
     print("[ ", end='')
 
     print("]")
+
+if __name__ == '__main__':
+    from wsl_survey.segmentation.irn.config import make_parser
+
+    parser = make_parser()
+    parser.set_defaults(
+        voc12_root='./data/test/VOC2012',
+        class_label_dict_path='./data/test/VOC2012/ImageSets/Segmentation/cls_labels.npy',
+        train_list='./data/test/VOC2012/ImageSets/Segmentation/train_aug.txt',
+        ir_label_out_dir='./outputs/test/results/resnet18/irn_label',
+        infer_list='./data/voc12/train.txt',
+        irn_network='ResNet18',
+        irn_num_epoches=1,
+        irn_batch_size=4
+    )
+    args = parser.parse_args()
+    run(args)

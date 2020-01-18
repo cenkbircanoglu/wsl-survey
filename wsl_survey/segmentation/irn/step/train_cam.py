@@ -6,10 +6,9 @@ cudnn.enabled = True
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
 
-import importlib
-
 from wsl_survey.segmentation.irn.voc12 import dataloader
 from wsl_survey.segmentation.irn.misc import pyutils, torchutils
+from wsl_survey.segmentation.irn.net import resnet_cam
 
 use_gpu = torch.cuda.is_available()
 
@@ -41,7 +40,15 @@ def validate(model, data_loader):
 
 
 def run(args):
-    model = getattr(importlib.import_module(args.cam_network), 'Net')()
+    assert args.voc12_root is not None
+    assert args.class_label_dict_path is not None
+    assert args.train_list is not None
+    assert args.val_list is not None
+    assert args.cam_weights_name is not None
+    assert args.cam_network is not None
+    assert args.cam_num_epoches is not None
+
+    model = getattr(resnet_cam, args.cam_network)()
 
     train_dataset = dataloader.VOC12ClassificationDataset(
         args.train_list, voc12_root=args.voc12_root,
@@ -93,7 +100,6 @@ def run(args):
                 label = label.cuda(non_blocking=True)
 
             x = model(img)
-            print(img.shape, x.shape, label.shape)
             loss = F.multilabel_soft_margin_loss(x, label)
 
             avg_meter.add({'loss1': loss.item()})
@@ -122,3 +128,21 @@ def run(args):
     torch.save(state_dict, args.cam_weights_name + '.pth')
     if use_gpu:
         torch.cuda.empty_cache()
+
+
+if __name__ == '__main__':
+    from wsl_survey.segmentation.irn.config import make_parser
+
+    parser = make_parser()
+    parser.set_defaults(
+        voc12_root='./data/test/VOC2012',
+        class_label_dict_path='./data/test/VOC2012/ImageSets/Segmentation/cls_labels.npy',
+        train_list='./data/test/VOC2012/ImageSets/Segmentation/train_aug.txt',
+        val_list='./data/test/VOC2012/ImageSets/Segmentation/val.txt',
+        cam_weights_name='./outputs/test/results/resnet18/sess/cam.pth',
+        cam_network='ResNet18',
+        cam_num_epoches=1,
+        cam_batch_size=4
+    )
+    args = parser.parse_args()
+    run(args)

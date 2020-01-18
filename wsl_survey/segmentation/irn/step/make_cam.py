@@ -1,4 +1,3 @@
-import importlib
 import os
 
 import numpy as np
@@ -10,6 +9,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from wsl_survey.segmentation.irn.misc import torchutils, imutils
+from wsl_survey.segmentation.irn.net import resnet_cam
 from wsl_survey.segmentation.irn.voc12 import dataloader
 
 cudnn.enabled = True
@@ -118,7 +118,14 @@ def _work_gpu(process_id, model, dataset, args):
 
 
 def run(args):
-    model = getattr(importlib.import_module(args.cam_network), 'CAM')()
+    assert args.voc12_root is not None
+    assert args.class_label_dict_path is not None
+    assert args.train_list is not None
+    assert args.cam_weights_name is not None
+    assert args.cam_network is not None
+    assert args.cam_out_dir is not None
+
+    model = getattr(resnet_cam, args.cam_network + 'CAM')()
     if use_gpu:
         model.load_state_dict(torch.load(args.cam_weights_name + '.pth'),
                               strict=True)
@@ -146,3 +153,20 @@ def run(args):
     print(']')
 
     torch.cuda.empty_cache()
+
+
+if __name__ == '__main__':
+    from wsl_survey.segmentation.irn.config import make_parser
+
+    parser = make_parser()
+    parser.set_defaults(
+        voc12_root='./data/test/VOC2012',
+        class_label_dict_path='./data/test/VOC2012/ImageSets/Segmentation/cls_labels.npy',
+        train_list='./data/test/VOC2012/ImageSets/Segmentation/train_aug.txt',
+        cam_weights_name='./outputs/test/results/resnet18/sess/cam.pth',
+        cam_network='ResNet18',
+        num_workers=2,
+        cam_out_dir='./outputs/test/results/resnet18/cam'
+    )
+    args = parser.parse_args()
+    run(args)

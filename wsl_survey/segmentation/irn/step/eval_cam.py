@@ -7,6 +7,10 @@ from tqdm import tqdm
 
 
 def run(args):
+    assert args.voc12_root is not None
+    assert args.chainer_eval_set is not None
+    assert args.cam_out_dir is not None
+
     dataset = VOCSemanticSegmentationDataset(split=args.chainer_eval_set,
                                              data_dir=args.voc12_root)
     labels = [dataset.get_example_by_keys(i, (1,))[0] for i in
@@ -32,3 +36,16 @@ def run(args):
     iou = gtjresj / denominator
 
     print({'iou': iou, 'miou': np.nanmean(iou)})
+
+
+if __name__ == '__main__':
+    from wsl_survey.segmentation.irn.config import make_parser
+
+    parser = make_parser()
+    parser.set_defaults(
+        voc12_root='./data/test/VOC2012',
+        chainer_eval_set='train',
+        cam_out_dir='./outputs/test/results/resnet18/cam'
+    )
+    args = parser.parse_args()
+    run(args)

@@ -2,21 +2,29 @@ import torch
 from torch.backends import cudnn
 from tqdm import tqdm
 
+from wsl_survey.segmentation.irn.net import resnet_irn
+
 cudnn.enabled = True
 from torch.utils.data import DataLoader
 from wsl_survey.segmentation.irn.voc12 import dataloader
 from wsl_survey.segmentation.irn.misc import pyutils, torchutils, indexing
-import importlib
 
 use_gpu = torch.cuda.is_available()
 
 
 def run(args):
+    assert args.voc12_root is not None
+    assert args.class_label_dict_path is not None
+    assert args.train_list is not None
+    assert args.ir_label_out_dir is not None
+    assert args.infer_list is not None
+    assert args.irn_network is not None
+
     path_index = indexing.PathIndex(radius=10, default_size=(
         args.irn_crop_size // 4, args.irn_crop_size // 4))
 
-    model = getattr(importlib.import_module(args.irn_network),
-                    'AffinityDisplacementLoss')(path_index)
+    model = getattr(resnet_irn, args.irn_network + 'AffinityDisplacementLoss')(
+        path_index)
 
     train_dataset = dataloader.VOC12AffinityDataset(args.train_list,
                                                     label_dir=args.ir_label_out_dir,
@@ -152,3 +160,21 @@ def run(args):
     torch.save(state_dict, args.irn_weights_name)
     if use_gpu:
         torch.cuda.empty_cache()
+
+
+if __name__ == '__main__':
+    from wsl_survey.segmentation.irn.config import make_parser
+
+    parser = make_parser()
+    parser.set_defaults(
+        voc12_root='./data/test/VOC2012',
+        class_label_dict_path='./data/test/VOC2012/ImageSets/Segmentation/cls_labels.npy',
+        train_list='./data/test/VOC2012/ImageSets/Segmentation/train_aug.txt',
+        ir_label_out_dir='./outputs/test/results/resnet18/irn_label',
+        infer_list='./data/voc12/train.txt',
+        irn_network='ResNet18',
+        irn_num_epoches=1,
+        irn_batch_size=4
+    )
+    args = parser.parse_args()
+    run(args)

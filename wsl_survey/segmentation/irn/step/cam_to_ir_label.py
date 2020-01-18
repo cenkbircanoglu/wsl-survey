@@ -2,7 +2,6 @@ import os
 
 import imageio
 import numpy as np
-from skimage.morphology import dilation, disk, square
 from torch import multiprocessing
 from torch.utils.data import DataLoader
 from tqdm import tqdm
@@ -44,7 +43,7 @@ def _work(process_id, infer_dataset, args):
         conf = fg_conf.copy()
         conf[fg_conf == 0] = 255
         conf[bg_conf + fg_conf == 0] = 0
-        conf = dilation(conf, square(1))
+        # conf = dilation(conf, square(1))
         imageio.imwrite(os.path.join(args.ir_label_out_dir, img_name + '.png'),
                         conf.astype(np.uint8))
 
@@ -54,6 +53,11 @@ def _work(process_id, infer_dataset, args):
 
 
 def run(args):
+    assert args.voc12_root is not None
+    assert args.train_list is not None
+    assert args.ir_label_out_dir is not None
+    assert args.cam_out_dir is not None
+
     dataset = dataloader.VOC12ImageDataset(args.train_list,
                                            voc12_root=args.voc12_root,
                                            img_normal=None, to_torch=False)
@@ -63,3 +67,18 @@ def run(args):
     multiprocessing.spawn(_work, nprocs=args.num_workers, args=(dataset, args),
                           join=True)
     print(']')
+
+
+if __name__ == '__main__':
+    from wsl_survey.segmentation.irn.config import make_parser
+
+    parser = make_parser()
+    parser.set_defaults(
+        voc12_root='./data/test/VOC2012',
+        train_list='./data/test/VOC2012/ImageSets/Segmentation/train_aug.txt',
+        ir_label_out_dir='./outputs/test/results/resnet18/irn_label',
+        cam_out_dir='./outputs/test/results/resnet18/cam',
+        num_workers=2
+    )
+    args = parser.parse_args()
+    run(args)
