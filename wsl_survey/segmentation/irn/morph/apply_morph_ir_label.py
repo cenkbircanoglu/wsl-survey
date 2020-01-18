@@ -12,8 +12,13 @@ from tqdm import tqdm
 
 def apply_morphology(img):
     selem = square(kernel_size)
-    return erosion(img, selem), dilation(img, selem), opening(img, selem), closing(img, selem), ndimage.gaussian_filter(
-        img, sigma=(kernel_size, kernel_size), order=0)
+    return erosion(img,
+                   selem), dilation(img, selem), opening(img, selem), closing(
+                       img,
+                       selem), ndimage.gaussian_filter(img,
+                                                       sigma=(kernel_size,
+                                                              kernel_size),
+                                                       order=0)
 
 
 def create_morph(img_name, folder):
@@ -52,9 +57,9 @@ def apply(folder):
     with Pool(processes=4) as pool:
         with tqdm(total=len(paths)) as pbar:
             for i, _ in tqdm(
-                enumerate(
-                    pool.imap_unordered(partial(create_morph, folder=folder),
-                                        paths))):
+                    enumerate(
+                        pool.imap_unordered(
+                            partial(create_morph, folder=folder), paths))):
                 pbar.update()
 
 

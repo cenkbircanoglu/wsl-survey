@@ -52,7 +52,8 @@ def get_arguments():
     parser.add_argument("--global_counter", type=int, default=0)
     parser.add_argument("--current_epoch", type=int, default=0)
     parser.add_argument("--checkpoints", type=str)
-    parser.add_argument("--output", type=str,
+    parser.add_argument("--output",
+                        type=str,
                         default='checkpoints/models/acol-voc2007/outputs')
 
     return parser.parse_args()
@@ -141,7 +142,8 @@ def val(args, model=None, current_epoch=0):
                                       np_last_featmaps,
                                       label_in.numpy(),
                                       img_size=(0, 0),
-                                      maps_in_dir=False, save_dir=args.output,
+                                      maps_in_dir=False,
+                                      save_dir=args.output,
                                       image_dir=args.image_dir)
 
         # save_atten.get_masked_img(img_path, np_last_featmaps, label_in.numpy(),size=(0,0),

@@ -15,7 +15,7 @@ def restore(args, model, optimizer, istrain=True, including_opt=False):
         filelist = os.listdir(restore_dir)
         filelist = [
             x for x in filelist if os.path.isfile(os.path.join(restore_dir, x))
-                                   and x.endswith('.pth.tar')
+            and x.endswith('.pth.tar')
         ]
         if len(filelist) > 0:
             filelist.sort(
@@ -91,7 +91,7 @@ def _model_load_v6(model, pretrained_dict):
 
     feature2_pred_w = {
         'module.fc5_seg.%d.weight' % (i):
-            'module.features.%d.weight' % (i + 24)
+        'module.features.%d.weight' % (i + 24)
         for i in range(0, 5, 2)
     }
     feature2_pred_b = {
@@ -108,7 +108,7 @@ def _model_load_v6(model, pretrained_dict):
     print("Weights cannot be loaded:")
     print([
         k for k in model_dict.keys() if k not in common_pred.keys() +
-                                        feature2_pred_w.keys() + feature2_pred_b.keys()
+        feature2_pred_w.keys() + feature2_pred_b.keys()
     ])
 
     def update_coord_dict(d):
@@ -136,7 +136,7 @@ def _model_load_v2(model, pretrained_dict):
 
     fc5_cls_w = {
         'module.fc5_cls.%d.weight' % (i):
-            'module.features.%d.weight' % (i + 24)
+        'module.features.%d.weight' % (i + 24)
         for i in range(0, 5, 2)
     }
     fc5_cls_b = {
@@ -145,7 +145,7 @@ def _model_load_v2(model, pretrained_dict):
     }
     fc5_seg_w = {
         'module.fc5_seg.%d.weight' % (i):
-            'module.features.%d.weight' % (i + 24)
+        'module.features.%d.weight' % (i + 24)
         for i in range(0, 5, 2)
     }
     fc5_seg_b = {
@@ -161,7 +161,7 @@ def _model_load_v2(model, pretrained_dict):
     print([
         k for k in model_dict.keys()
         if k not in common_pred.keys() + fc5_cls_w.keys() + fc5_cls_b.keys() +
-           fc5_seg_w.keys() + fc5_seg_b.keys()
+        fc5_seg_w.keys() + fc5_seg_b.keys()
     ])
 
     def update_coord_dict(d):

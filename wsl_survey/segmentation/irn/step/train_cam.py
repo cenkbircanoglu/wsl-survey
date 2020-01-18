@@ -1,3 +1,5 @@
+import importlib
+
 import torch
 from torch.backends import cudnn
 from tqdm import tqdm
@@ -8,7 +10,6 @@ import torch.nn.functional as F
 
 from wsl_survey.segmentation.irn.voc12 import dataloader
 from wsl_survey.segmentation.irn.misc import pyutils, torchutils
-from wsl_survey.segmentation.irn.net import resnet_cam
 
 use_gpu = torch.cuda.is_available()
 
@@ -47,37 +48,56 @@ def run(args):
     assert args.cam_weights_name is not None
     assert args.cam_network is not None
     assert args.cam_num_epoches is not None
+    assert args.cam_network_module is not None
 
-    model = getattr(resnet_cam, args.cam_network)()
+    model = getattr(importlib.import_module(args.cam_network_module),
+                    args.cam_network)()
 
     train_dataset = dataloader.VOC12ClassificationDataset(
-        args.train_list, voc12_root=args.voc12_root,
-        resize_long=(320, 640), hor_flip=True,
-        crop_size=512, crop_method="random",
+        args.train_list,
+        voc12_root=args.voc12_root,
+        resize_long=(320, 640),
+        hor_flip=True,
+        crop_size=512,
+        crop_method="random",
         class_label_dict_path=args.class_label_dict_path)
     train_data_loader = DataLoader(train_dataset,
                                    batch_size=args.cam_batch_size,
-                                   shuffle=True, num_workers=args.num_workers,
-                                   pin_memory=True, drop_last=True)
-    max_step = (len(
-        train_dataset) // args.cam_batch_size) * args.cam_num_epoches
+                                   shuffle=True,
+                                   num_workers=args.num_workers,
+                                   pin_memory=True,
+                                   drop_last=True)
+    max_step = (len(train_dataset) //
+                args.cam_batch_size) * args.cam_num_epoches
 
-    val_dataset = dataloader.VOC12ClassificationDataset(args.val_list,
-                                                        voc12_root=args.voc12_root,
-                                                        crop_size=512,
-                                                        class_label_dict_path=args.class_label_dict_path)
-    val_data_loader = DataLoader(val_dataset, batch_size=args.cam_batch_size,
-                                 shuffle=False, num_workers=args.num_workers,
-                                 pin_memory=True, drop_last=True)
+    val_dataset = dataloader.VOC12ClassificationDataset(
+        args.val_list,
+        voc12_root=args.voc12_root,
+        crop_size=512,
+        class_label_dict_path=args.class_label_dict_path)
+    val_data_loader = DataLoader(val_dataset,
+                                 batch_size=args.cam_batch_size,
+                                 shuffle=False,
+                                 num_workers=args.num_workers,
+                                 pin_memory=True,
+                                 drop_last=True)
 
     param_groups = model.trainable_parameters()
     optimizer = torchutils.PolyOptimizer([
-        {'params': param_groups[0], 'lr': args.cam_learning_rate,
-         'weight_decay': args.cam_weight_decay},
-        {'params': param_groups[1], 'lr': 10 * args.cam_learning_rate,
-         'weight_decay': args.cam_weight_decay},
-    ], lr=args.cam_learning_rate, weight_decay=args.cam_weight_decay,
-        max_step=max_step)
+        {
+            'params': param_groups[0],
+            'lr': args.cam_learning_rate,
+            'weight_decay': args.cam_weight_decay
+        },
+        {
+            'params': param_groups[1],
+            'lr': 10 * args.cam_learning_rate,
+            'weight_decay': args.cam_weight_decay
+        },
+    ],
+                                         lr=args.cam_learning_rate,
+                                         weight_decay=args.cam_weight_decay,
+                                         max_step=max_step)
 
     if use_gpu:
         model = torch.nn.DataParallel(model).cuda()
@@ -91,8 +111,9 @@ def run(args):
 
         print('Epoch %d/%d' % (ep + 1, args.cam_num_epoches))
 
-        for step, pack in tqdm(enumerate(train_data_loader), total=len(
-            train_dataset) // args.cam_batch_size):
+        for step, pack in tqdm(enumerate(train_data_loader),
+                               total=len(train_dataset) //
+                               args.cam_batch_size):
 
             img = pack['img']
             label = pack['label']
@@ -113,10 +134,11 @@ def run(args):
 
                 print('step:%5d/%5d' % (optimizer.global_step - 1, max_step),
                       'loss:%.4f' % (avg_meter.pop('loss1')),
-                      'imps:%.1f' % ((
-                                         step + 1) * args.cam_batch_size / timer.get_stage_elapsed()),
+                      'imps:%.1f' % ((step + 1) * args.cam_batch_size /
+                                     timer.get_stage_elapsed()),
                       'lr: %.4f' % (optimizer.param_groups[0]['lr']),
-                      'etc:%s' % (timer.str_estimated_complete()), flush=True)
+                      'etc:%s' % (timer.str_estimated_complete()),
+                      flush=True)
 
         else:
             validate(model, val_data_loader)
@@ -132,17 +154,20 @@ def run(args):
 
 if __name__ == '__main__':
     from wsl_survey.segmentation.irn.config import make_parser
+    import os
 
     parser = make_parser()
     parser.set_defaults(
-        voc12_root='./data/test/VOC2012',
-        class_label_dict_path='./data/test/VOC2012/ImageSets/Segmentation/cls_labels.npy',
-        train_list='./data/test/VOC2012/ImageSets/Segmentation/train_aug.txt',
-        val_list='./data/test/VOC2012/ImageSets/Segmentation/val.txt',
-        cam_weights_name='./outputs/test/results/resnet18/sess/cam.pth',
+        voc12_root='./data/test1/VOC2012',
+        class_label_dict_path=
+        './data/test1/VOC2012/ImageSets/Segmentation/cls_labels.npy',
+        train_list='./data/test1/VOC2012/ImageSets/Segmentation/train_aug.txt',
+        val_list='./data/test1/VOC2012/ImageSets/Segmentation/val.txt',
+        cam_weights_name='./outputs/test1/results/resnet18/sess/cam.pth',
         cam_network='ResNet18',
+        cam_network_module='wsl_survey.segmentation.irn.net.resnet_cam',
         cam_num_epoches=1,
-        cam_batch_size=4
-    )
+        cam_batch_size=4)
     args = parser.parse_args()
+    os.makedirs(os.path.dirname(args.cam_weights_name), exist_ok=True)
     run(args)

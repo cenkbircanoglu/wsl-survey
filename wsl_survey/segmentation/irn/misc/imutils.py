@@ -37,8 +37,8 @@ def random_resize_long(img, min_long, max_long):
 
 
 def random_scale(img, scale_range, order):
-    target_scale = scale_range[0] + random.random() * (
-            scale_range[1] - scale_range[0])
+    target_scale = scale_range[0] + random.random() * (scale_range[1] -
+                                                       scale_range[0])
 
     if isinstance(img, tuple):
         return (pil_rescale(img[0], target_scale, order[0]),
@@ -84,8 +84,8 @@ def get_random_crop_box(imgsize, cropsize):
 
 
 def random_crop(images, cropsize, default_values):
-    if isinstance(images, np.ndarray): images = (images,)
-    if isinstance(default_values, int): default_values = (default_values,)
+    if isinstance(images, np.ndarray): images = (images, )
+    if isinstance(default_values, int): default_values = (default_values, )
 
     imgsize = images[0].shape[:2]
     box = get_random_crop_box(imgsize, cropsize)
@@ -115,8 +115,8 @@ def top_left_crop(img, cropsize, default_value):
     if len(img.shape) == 2:
         container = np.ones((cropsize, cropsize), img.dtype) * default_value
     else:
-        container = np.ones((cropsize, cropsize, img.shape[2]),
-                            img.dtype) * default_value
+        container = np.ones(
+            (cropsize, cropsize, img.shape[2]), img.dtype) * default_value
 
     container[:ch, :cw] = img[:ch, :cw]
 
@@ -149,8 +149,8 @@ def center_crop(img, cropsize, default_value=0):
     if len(img.shape) == 2:
         container = np.ones((cropsize, cropsize), img.dtype) * default_value
     else:
-        container = np.ones((cropsize, cropsize, img.shape[2]),
-                            img.dtype) * default_value
+        container = np.ones(
+            (cropsize, cropsize, img.shape[2]), img.dtype) * default_value
 
     container[cont_top:cont_top + ch, cont_left:cont_left + cw] = \
         img[img_top:img_top + ch, img_left:img_left + cw]
@@ -167,13 +167,17 @@ def crf_inference_label(img, labels, t=10, n_labels=21, gt_prob=0.7):
 
     d = dcrf.DenseCRF2D(w, h, n_labels)
 
-    unary = unary_from_labels(labels, n_labels, gt_prob=gt_prob,
+    unary = unary_from_labels(labels,
+                              n_labels,
+                              gt_prob=gt_prob,
                               zero_unsure=False)
 
     d.setUnaryEnergy(unary)
     d.addPairwiseGaussian(sxy=3, compat=3)
-    d.addPairwiseBilateral(sxy=50, srgb=5,
-                           rgbim=np.ascontiguousarray(np.copy(img)), compat=10)
+    d.addPairwiseBilateral(sxy=50,
+                           srgb=5,
+                           rgbim=np.ascontiguousarray(np.copy(img)),
+                           compat=10)
 
     q = d.inference(t)
 
@@ -200,7 +204,9 @@ def compress_range(arr):
     return out - np.min(out)
 
 
-def colorize_score(score_map, exclude_zero=False, normalize=True,
+def colorize_score(score_map,
+                   exclude_zero=False,
+                   normalize=True,
                    by_hue=False):
     import matplotlib.colors
     if by_hue:
@@ -218,15 +224,14 @@ def colorize_score(score_map, exclude_zero=False, normalize=True,
             return test
 
     else:
-        VOC_color = np.array(
-            [(0, 0, 0), (128, 0, 0), (0, 128, 0), (128, 128, 0), (0, 0, 128),
-             (128, 0, 128),
-             (0, 128, 128), (128, 128, 128), (64, 0, 0), (192, 0, 0),
-             (64, 128, 0), (192, 128, 0),
-             (64, 0, 128), (192, 0, 128), (64, 128, 128), (192, 128, 128),
-             (0, 64, 0), (128, 64, 0),
-             (0, 192, 0), (128, 192, 0), (0, 64, 128), (255, 255, 255)],
-            np.float32)
+        VOC_color = np.array([(0, 0, 0), (128, 0, 0), (0, 128, 0),
+                              (128, 128, 0), (0, 0, 128), (128, 0, 128),
+                              (0, 128, 128), (128, 128, 128), (64, 0, 0),
+                              (192, 0, 0), (64, 128, 0), (192, 128, 0),
+                              (64, 0, 128), (192, 0, 128), (64, 128, 128),
+                              (192, 128, 128), (0, 64, 0), (128, 64, 0),
+                              (0, 192, 0), (128, 192, 0), (0, 64, 128),
+                              (255, 255, 255)], np.float32)
 
         if exclude_zero:
             VOC_color = VOC_color[1:]
@@ -245,7 +250,7 @@ def colorize_displacement(disp):
 
     a = (np.arctan2(-disp[0], -disp[1]) / math.pi + 1) / 2
 
-    r = np.sqrt(disp[0] ** 2 + disp[1] ** 2)
+    r = np.sqrt(disp[0]**2 + disp[1]**2)
     s = r / np.max(r)
     hsv_color = np.stack((a, s, np.ones_like(a)), axis=-1)
     rgb_color = matplotlib.colors.hsv_to_rgb(hsv_color)
@@ -253,7 +258,10 @@ def colorize_displacement(disp):
     return rgb_color
 
 
-def colorize_label(label_map, normalize=True, by_hue=True, exclude_zero=False,
+def colorize_label(label_map,
+                   normalize=True,
+                   by_hue=True,
+                   exclude_zero=False,
                    outline=False):
     label_map = label_map.astype(np.uint8)
 
@@ -268,15 +276,14 @@ def colorize_label(label_map, normalize=True, by_hue=True, exclude_zero=False,
 
         test = rgb_color[label_map]
     else:
-        VOC_color = np.array(
-            [(0, 0, 0), (128, 0, 0), (0, 128, 0), (128, 128, 0), (0, 0, 128),
-             (128, 0, 128),
-             (0, 128, 128), (128, 128, 128), (64, 0, 0), (192, 0, 0),
-             (64, 128, 0), (192, 128, 0),
-             (64, 0, 128), (192, 0, 128), (64, 128, 128), (192, 128, 128),
-             (0, 64, 0), (128, 64, 0),
-             (0, 192, 0), (128, 192, 0), (0, 64, 128), (255, 255, 255)],
-            np.float32)
+        VOC_color = np.array([(0, 0, 0), (128, 0, 0), (0, 128, 0),
+                              (128, 128, 0), (0, 0, 128), (128, 0, 128),
+                              (0, 128, 128), (128, 128, 128), (64, 0, 0),
+                              (192, 0, 0), (64, 128, 0), (192, 128, 0),
+                              (64, 0, 128), (192, 0, 128), (64, 128, 128),
+                              (192, 128, 128), (0, 64, 0), (128, 64, 0),
+                              (0, 192, 0), (128, 192, 0), (0, 64, 128),
+                              (255, 255, 255)], np.float32)
 
         if exclude_zero:
             VOC_color = VOC_color[1:]
@@ -286,13 +293,16 @@ def colorize_label(label_map, normalize=True, by_hue=True, exclude_zero=False,
 
     if outline:
         edge = np.greater(
-            np.sum(np.abs(test[:-1, :-1] - test[1:, :-1]), axis=-1) + np.sum(
-                np.abs(test[:-1, :-1] - test[:-1, 1:]), axis=-1), 0)
-        edge1 = np.pad(edge, ((0, 1), (0, 1)), mode='constant',
+            np.sum(np.abs(test[:-1, :-1] - test[1:, :-1]), axis=-1) +
+            np.sum(np.abs(test[:-1, :-1] - test[:-1, 1:]), axis=-1), 0)
+        edge1 = np.pad(edge, ((0, 1), (0, 1)),
+                       mode='constant',
                        constant_values=0)
-        edge2 = np.pad(edge, ((1, 0), (1, 0)), mode='constant',
+        edge2 = np.pad(edge, ((1, 0), (1, 0)),
+                       mode='constant',
                        constant_values=0)
-        edge = np.repeat(np.expand_dims(np.maximum(edge1, edge2), -1), 3,
+        edge = np.repeat(np.expand_dims(np.maximum(edge1, edge2), -1),
+                         3,
                          axis=-1)
 
         test = np.maximum(test, edge)

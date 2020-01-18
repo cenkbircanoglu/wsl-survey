@@ -40,13 +40,16 @@ def _work_cpu(process_id, model, dataset, args):
 
             cam_downsized_values = cams
 
-            rw = indexing.propagate_to_edge(cam_downsized_values, edge,
+            rw = indexing.propagate_to_edge(cam_downsized_values,
+                                            edge,
                                             beta=args.beta,
-                                            exp_times=args.exp_times, radius=5)
+                                            exp_times=args.exp_times,
+                                            radius=5)
 
-            rw_up = F.interpolate(rw, scale_factor=4, mode='bilinear',
-                                  align_corners=False)[..., 0,
-                    :orig_img_size[0], :orig_img_size[1]]
+            rw_up = F.interpolate(
+                rw, scale_factor=4, mode='bilinear',
+                align_corners=False)[...,
+                                     0, :orig_img_size[0], :orig_img_size[1]]
             rw_up = rw_up / torch.max(rw_up)
 
             rw_up_bg = F.pad(rw_up, (0, 0, 0, 0, 1, 0),
@@ -59,8 +62,9 @@ def _work_cpu(process_id, model, dataset, args):
                 os.path.join(args.sem_seg_out_dir, img_name + '.png'),
                 rw_pred.astype(np.uint8))
 
-            if process_id == args.num_workers - 1 and iter % (len(databin) // 20) == 0:
-                print("%d " % ((5 * iter + 1) // (len(databin) // 20)), end='')
+            if process_id == args.num_workers - 1 and iter % (len(databin) //
+                                                              4) == 0:
+                print("%d " % ((5 * iter + 1) // (len(databin) // 4)), end='')
 
 
 def _work_gpu(process_id, model, dataset, args):
@@ -89,13 +93,16 @@ def _work_gpu(process_id, model, dataset, args):
 
             cam_downsized_values = cams.cuda()
 
-            rw = indexing.propagate_to_edge(cam_downsized_values, edge,
+            rw = indexing.propagate_to_edge(cam_downsized_values,
+                                            edge,
                                             beta=args.beta,
-                                            exp_times=args.exp_times, radius=5)
+                                            exp_times=args.exp_times,
+                                            radius=5)
 
-            rw_up = F.interpolate(rw, scale_factor=4, mode='bilinear',
-                                  align_corners=False)[..., 0,
-                    :orig_img_size[0], :orig_img_size[1]]
+            rw_up = F.interpolate(
+                rw, scale_factor=4, mode='bilinear',
+                align_corners=False)[...,
+                                     0, :orig_img_size[0], :orig_img_size[1]]
             rw_up = rw_up / torch.max(rw_up)
 
             rw_up_bg = F.pad(rw_up, (0, 0, 0, 0, 1, 0),
@@ -108,51 +115,68 @@ def _work_gpu(process_id, model, dataset, args):
                 os.path.join(args.sem_seg_out_dir, img_name + '.png'),
                 rw_pred.astype(np.uint8))
 
-            if process_id == n_gpus - 1 and iter % (len(databin) // 20) == 0:
-                print("%d " % ((5 * iter + 1) // (len(databin) // 20)), end='')
+            if process_id == n_gpus - 1 and iter % (len(databin) // 4) == 0:
+                print("%d " % ((5 * iter + 1) // (len(databin) // 4)), end='')
 
 
 def run(args):
-    model = getattr(importlib.import_module(args.irn_network),
-                    'EdgeDisplacement')()
+    assert args.voc12_root is not None
+    assert args.class_label_dict_path is not None
+    assert args.infer_list is not None
+    assert args.sem_seg_out_dir is not None
+    assert args.irn_weights_name is not None
+    assert args.cam_out_dir is not None
+    assert args.irn_network is not None
+    assert args.irn_network_module is not None
+
+    model = getattr(importlib.import_module(args.irn_network_module),
+                    args.irn_network + 'EdgeDisplacement')()
+
     model.load_state_dict(torch.load(args.irn_weights_name), strict=False)
     model.eval()
 
-    dataset = dataloader.VOC12ClassificationDatasetMSF(args.infer_list,
-                                                       voc12_root=args.voc12_root,
-                                                       scales=(1.0,),
-                                                       class_label_dict_path=args.class_label_dict_path)
+    dataset = dataloader.VOC12ClassificationDatasetMSF(
+        args.infer_list,
+        voc12_root=args.voc12_root,
+        scales=(1.0, ),
+        class_label_dict_path=args.class_label_dict_path)
     print("[", end='')
     if use_gpu:
         n_gpus = torch.cuda.device_count()
 
         dataset = torchutils.split_dataset(dataset, n_gpus)
 
-        multiprocessing.spawn(_work_gpu, nprocs=n_gpus,
+        multiprocessing.spawn(_work_gpu,
+                              nprocs=n_gpus,
                               args=(model, dataset, args),
                               join=True)
     else:
         dataset = torchutils.split_dataset(dataset, args.num_workers)
-        multiprocessing.spawn(_work_cpu, nprocs=args.num_workers,
+        multiprocessing.spawn(_work_cpu,
+                              nprocs=args.num_workers,
                               args=(model, dataset, args),
                               join=True)
     print("]")
 
     torch.cuda.empty_cache()
 
+
 if __name__ == '__main__':
     from wsl_survey.segmentation.irn.config import make_parser
 
     parser = make_parser()
     parser.set_defaults(
-        voc12_root='./data/test/VOC2012',
-        class_label_dict_path='./data/test/VOC2012/ImageSets/Segmentation/cls_labels.npy',
-        train_list='./data/test/VOC2012/ImageSets/Segmentation/train_aug.txt',
-        ir_label_out_dir='./outputs/test/results/resnet18/irn_label',
-        infer_list='./data/voc12/train.txt',
+        voc12_root='./data/test1/VOC2012',
+        class_label_dict_path=
+        './data/test1/VOC2012/ImageSets/Segmentation/cls_labels.npy',
+        infer_list='./data/test1/VOC2012/ImageSets/Segmentation/val.txt',
         irn_network='ResNet18',
-        irn_num_epoches=1,
-        irn_batch_size=4
+        num_workers=1,
+        sem_seg_out_dir='./outputs/test1/results/resnet18/sem_seg',
+        irn_weights_name='./outputs/test1/results/resnet18/sess/irn.pth',
+        cam_out_dir='./outputs/test1/results/resnet18/cam',
+        irn_network_module='wsl_survey.segmentation.irn.net.resnet_irn',
     )
     args = parser.parse_args()
+    os.makedirs(args.sem_seg_out_dir, exist_ok=True)
     run(args)

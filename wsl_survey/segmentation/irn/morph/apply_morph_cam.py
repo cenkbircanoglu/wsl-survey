@@ -18,11 +18,12 @@ def apply_morphology(imgs):
         openeds.append(opening(img * 255, selem)[newaxis, ...] / 255)
         closeds.append(closing(img * 255, selem)[newaxis, ...] / 255)
         gaussians.append(
-            ndimage.gaussian_filter(img * 255, sigma=(kernel_size, kernel_size), order=0)[newaxis, ...] / 255)
-    return np.concatenate(erodeds, axis=0), np.concatenate(dilateds,
-                                                           axis=0), np.concatenate(
-        openeds, axis=0), np.concatenate(closeds, axis=0), np.concatenate(
-        gaussians, axis=0)
+            ndimage.gaussian_filter(img * 255,
+                                    sigma=(kernel_size, kernel_size),
+                                    order=0)[newaxis, ...] / 255)
+    return np.concatenate(erodeds, axis=0), np.concatenate(
+        dilateds, axis=0), np.concatenate(openeds, axis=0), np.concatenate(
+            closeds, axis=0), np.concatenate(gaussians, axis=0)
 
 
 def create_morph(img_name, folder):
@@ -35,10 +36,12 @@ def create_morph(img_name, folder):
     cam_dict = np.load(os.path.join(folder, img_name),
                        allow_pickle=True).item()
 
-    eroded, dilated, opened, closed, gaussians = apply_morphology(cam_dict['high_res'])
-    eroded1, dilated1, opened1, closed1, gaussians1 = apply_morphology(cam_dict['cam'])
+    eroded, dilated, opened, closed, gaussians = apply_morphology(
+        cam_dict['high_res'])
+    eroded1, dilated1, opened1, closed1, gaussians1 = apply_morphology(
+        cam_dict['cam'])
     assert cam_dict[
-               'high_res'].shape == eroded.shape == dilated.shape == opened.shape == closed.shape == gaussians.shape
+        'high_res'].shape == eroded.shape == dilated.shape == opened.shape == closed.shape == gaussians.shape
 
     cam_dict['high_res'] = eroded
     cam_dict['cam'] = eroded1
@@ -78,9 +81,9 @@ def apply(folder):
     with Pool(processes=16) as pool:
         with tqdm(total=len(paths)) as pbar:
             for i, _ in tqdm(
-                enumerate(
-                    pool.imap_unordered(partial(create_morph, folder=folder),
-                                        paths))):
+                    enumerate(
+                        pool.imap_unordered(
+                            partial(create_morph, folder=folder), paths))):
                 pbar.update()
 
 

@@ -13,15 +13,17 @@ def run(args):
 
     dataset = VOCSemanticSegmentationDataset(split=args.chainer_eval_set,
                                              data_dir=args.voc12_root)
-    labels = [dataset.get_example_by_keys(i, (1,))[0] for i in
-              range(len(dataset))]
+    labels = [
+        dataset.get_example_by_keys(i, (1, ))[0] for i in range(len(dataset))
+    ]
 
     preds = []
     for id in tqdm(dataset.ids):
         cam_dict = np.load(os.path.join(args.cam_out_dir, id + '.npy'),
                            allow_pickle=True).item()
         cams = cam_dict['high_res']
-        cams = np.pad(cams, ((1, 0), (0, 0), (0, 0)), mode='constant',
+        cams = np.pad(cams, ((1, 0), (0, 0), (0, 0)),
+                      mode='constant',
                       constant_values=args.cam_eval_thres)
         keys = np.pad(cam_dict['keys'] + 1, (1, 0), mode='constant')
         cls_labels = np.argmax(cams, axis=0)
@@ -42,10 +44,8 @@ if __name__ == '__main__':
     from wsl_survey.segmentation.irn.config import make_parser
 
     parser = make_parser()
-    parser.set_defaults(
-        voc12_root='./data/test/VOC2012',
-        chainer_eval_set='train',
-        cam_out_dir='./outputs/test/results/resnet18/cam'
-    )
+    parser.set_defaults(voc12_root='./data/test1/VOC2012',
+                        chainer_eval_set='val',
+                        cam_out_dir='./outputs/test1/results/resnet18/cam')
     args = parser.parse_args()
     run(args)

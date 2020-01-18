@@ -15,7 +15,8 @@ def run(args):
     infer_dataset = dataloader.VOC12ImageDataset(args.infer_list,
                                                  voc12_root=args.voc12_root)
 
-    infer_data_loader = DataLoader(infer_dataset, shuffle=False,
+    infer_data_loader = DataLoader(infer_dataset,
+                                   shuffle=False,
                                    num_workers=args.num_workers,
                                    pin_memory=True)
 
@@ -51,7 +52,11 @@ def run(args):
             category_info = {'id': class_id, 'is_crowd': False}
 
             annotation_info = pycococreatortools.create_annotation_info(
-                instance_id, img_id, category_info, mask, img_size[::-1],
+                instance_id,
+                img_id,
+                category_info,
+                mask,
+                img_size[::-1],
                 tolerance=0)
             instance_id += 1
             coco_output['annotations'].append(annotation_info)

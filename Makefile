@@ -55,7 +55,8 @@ clean-test: ## remove test and coverage artifacts
 
 lint: ## check style with flake8
 	pip install yapf==0.29.0
-	yapf --exclude "*egg*" --recursive --diff wsl_survey tests
+	yapf --exclude "*egg*" --recursive --in-place wsl_survey tests detection
+	yapf --exclude "*egg*" --recursive --diff wsl_survey tests detection
 
 test: ## run tests quickly with the default Python
 	pytest

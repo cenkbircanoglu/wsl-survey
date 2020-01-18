@@ -255,8 +255,9 @@ def train_model(model,
                             'acc': epoch_acc,
                             'epoch': epoch,
                         }
-                        torch.save(state, os.path.join(args.checkpoints,
-                                                       file_name + '.t7'))
+                        torch.save(
+                            state,
+                            os.path.join(args.checkpoints, file_name + '.t7'))
 
                     val_acc = epoch_acc
 
@@ -280,7 +281,7 @@ def exp_lr_scheduler(optimizer,
                      init_lr=args.lr,
                      weight_decay=args.weight_decay,
                      lr_decay_epoch=args.lr_decay_epoch):
-    lr = init_lr * (0.5 ** (epoch // lr_decay_epoch))
+    lr = init_lr * (0.5**(epoch // lr_decay_epoch))
 
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr

@@ -4,7 +4,6 @@ import torch.nn.functional as F
 
 
 class Net(nn.Module):
-
     def __init__(self, backbone=None):
         super(Net, self).__init__()
 
@@ -86,25 +85,24 @@ class Net(nn.Module):
             nn.Upsample(scale_factor=2, mode='bilinear', align_corners=False),
             nn.ReLU(inplace=True),
         )
-        self.fc_dp7 = nn.Sequential(
-            nn.Conv2d(448, 256, 1, bias=False),
-            nn.GroupNorm(16, 256),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(256, 2, 1, bias=False),
-            self.mean_shift
-        )
+        self.fc_dp7 = nn.Sequential(nn.Conv2d(448, 256, 1, bias=False),
+                                    nn.GroupNorm(16,
+                                                 256), nn.ReLU(inplace=True),
+                                    nn.Conv2d(256, 2, 1, bias=False),
+                                    self.mean_shift)
 
         self.backbone = nn.ModuleList(
             [self.stage1, self.stage2, self.stage3, self.stage4, self.stage5])
-        self.edge_layers = nn.ModuleList(
-            [self.fc_edge1, self.fc_edge2, self.fc_edge3, self.fc_edge4,
-             self.fc_edge5, self.fc_edge6])
-        self.dp_layers = nn.ModuleList(
-            [self.fc_dp1, self.fc_dp2, self.fc_dp3, self.fc_dp4, self.fc_dp5,
-             self.fc_dp6, self.fc_dp7])
+        self.edge_layers = nn.ModuleList([
+            self.fc_edge1, self.fc_edge2, self.fc_edge3, self.fc_edge4,
+            self.fc_edge5, self.fc_edge6
+        ])
+        self.dp_layers = nn.ModuleList([
+            self.fc_dp1, self.fc_dp2, self.fc_dp3, self.fc_dp4, self.fc_dp5,
+            self.fc_dp6, self.fc_dp7
+        ])
 
     class MeanShift(nn.Module):
-
         def __init__(self, num_features):
             super(Net.MeanShift, self).__init__()
             self.register_buffer('running_mean', torch.zeros(num_features))
@@ -135,8 +133,8 @@ class Net(nn.Module):
         dp4 = self.fc_dp4(x4)[..., :dp3.size(2), :dp3.size(3)]
         dp5 = self.fc_dp5(x5)[..., :dp3.size(2), :dp3.size(3)]
 
-        dp_up3 = self.fc_dp6(torch.cat([dp3, dp4, dp5], dim=1))[...,
-                 :dp2.size(2), :dp2.size(3)]
+        dp_up3 = self.fc_dp6(torch.cat([dp3, dp4, dp5],
+                                       dim=1))[..., :dp2.size(2), :dp2.size(3)]
         dp_out = self.fc_dp7(torch.cat([dp1, dp2, dp_up3], dim=1))
 
         return edge_out, dp_out
@@ -151,7 +149,6 @@ class Net(nn.Module):
 
 
 class SmallNet(nn.Module):
-
     def __init__(self, backbone=None):
         super(SmallNet, self).__init__()
 
@@ -234,25 +231,24 @@ class SmallNet(nn.Module):
             nn.Upsample(scale_factor=2, mode='bilinear', align_corners=False),
             nn.ReLU(inplace=True),
         )
-        self.fc_dp7 = nn.Sequential(
-            nn.Conv2d(448, 256, 1, bias=False),
-            nn.GroupNorm(16, 256),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(256, 2, 1, bias=False),
-            self.mean_shift
-        )
+        self.fc_dp7 = nn.Sequential(nn.Conv2d(448, 256, 1, bias=False),
+                                    nn.GroupNorm(16,
+                                                 256), nn.ReLU(inplace=True),
+                                    nn.Conv2d(256, 2, 1, bias=False),
+                                    self.mean_shift)
 
         self.backbone = nn.ModuleList(
             [self.stage1, self.stage2, self.stage3, self.stage4, self.stage5])
-        self.edge_layers = nn.ModuleList(
-            [self.fc_edge1, self.fc_edge2, self.fc_edge3, self.fc_edge4,
-             self.fc_edge5, self.fc_edge6])
-        self.dp_layers = nn.ModuleList(
-            [self.fc_dp1, self.fc_dp2, self.fc_dp3, self.fc_dp4, self.fc_dp5,
-             self.fc_dp6, self.fc_dp7])
+        self.edge_layers = nn.ModuleList([
+            self.fc_edge1, self.fc_edge2, self.fc_edge3, self.fc_edge4,
+            self.fc_edge5, self.fc_edge6
+        ])
+        self.dp_layers = nn.ModuleList([
+            self.fc_dp1, self.fc_dp2, self.fc_dp3, self.fc_dp4, self.fc_dp5,
+            self.fc_dp6, self.fc_dp7
+        ])
 
     class MeanShift(nn.Module):
-
         def __init__(self, num_features):
             super(SmallNet.MeanShift, self).__init__()
             self.register_buffer('running_mean', torch.zeros(num_features))
@@ -283,8 +279,8 @@ class SmallNet(nn.Module):
         dp4 = self.fc_dp4(x4)[..., :dp3.size(2), :dp3.size(3)]
         dp5 = self.fc_dp5(x5)[..., :dp3.size(2), :dp3.size(3)]
 
-        dp_up3 = self.fc_dp6(torch.cat([dp3, dp4, dp5], dim=1))[...,
-                 :dp2.size(2), :dp2.size(3)]
+        dp_up3 = self.fc_dp6(torch.cat([dp3, dp4, dp5],
+                                       dim=1))[..., :dp2.size(2), :dp2.size(3)]
         dp_out = self.fc_dp7(torch.cat([dp1, dp2, dp_up3], dim=1))
 
         return edge_out, dp_out
@@ -315,9 +311,10 @@ class SmallAffinityDisplacementLoss(SmallNet):
 
         self.register_buffer(
             'disp_target',
-            torch.unsqueeze(torch.unsqueeze(
-                torch.from_numpy(path_index.search_dst).transpose(1, 0), 0),
-                -1).float())
+            torch.unsqueeze(
+                torch.unsqueeze(
+                    torch.from_numpy(path_index.search_dst).transpose(1, 0),
+                    0), -1).float())
 
     def to_affinity(self, edge):
         aff_list = []
@@ -347,9 +344,11 @@ class SmallAffinityDisplacementLoss(SmallNet):
         disp_src = disp[:, :, :cropped_height,
                    radius_floor:radius_floor + cropped_width]
 
-        disp_dst = [disp[:, :, dy:dy + cropped_height,
-                    radius_floor + dx:radius_floor + dx + cropped_width]
-                    for dy, dx in self.path_index.search_dst]
+        disp_dst = [
+            disp[:, :, dy:dy + cropped_height,
+            radius_floor + dx:radius_floor + dx + cropped_width]
+            for dy, dx in self.path_index.search_dst
+        ]
         disp_dst = torch.stack(disp_dst, 2)
 
         pair_disp = torch.unsqueeze(disp_src, 2) - disp_dst
@@ -396,17 +395,18 @@ class AffinityDisplacementLoss(Net):
 
         self.register_buffer(
             'disp_target',
-            torch.unsqueeze(torch.unsqueeze(
-                torch.from_numpy(path_index.search_dst).transpose(1, 0), 0),
-                -1).float())
+            torch.unsqueeze(
+                torch.unsqueeze(
+                    torch.from_numpy(path_index.search_dst).transpose(1, 0),
+                    0), -1).float())
 
     def to_affinity(self, edge):
         aff_list = []
         edge = edge.view(edge.size(0), -1)
 
         for i in range(self.n_path_lengths):
-            ind = self._buffers[
-                AffinityDisplacementLoss.path_indices_prefix + str(i)]
+            ind = self._buffers[AffinityDisplacementLoss.path_indices_prefix +
+                                str(i)]
             ind_flat = ind.view(-1)
             dist = torch.index_select(edge, dim=-1, index=ind_flat)
             dist = dist.view(dist.size(0), ind.size(0), ind.size(1),
@@ -428,9 +428,11 @@ class AffinityDisplacementLoss(Net):
         disp_src = disp[:, :, :cropped_height,
                    radius_floor:radius_floor + cropped_width]
 
-        disp_dst = [disp[:, :, dy:dy + cropped_height,
-                    radius_floor + dx:radius_floor + dx + cropped_width]
-                    for dy, dx in self.path_index.search_dst]
+        disp_dst = [
+            disp[:, :, dy:dy + cropped_height,
+            radius_floor + dx:radius_floor + dx + cropped_width]
+            for dy, dx in self.path_index.search_dst
+        ]
         disp_dst = torch.stack(disp_dst, 2)
 
         pair_disp = torch.unsqueeze(disp_src, 2) - disp_dst
@@ -461,18 +463,17 @@ class AffinityDisplacementLoss(Net):
 
 
 class SmallEdgeDisplacement(SmallNet):
-
     def __init__(self, crop_size=512, stride=4, backbone=None):
         super(SmallEdgeDisplacement, self).__init__(backbone=backbone)
         self.crop_size = crop_size
         self.stride = stride
 
     def forward(self, x):
-        feat_size = (x.size(2) - 1) // self.stride + 1, (
-            x.size(3) - 1) // self.stride + 1
+        feat_size = (x.size(2) - 1) // self.stride + 1, (x.size(3) -
+                                                         1) // self.stride + 1
 
-        x = F.pad(x, [0, self.crop_size - x.size(3), 0,
-                      self.crop_size - x.size(2)])
+        x = F.pad(
+            x, [0, self.crop_size - x.size(3), 0, self.crop_size - x.size(2)])
         edge_out, dp_out = super().forward(x)
         edge_out = edge_out[..., :feat_size[0], :feat_size[1]]
         dp_out = dp_out[..., :feat_size[0], :feat_size[1]]
@@ -484,18 +485,17 @@ class SmallEdgeDisplacement(SmallNet):
 
 
 class EdgeDisplacement(Net):
-
     def __init__(self, crop_size=512, stride=4, backbone=None):
         super(EdgeDisplacement, self).__init__(backbone=backbone)
         self.crop_size = crop_size
         self.stride = stride
 
     def forward(self, x):
-        feat_size = (x.size(2) - 1) // self.stride + 1, (
-            x.size(3) - 1) // self.stride + 1
+        feat_size = (x.size(2) - 1) // self.stride + 1, (x.size(3) -
+                                                         1) // self.stride + 1
 
-        x = F.pad(x, [0, self.crop_size - x.size(3), 0,
-                      self.crop_size - x.size(2)])
+        x = F.pad(
+            x, [0, self.crop_size - x.size(3), 0, self.crop_size - x.size(2)])
         edge_out, dp_out = super().forward(x)
         edge_out = edge_out[..., :feat_size[0], :feat_size[1]]
         dp_out = dp_out[..., :feat_size[0], :feat_size[1]]

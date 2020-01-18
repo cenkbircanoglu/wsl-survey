@@ -5,7 +5,6 @@ from wsl_survey.segmentation.irn.misc import torchutils
 
 
 class Net(nn.Module):
-
     def __init__(self, backbone=None, num_classes=20, conv_output=2048):
         super(Net, self).__init__()
 
@@ -21,7 +20,9 @@ class Net(nn.Module):
         self.stage3 = nn.Sequential(self.backbone_model.layer3)
         self.stage4 = nn.Sequential(self.backbone_model.layer4)
 
-        self.classifier = nn.Conv2d(conv_output, self.num_classes, 1,
+        self.classifier = nn.Conv2d(conv_output,
+                                    self.num_classes,
+                                    1,
                                     bias=False)
 
         self.backbone = nn.ModuleList(
@@ -50,13 +51,11 @@ class Net(nn.Module):
 
     def trainable_parameters(self):
 
-        return (
-            list(self.backbone.parameters()),
-            list(self.newly_added.parameters()))
+        return (list(self.backbone.parameters()),
+                list(self.newly_added.parameters()))
 
 
 class CAM(Net):
-
     def __init__(self):
         super(CAM, self).__init__()
 

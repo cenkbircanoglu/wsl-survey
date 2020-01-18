@@ -8,10 +8,15 @@ from tqdm import tqdm
 
 
 def run(args):
+    assert args.voc12_root is not None
+    assert args.chainer_eval_set is not None
+    assert args.sem_seg_out_dir is not None
+
     dataset = VOCSemanticSegmentationDataset(split=args.chainer_eval_set,
                                              data_dir=args.voc12_root)
-    labels = [dataset.get_example_by_keys(i, (1,))[0] for i in
-              range(len(dataset))]
+    labels = [
+        dataset.get_example_by_keys(i, (1, ))[0] for i in range(len(dataset))
+    ]
 
     preds = []
     for id in tqdm(dataset.ids):
@@ -34,19 +39,14 @@ def run(args):
 
     print({'iou': iou, 'miou': np.nanmean(iou)})
 
+
 if __name__ == '__main__':
     from wsl_survey.segmentation.irn.config import make_parser
 
     parser = make_parser()
     parser.set_defaults(
-        voc12_root='./data/test/VOC2012',
-        class_label_dict_path='./data/test/VOC2012/ImageSets/Segmentation/cls_labels.npy',
-        train_list='./data/test/VOC2012/ImageSets/Segmentation/train_aug.txt',
-        ir_label_out_dir='./outputs/test/results/resnet18/irn_label',
-        infer_list='./data/voc12/train.txt',
-        irn_network='ResNet18',
-        irn_num_epoches=1,
-        irn_batch_size=4
-    )
+        voc12_root='./data/test1/VOC2012',
+        chainer_eval_set='val',
+        sem_seg_out_dir='./outputs/test1/results/resnet18/sem_seg')
     args = parser.parse_args()
     run(args)
