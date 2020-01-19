@@ -222,28 +222,6 @@ class AffinityDisplacementLoss(Net):
         return pos_aff_loss, neg_aff_loss, dp_fg_loss, dp_bg_loss
 
 
-class SmallEdgeDisplacement(SmallNet):
-    def __init__(self, crop_size=512, stride=4, backbone=None):
-        super(SmallEdgeDisplacement, self).__init__(backbone=backbone)
-        self.crop_size = crop_size
-        self.stride = stride
-
-    def forward(self, x):
-        feat_size = (x.size(2) - 1) // self.stride + 1, (x.size(3) -
-                                                         1) // self.stride + 1
-
-        x = F.pad(
-            x, [0, self.crop_size - x.size(3), 0, self.crop_size - x.size(2)])
-        edge_out, dp_out = super().forward(x)
-        edge_out = edge_out[..., :feat_size[0], :feat_size[1]]
-        dp_out = dp_out[..., :feat_size[0], :feat_size[1]]
-
-        edge_out = torch.sigmoid(edge_out[0] / 2 + edge_out[1].flip(-1) / 2)
-        dp_out = dp_out[0]
-
-        return edge_out, dp_out
-
-
 class EdgeDisplacement(Net):
     def __init__(self, crop_size=512, stride=4, backbone=None):
         super(EdgeDisplacement, self).__init__(backbone=backbone)
