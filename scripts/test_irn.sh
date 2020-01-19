@@ -52,6 +52,7 @@ python3 wsl_survey/segmentation/irn/main.py \
 
 
 export MODEL=resnet50
+export NETWORK=ResNet50
 export ROOT_FOLDER=./data/test1/VOC2012
 export SEGMENTATION_DATA_FOLDER=./data/test1/VOC2012/ImageSets/Segmentation
 export OUTPUT_FOLDER=./outputs/test1/results/distilled_$MODEL/
