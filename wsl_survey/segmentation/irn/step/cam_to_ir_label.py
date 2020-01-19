@@ -49,7 +49,7 @@ def _work(process_id, infer_dataset, args):
         conf = fg_conf.copy()
         conf[fg_conf == 0] = 255
         conf[bg_conf + fg_conf == 0] = 0
-        # conf = dilation(conf, square(1))
+
         imageio.imwrite(os.path.join(args.ir_label_out_dir, img_name + '.png'),
                         conf.astype(np.uint8))
 

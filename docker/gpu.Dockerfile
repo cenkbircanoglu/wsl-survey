@@ -15,7 +15,7 @@ RUN pip install scipy torchnet==0.0.4 torchvision tqdm==4.41.0 \
 RUN pip install git+git://github.com/waspinator/pycococreator.git@0.2.0
 
 ADD ./dist/wsl_survey-0.1.0-py2.py3-none-any.whl /app/
-ADD ./datasets/test /test_dataset
+ADD ./data /data
 WORKDIR /app
 RUN pip install --quiet wsl_survey-0.1.0-py2.py3-none-any.whl --target /app
 ADD ./docker/entrypoint.sh /opt/

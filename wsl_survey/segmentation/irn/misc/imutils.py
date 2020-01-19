@@ -84,8 +84,8 @@ def get_random_crop_box(imgsize, cropsize):
 
 
 def random_crop(images, cropsize, default_values):
-    if isinstance(images, np.ndarray): images = (images, )
-    if isinstance(default_values, int): default_values = (default_values, )
+    if isinstance(images, np.ndarray): images = (images,)
+    if isinstance(default_values, int): default_values = (default_values,)
 
     imgsize = images[0].shape[:2]
     box = get_random_crop_box(imgsize, cropsize)
@@ -185,10 +185,22 @@ def crf_inference_label(img, labels, t=10, n_labels=21, gt_prob=0.7):
 
 
 def get_strided_size(orig_size, stride):
+    """
+    >>> orig_size = (281, 500)
+    >>> stride = 4
+    >>> get_strided_size(orig_size, stride)
+    (71, 125)
+    """
     return ((orig_size[0] - 1) // stride + 1, (orig_size[1] - 1) // stride + 1)
 
 
 def get_strided_up_size(orig_size, stride):
+    """
+    >>> orig_size = (281, 500)
+    >>> stride = 16
+    >>> get_strided_up_size(orig_size, stride)
+    (288, 512)
+    """
     strided_size = get_strided_size(orig_size, stride)
     return strided_size[0] * stride, strided_size[1] * stride
 
@@ -250,7 +262,7 @@ def colorize_displacement(disp):
 
     a = (np.arctan2(-disp[0], -disp[1]) / math.pi + 1) / 2
 
-    r = np.sqrt(disp[0]**2 + disp[1]**2)
+    r = np.sqrt(disp[0] ** 2 + disp[1] ** 2)
     s = r / np.max(r)
     hsv_color = np.stack((a, s, np.ones_like(a)), axis=-1)
     rgb_color = matplotlib.colors.hsv_to_rgb(hsv_color)
@@ -307,3 +319,9 @@ def colorize_label(label_map,
 
         test = np.maximum(test, edge)
     return test
+
+
+if __name__ == '__main__':
+    import doctest
+
+    doctest.testmod()

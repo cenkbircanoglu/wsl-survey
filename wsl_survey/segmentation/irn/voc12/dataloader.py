@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset
 
-from wsl_survey.segmentation.irn.misc import imutils
+from wsl_survey.segmentation.irn.misc import imutils, indexing
 
 IMG_FOLDER_NAME = "JPEGImages"
 ANNOT_FOLDER_NAME = "Annotations"
@@ -111,7 +111,7 @@ class GetAffinityLabelFromIndices():
         fg_pos_affinity_label = np.logical_and(pos_affinity_label,
                                                np.greater(segm_label_from,
                                                           0)).astype(
-                                                              np.float32)
+            np.float32)
 
         neg_affinity_label = np.logical_and(np.logical_not(equal_label),
                                             valid_label).astype(np.float32)
@@ -208,7 +208,7 @@ class VOC12ClassificationDatasetMSF(VOC12ClassificationDataset):
                  img_name_list_path,
                  voc12_root,
                  img_normal=TorchvisionNormalize(),
-                 scales=(1.0, ),
+                 scales=(1.0,),
                  class_label_dict_path=None):
         self.scales = scales
 
@@ -338,3 +338,58 @@ class VOC12AffinityDataset(VOC12SegmentationDataset):
             'aff_neg_label'] = self.extract_aff_lab_func(reduced_label)
 
         return out
+
+
+if __name__ == '__main__':
+    train_dataset = VOC12ClassificationDataset(
+        './data/test1/VOC2012/ImageSets/Segmentation/train_aug.txt',
+        voc12_root='./data/test1/VOC2012',
+        resize_long=(320, 640),
+        hor_flip=True,
+        crop_size=512,
+        crop_method="random",
+        class_label_dict_path='./data/voc12/cls_labels.npy')
+
+    print(len(train_dataset))
+    for item in train_dataset:
+        print(item['name'], item['img'].shape, item['label'].shape)
+        print(item['name'], item['img'].max(), item['img'].min(),
+              item['label'])
+        break
+
+    train_dataset = VOC12ClassificationDatasetMSF(
+        './data/test1/VOC2012/ImageSets/Segmentation/train_aug.txt',
+        voc12_root='./data/test1/VOC2012',
+        scales=(1.0, 0.5, 1.5, 2.0),
+        class_label_dict_path='./data/voc12/cls_labels.npy')
+
+    print(len(train_dataset))
+    for item in train_dataset:
+        print(item['name'], [img.shape for img in item['img']],
+              item['label'].shape)
+        print(item['name'], [img.max() for img in item['img']],
+              [img.min() for img in item['img']], item['label'], item['size'])
+        break
+
+    path_index = indexing.PathIndex(radius=10,
+                                    default_size=(512 // 4,
+                                                  512 // 4))
+
+    train_dataset = VOC12AffinityDataset(
+        './data/test1/VOC2012/ImageSets/Segmentation/train_aug.txt',
+        voc12_root='./data/test1/VOC2012',
+        label_dir='./outputs/test1/results/resnet18/irn_label',
+        indices_from=path_index.src_indices,
+        indices_to=path_index.dst_indices,
+        hor_flip=True,
+        crop_size=512,
+        crop_method="random",
+        rescale=(0.5, 1.5))
+
+    print(len(train_dataset))
+    for item in train_dataset:
+        print(item['name'], item['img'].shape, item['label'].shape)
+        print(item['name'], item['img'].max(), item['img'].min(),
+              item['label'].shape, item['aff_bg_pos_label'].shape,
+              item['aff_fg_pos_label'].shape, item['aff_neg_label'].shape)
+        break

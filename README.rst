@@ -67,6 +67,8 @@ Datasets
 
 
 
+    .. code-block:: console
+        python3 wsl_survey/utils/network_summary.py --network_name=ResNet152 --network_module=wsl_survey.segmentation.irn.net.resnet_cam
 TODO
 ----
 1. Add Datasets
