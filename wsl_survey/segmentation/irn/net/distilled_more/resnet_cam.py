@@ -1,4 +1,4 @@
-from wsl_survey.segmentation.irn.net.distilled import cam
+from wsl_survey.segmentation.irn.net.distilled_more import cam
 from wsl_survey.segmentation.irn.net.resnet import resnet50, resnet152, \
     resnet101
 
