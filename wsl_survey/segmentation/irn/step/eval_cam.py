@@ -13,12 +13,10 @@ def run(args):
 
     dataset = VOCSemanticSegmentationDataset(split=args.chainer_eval_set,
                                              data_dir=args.voc12_root)
-    labels = [
-        dataset.get_example_by_keys(i, (1, ))[0] for i in range(len(dataset))
-    ]
 
     preds = []
-    for id in tqdm(dataset.ids):
+    labels = []
+    for d, id in tqdm(enumerate(dataset.ids)):
         try:
             cam_dict = np.load(os.path.join(args.cam_out_dir, id + '.npy'),
                                allow_pickle=True).item()
@@ -29,11 +27,14 @@ def run(args):
             keys = np.pad(cam_dict['keys'] + 1, (1, 0), mode='constant')
             cls_labels = np.argmax(cams, axis=0)
             cls_labels = keys[cls_labels]
-            preds.append(cls_labels.copy())
-        except:
-            pass
-    confusion = calc_semantic_segmentation_confusion(preds, labels)
+            pred = cls_labels.copy()
+            label = dataset.get_example_by_keys(d, (1,))[0]
+            preds.append(pred)
+            labels.append(label)
+        except Exception as e:
+            print(e)
 
+    confusion = calc_semantic_segmentation_confusion(preds, labels)
     gtj = confusion.sum(axis=1)
     resj = confusion.sum(axis=0)
     gtjresj = np.diag(confusion)

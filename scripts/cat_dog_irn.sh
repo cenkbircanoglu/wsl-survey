@@ -4,7 +4,7 @@ export MODEL=resnet152
 export NETWORK=ResNet152
 export ROOT_FOLDER=./datasets/voc2012/VOCdevkit/VOC2012/
 export SEGMENTATION_DATA_FOLDER=./data/test1/VOC2012/ImageSets/Segmentation
-export OUTPUT_FOLDER=./outputs/voc12/results/cat_dog_$MODEL/
+export OUTPUT_FOLDER=./outputs/voc12/results/cat_dog_$MODEL
 
 python3 wsl_survey/segmentation/irn/main.py \
     --voc12_root=$ROOT_FOLDER \
@@ -22,11 +22,7 @@ python3 wsl_survey/segmentation/irn/main.py \
     --cam_network=$NETWORK \
     --irn_network=$NETWORK \
     --log_name=$OUTPUT_FOLDER/logs \
-    --train_cam_pass=True \
-    --make_cam_pass=True \
     --eval_cam_pass=True \
     --num_workers=1 \
     --cam_network_module=wsl_survey.segmentation.irn.net.distilled.resnet_cam \
-    --irn_network_module=wsl_survey.segmentation.irn.net.distilled.resnet_irn \
-    --cam_batch_size=8 \
-    --irn_batch_size=8
+    --irn_network_module=wsl_survey.segmentation.irn.net.distilled.resnet_irn

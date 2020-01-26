@@ -11,27 +11,27 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--train_aug_list",
-        default='/Users/cenks/ws/wsl-survey/data/voc12/train_aug.txt',
+        default='./data/voc12/train_aug.txt',
         type=str)
     parser.add_argument(
         "--train_list",
-        default='/Users/cenks/ws/wsl-survey/data/voc12/train.txt',
+        default='./data/voc12/train.txt',
         type=str)
     parser.add_argument(
         "--val_list",
-        default='/Users/cenks/ws/wsl-survey/data/voc12/val.txt',
+        default='./data/voc12/val.txt',
         type=str)
     parser.add_argument(
         "--test_list",
-        default='/Users/cenks/ws/wsl-survey/data/test1/VOC2012/ImageSets/Segmentation/test.txt',
+        default='./data/test1/VOC2012/ImageSets/Segmentation/test.txt',
         type=str)
     parser.add_argument(
         "--out",
-        default='/Users/cenks/ws/wsl-survey/data/voc12/dog_train/',
+        default='./data/voc12/cat_dog/',
         type=str)
     parser.add_argument(
         "--voc12_root",
-        default="/Users/cenks/ws/wsl-survey/datasets/voc2012/VOCdevkit/VOC2012",
+        default="./datasets/voc2012/VOCdevkit/VOC2012",
         type=str)
     args = parser.parse_args()
 
@@ -41,13 +41,12 @@ if __name__ == '__main__':
 
     train_val_name_list = np.concatenate([train_aug_list, train_list, val_list], axis=0)
     train_val_name_list = np.unique(train_val_name_list)
-    cat_list = ['dog', 'train']
-    cat_name_to_num = dict(zip(cat_list, range(len(cat_list))))
+    cat_list = ['cat', 'dog']
 
     label_list = dataloader.load_image_label_list_from_xml(
-        train_val_name_list, args.voc12_root, cat_list=cat_list, cat_name_to_num=cat_name_to_num)
+        train_val_name_list, args.voc12_root, cat_list=cat_list)
 
-    total_label = np.zeros(len(cat_list))
+    total_label = np.zeros(20)
 
     d = dict()
     out_train_aug = []
