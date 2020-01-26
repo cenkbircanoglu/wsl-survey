@@ -22,6 +22,8 @@ python3 wsl_survey/segmentation/irn/main.py \
     --cam_network=$NETWORK \
     --irn_network=$NETWORK \
     --log_name=$OUTPUT_FOLDER/logs \
+    --train_cam_pass=True \
+    --make_cam_pass=True \
     --eval_cam_pass=True \
     --num_workers=1 \
     --cam_network_module=wsl_survey.segmentation.irn.net.distilled.resnet_cam \
