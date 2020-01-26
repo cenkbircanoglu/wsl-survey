@@ -4,15 +4,15 @@ export MODEL=resnet152
 export NETWORK=ResNet152
 export ROOT_FOLDER=./datasets/voc2012/VOCdevkit/VOC2012/
 export SEGMENTATION_DATA_FOLDER=./data/test1/VOC2012/ImageSets/Segmentation
-export OUTPUT_FOLDER=./outputs/voc12/results/dog_train_$MODEL/
+export OUTPUT_FOLDER=./outputs/voc12/results/dog_train_$MODEL
 
 python3 wsl_survey/segmentation/irn/main.py \
     --voc12_root=$ROOT_FOLDER \
     --chainer_eval_set=train \
-    --class_label_dict_path=./data/voc12/dog_train_/cls_labels.npy \
-    --train_list=./data/voc12/dog_train_/train_aug.txt \
-    --val_list=./data/voc12/dog_train_/val.txt \
-    --infer_list=./data/voc12/dog_train_/train.txt \
+    --class_label_dict_path=./data/voc12/dog_train/cls_labels.npy \
+    --train_list=./data/voc12/dog_train/train_aug.txt \
+    --val_list=./data/voc12/dog_train/val.txt \
+    --infer_list=./data/voc12/dog_train/train.txt \
     --cam_weights_name=$OUTPUT_FOLDER/sess/cam.pth \
     --irn_weights_name=$OUTPUT_FOLDER/sess/irn.pth \
     --cam_out_dir=$OUTPUT_FOLDER/cam \
