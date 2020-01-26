@@ -27,7 +27,7 @@ if __name__ == '__main__':
         type=str)
     parser.add_argument(
         "--out",
-        default='./data/voc12/cat_dog/',
+        default='./data/voc12/dog_train/',
         type=str)
     parser.add_argument(
         "--voc12_root",
@@ -41,7 +41,7 @@ if __name__ == '__main__':
 
     train_val_name_list = np.concatenate([train_aug_list, train_list, val_list], axis=0)
     train_val_name_list = np.unique(train_val_name_list)
-    cat_list = ['cat', 'dog']
+    cat_list = ['dog', 'train']
     cat_name_to_num = dict(zip(cat_list, range(len(cat_list))))
     label_list = dataloader.load_image_label_list_from_xml(
         train_val_name_list, args.voc12_root, cat_list=cat_list, cat_name_to_num=cat_name_to_num)

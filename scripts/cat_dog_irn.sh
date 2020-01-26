@@ -27,5 +27,4 @@ python3 wsl_survey/segmentation/irn/main.py \
     --eval_cam_pass=True \
     --num_workers=1 \
     --cam_network_module=wsl_survey.segmentation.irn.net.distilled.resnet_cam \
-    --irn_network_module=wsl_survey.segmentation.irn.net.distilled.resnet_irn \
-    --cam_num_epoches=10
+    --irn_network_module=wsl_survey.segmentation.irn.net.distilled.resnet_irn
