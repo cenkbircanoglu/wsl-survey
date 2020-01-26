@@ -27,7 +27,7 @@ def decode_int_filename(int_filename):
     return s[:4] + '_' + s[4:]
 
 
-def load_image_label_from_xml(img_name, voc12_root):
+def load_image_label_from_xml(img_name, voc12_root, cat_list=CAT_LIST, cat_name_to_num=CAT_NAME_TO_NUM):
     from xml.dom import minidom
 
     elem_list = minidom.parse(
@@ -35,20 +35,20 @@ def load_image_label_from_xml(img_name, voc12_root):
                      decode_int_filename(img_name) +
                      '.xml')).getElementsByTagName('name')
 
-    multi_cls_lab = np.zeros((N_CAT), np.float32)
+    multi_cls_lab = np.zeros((len(cat_list)), np.float32)
 
     for elem in elem_list:
         cat_name = elem.firstChild.data
-        if cat_name in CAT_LIST:
-            cat_num = CAT_NAME_TO_NUM[cat_name]
+        if cat_name in cat_list:
+            cat_num = cat_name_to_num[cat_name]
             multi_cls_lab[cat_num] = 1.0
 
     return multi_cls_lab
 
 
-def load_image_label_list_from_xml(img_name_list, voc12_root):
+def load_image_label_list_from_xml(img_name_list, voc12_root, cat_list=CAT_LIST, cat_name_to_num=CAT_NAME_TO_NUM):
     return [
-        load_image_label_from_xml(img_name, voc12_root)
+        load_image_label_from_xml(img_name, voc12_root, cat_list, cat_name_to_num)
         for img_name in img_name_list
     ]
 
