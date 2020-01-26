@@ -651,3 +651,236 @@ eval_sem_seg
        0.7254037 , 0.53479209, 0.8346602 , 0.64902531, 0.69559201,
        0.61168317]), 'miou': 0.6917781684835346}
 
+
+Distilled more
+Last login: Tue Jan 21 07:33:54 on ttys003
+v%                                                                                                                                                                                                          ^R
+➜  ~ cb-image-train
+=============================================================================
+       __|  __|_  )
+       _|  (     /   Deep Learning AMI (Ubuntu) Version 23.1
+      ___|\___|___|
+=============================================================================
+
+Welcome to Ubuntu 16.04.6 LTS (GNU/Linux 4.4.0-1100-aws x86_64v)
+
+Please use one of the following commands to start the required environment with the framework of your choice:
+for MXNet(+Keras2) with Python3 (CUDA 10.0 and Intel MKL-DNN) _____________________________________ source activate mxnet_p36
+for MXNet(+Keras2) with Python2 (CUDA 10.0 and Intel MKL-DNN) _____________________________________ source activate mxnet_p27
+for MXNet(+Amazon Elastic Inference) with Python3 _______________________________________ source activate amazonei_mxnet_p36
+for MXNet(+Amazon Elastic Inference) with Python2 _______________________________________ source activate amazonei_mxnet_p27
+for TensorFlow(+Keras2) with Python3 (CUDA 10.0 and Intel MKL-DNN) ___________________________ source activate tensorflow_p36
+for TensorFlow(+Keras2) with Python2 (CUDA 10.0 and Intel MKL-DNN) ___________________________ source activate tensorflow_p27
+for Tensorflow(+Amazon Elastic Inference) with Python2 _____________________________ source activate amazonei_tensorflow_p27
+for Tensorflow(+Amazon Elastic Inference) with Python3 _____________________________ source activate amazonei_tensorflow_p36
+for Theano(+Keras2) with Python3 (CUDA 9.0) _____________________________________________________ source activate theano_p36
+for Theano(+Keras2) with Python2 (CUDA 9.0) _____________________________________________________ source activate theano_p27
+for PyTorch with Python3 (CUDA 10.0 and Intel MKL) _____________________________________________ source activate pytorch_p36
+for PyTorch with Python2 (CUDA 10.0 and Intel MKL) _____________________________________________ source activate pytorch_p27
+for CNTK(+Keras2) with Python3 (CUDA 9.0 and Intel MKL-DNN) _______________________________________ source activate cntk_p36
+for CNTK(+Keras2) with Python2 (CUDA 9.0 and Intel MKL-DNN) _______________________________________ source activate cntk_p27
+for Caffe2 with Python2 (CUDA 9.0) ______________________________________________________________ source activate caffe2_p27
+for Caffe with Python2 (CUDA 8.0) ________________________________________________________________ source activate caffe_p27
+for Caffe with Python3 (CUDA 8.0) ________________________________________________________________ source activate caffe_p35
+for Chainer with Python2 (CUDA 10.0 and Intel iDeep) ____________________________________________ source activate chainer_p27
+for Chainer with Python3 (CUDA 10.0 and Intel iDeep) ____________________________________________ source activate chainer_p36
+for base Python2 (CUDA 9.0) ________________________________________________________________________ source activate python2
+for base Python3 (CUDA 9.0) ________________________________________________________________________ source activate python3
+
+Official Conda User Guide: https://docs.conda.io/projects/conda/en/latest/user-guide/
+AWS Deep Learning AMI Homepage: https://aws.amazon.com/machine-learning/amis/
+Developer Guide and Release Notes: https://docs.aws.amazon.com/dlami/latest/devguide/what-is-dlami.html
+Support: https://forums.aws.amazon.com/forum.jspa?forumID=263
+For a fully managed experience, check out Amazon SageMaker at https://aws.amazon.com/sagemaker
+=============================================================================
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  Get cloud support with Ubuntu Advantage Cloud Guest:
+    http://www.ubuntu.com/business/services/cloud
+
+58 packages can be updated.
+0 updates are security updates.
+
+New release '18.04.3 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
+
+
+ubuntu@ip-172-31-40-137:~$ cd wsl-survey/
+ubuntu@ip-172-31-40-137:~/wsl-survey$ ls
+=0.15.0      CONTRIBUTING.rst  MANIFEST.in  README.rst  datasets    docker  nohup.out  requirements  scripts    setup.py  version.sh
+AUTHORS.rst  HISTORY.rst       Makefile     data        deploy.env  docs    outputs    run.sh        setup.cfg  tox.ini   wsl_survey
+ubuntu@ip-172-31-40-137:~/wsl-survey$ tail -200f nohup.out
+Downloading: "https://download.pytorch.org/models/resnet152-b121ed2d.pth" to /home/ubuntu/.cache/torch/checkpoints/resnet152-b121ed2d.pth
+100%|##########| 230M/230M [00:07<00:00, 31.2MB/s]{'num_workers': 1, 'voc12_root': './datasets/voc2012/VOCdevkit/VOC2012/', 'class_label_dict_path': './data/voc12/cls_labels.npy', 'train_list': './data/voc12/train_aug.txt', 'val_list': './data/voc12/val.txt', 'infer_list': './data/voc12/val.txt', 'chainer_eval_set': 'val', 'cam_network': 'ResNet152', 'cam_network_module': 'wsl_survey.segmentation.irn.net.distilled_more.resnet_cam', 'cam_crop_size': 512, 'cam_batch_size': 16, 'cam_num_epoches': 5, 'cam_learning_rate': 0.1, 'cam_weight_decay': 0.0001, 'cam_eval_thres': 0.15, 'cam_scales': (1.0, 0.5, 1.5, 2.0), 'conf_fg_thres': 0.3, 'conf_bg_thres': 0.05, 'irn_network': 'ResNet152', 'irn_network_module': 'wsl_survey.segmentation.irn.net.distilled_more.resnet_irn', 'irn_crop_size': 512, 'irn_batch_size': 16, 'irn_num_epoches': 3, 'irn_learning_rate': 0.1, 'irn_weight_decay': 0.0001, 'beta': 10, 'exp_times': 8, 'ins_seg_bg_thres': 0.25, 'sem_seg_bg_thres': 0.25, 'log_name': './outputs/voc12/results/distilled_more_resnet152//logs', 'cam_weights_name': './outputs/voc12/results/distilled_more_resnet152//sess/cam.pth', 'irn_weights_name': './outputs/voc12/results/distilled_more_resnet152//sess/irn.pth', 'cam_out_dir': './outputs/voc12/results/distilled_more_resnet152//cam', 'ir_label_out_dir': './outputs/voc12/results/distilled_more_resnet152//irn_label', 'sem_seg_out_dir': './outputs/voc12/results/distilled_more_resnet152//sem_seg', 'ins_seg_out_dir': './outputs/voc12/results/distilled_more_resnet152//ins_seg', 'train_cam_pass': True, 'make_cam_pass': True, 'eval_cam_pass': True, 'cam_to_ir_label_pass': True, 'train_irn_pass': True, 'make_ins_seg_pass': False, 'eval_ins_seg_pass': False, 'make_sem_seg_pass': True, 'eval_sem_seg_pass': True}
+train_cam
+step.train_cam: Tue Jan 21 06:43:37 2020
+Epoch 1/5
+
+  0%|          | 0/661 [00:00<?, ?it/s]step:    0/ 3305 loss:0.6907 imps:21.8 lr: 0.1000 etc:Tue Jan 21 07:24:22 2020
+ 15%|#5        | 100/661 [00:35<03:18,  2.82it/s]step:  100/ 3305 loss:0.2531 imps:44.6 lr: 0.0973 etc:Tue Jan 21 07:03:38 2020
+ 30%|###       | 200/661 [01:11<02:43,  2.82it/s]step:  200/ 3305 loss:0.2190 imps:44.9 lr: 0.0945 etc:Tue Jan 21 07:03:30 2020
+ 45%|####5     | 300/661 [01:46<02:07,  2.83it/s]step:  300/ 3305 loss:0.1844 imps:45.0 lr: 0.0918 etc:Tue Jan 21 07:03:28 2020
+ 61%|######    | 400/661 [02:22<01:32,  2.82it/s]step:  400/ 3305 loss:0.1755 imps:45.0 lr: 0.0890 etc:Tue Jan 21 07:03:26 2020
+ 76%|#######5  | 500/661 [02:57<00:57,  2.82it/s]step:  500/ 3305 loss:0.1611 imps:45.0 lr: 0.0863 etc:Tue Jan 21 07:03:26 2020
+ 91%|######### | 600/661 [03:33<00:21,  2.82it/s]step:  600/ 3305 loss:0.1486 imps:45.0 lr: 0.0835 etc:Tue Jan 21 07:03:26 2020
+100%|##########| 661/661 [03:54<00:00,  2.82it/s]validating ...
+loss: 0.1328
+Epoch 2/5
+  6%|5         | 39/661 [00:14<03:40,  2.82it/s]step:  700/ 3305 loss:0.1351 imps:44.1 lr: 0.0807 etc:Tue Jan 21 07:04:42 2020
+ 21%|##1       | 139/661 [00:49<03:05,  2.82it/s]step:  800/ 3305 loss:0.1303 imps:44.8 lr: 0.0779 etc:Tue Jan 21 07:04:33 2020
+ 36%|###6      | 239/661 [01:25<02:30,  2.81it/s]step:  900/ 3305 loss:0.1155 imps:44.9 lr: 0.0751 etc:Tue Jan 21 07:04:25 2020
+ 51%|#####1    | 339/661 [02:00<01:54,  2.82it/s]step: 1000/ 3305 loss:0.1164 imps:45.0 lr: 0.0723 etc:Tue Jan 21 07:04:19 2020
+ 66%|######6   | 439/661 [02:36<01:18,  2.82it/s]step: 1100/ 3305 loss:0.1038 imps:45.0 lr: 0.0695 etc:Tue Jan 21 07:04:14 2020
+ 82%|########1 | 539/661 [03:11<00:43,  2.82it/s]step: 1200/ 3305 loss:0.1048 imps:45.0 lr: 0.0666 etc:Tue Jan 21 07:04:10 2020
+ 97%|#########6| 639/661 [03:47<00:07,  2.82it/s]step: 1300/ 3305 loss:0.0911 imps:45.0 lr: 0.0638 etc:Tue Jan 21 07:04:07 2020
+100%|##########| 661/661 [03:54<00:00,  2.81it/s]validating ...
+loss: 0.0896
+Epoch 3/5
+ 12%|#1        | 78/661 [00:27<03:26,  2.82it/s]step: 1400/ 3305 loss:0.0899 imps:44.6 lr: 0.0609 etc:Tue Jan 21 07:04:42 2020
+ 27%|##6       | 178/661 [01:03<02:51,  2.82it/s]step: 1500/ 3305 loss:0.0886 imps:44.9 lr: 0.0580 etc:Tue Jan 21 07:04:37 2020
+ 42%|####2     | 278/661 [01:38<02:15,  2.82it/s]step: 1600/ 3305 loss:0.0827 imps:44.9 lr: 0.0551 etc:Tue Jan 21 07:04:33 2020
+ 57%|#####7    | 378/661 [02:14<01:40,  2.82it/s]step: 1700/ 3305 loss:0.0802 imps:45.0 lr: 0.0522 etc:Tue Jan 21 07:04:29 2020
+ 72%|#######2  | 478/661 [02:49<01:04,  2.82it/s]step: 1800/ 3305 loss:0.0745 imps:45.0 lr: 0.0493 etc:Tue Jan 21 07:04:25 2020
+ 87%|########7 | 578/661 [03:25<00:29,  2.82it/s]step: 1900/ 3305 loss:0.0764 imps:45.0 lr: 0.0463 etc:Tue Jan 21 07:04:22 2020
+100%|##########| 661/661 [03:54<00:00,  2.81it/s]validating ...
+loss: 0.0779
+Epoch 4/5
+  3%|2         | 17/661 [00:06<03:49,  2.81it/s]step: 2000/ 3305 loss:0.0730 imps:42.8 lr: 0.0433 etc:Tue Jan 21 07:04:46 2020
+ 18%|#7        | 117/661 [00:41<03:13,  2.82it/s]step: 2100/ 3305 loss:0.0719 imps:44.7 lr: 0.0403 etc:Tue Jan 21 07:04:42 2020
+ 33%|###2      | 217/661 [01:17<02:37,  2.82it/s]step: 2200/ 3305 loss:0.0682 imps:44.9 lr: 0.0373 etc:Tue Jan 21 07:04:39 2020
+ 48%|####7     | 317/661 [01:52<02:02,  2.82it/s]step: 2300/ 3305 loss:0.0627 imps:45.0 lr: 0.0343 etc:Tue Jan 21 07:04:35 2020
+ 63%|######3   | 417/661 [02:28<01:26,  2.82it/s]step: 2400/ 3305 loss:0.0664 imps:45.0 lr: 0.0312 etc:Tue Jan 21 07:04:32 2020
+ 78%|#######8  | 517/661 [03:03<00:51,  2.82it/s]step: 2500/ 3305 loss:0.0625 imps:45.0 lr: 0.0281 etc:Tue Jan 21 07:04:30 2020
+ 93%|#########3| 617/661 [03:39<00:15,  2.82it/s]step: 2600/ 3305 loss:0.0627 imps:45.0 lr: 0.0249 etc:Tue Jan 21 07:04:27 2020
+100%|##########| 661/661 [03:54<00:00,  2.81it/s]validating ...
+loss: 0.0616
+Epoch 5/5
+  8%|8         | 56/661 [00:20<03:35,  2.81it/s]step: 2700/ 3305 loss:0.0576 imps:44.3 lr: 0.0217 etc:Tue Jan 21 07:04:45 2020
+ 24%|##3       | 156/661 [00:55<02:59,  2.82it/s]step: 2800/ 3305 loss:0.0561 imps:44.8 lr: 0.0184 etc:Tue Jan 21 07:04:42 2020
+ 39%|###8      | 256/661 [01:31<02:23,  2.82it/s]step: 2900/ 3305 loss:0.0531 imps:44.9 lr: 0.0151 etc:Tue Jan 21 07:04:39 2020
+ 54%|#####3    | 356/661 [02:06<01:48,  2.82it/s]step: 3000/ 3305 loss:0.0516 imps:45.0 lr: 0.0117 etc:Tue Jan 21 07:04:37 2020
+ 69%|######8   | 456/661 [02:42<01:12,  2.82it/s]step: 3100/ 3305 loss:0.0526 imps:45.0 lr: 0.0082 etc:Tue Jan 21 07:04:35 2020
+ 84%|########4 | 556/661 [03:17<00:37,  2.82it/s]step: 3200/ 3305 loss:0.0505 imps:45.0 lr: 0.0045 etc:Tue Jan 21 07:04:32 2020
+ 99%|#########9| 656/661 [03:53<00:01,  2.82it/s]step: 3300/ 3305 loss:0.0538 imps:45.0 lr: 0.0003 etc:Tue Jan 21 07:04:30 2020
+100%|##########| 661/661 [03:54<00:00,  2.81it/s]validating ...
+loss: 0.0570
+make_cam
+step.make_cam: Tue Jan 21 07:04:47 2020
+100%|##########| 10582/10582 [29:11<00:00,  6.04it/s]0 5 10 15 20
+  0%|          | 0/1449 [00:00<?, ?it/s]
+]
+eval_cam
+step.eval_cam: Tue Jan 21 07:34:09 2020
+Traceback (most recent call last):
+  File "wsl_survey/segmentation/irn/main.py", line 40, in <module>
+    step.eval_cam.run(args)
+  File "/home/ubuntu/wsl-survey/wsl_survey/segmentation/irn/step/eval_cam.py", line 23, in run
+    allow_pickle=True).item()
+  File "/home/ubuntu/anaconda3/lib/python3.6/site-packages/numpy/lib/npyio.py", line 428, in load
+    fid = open(os_fspath(file), "rb")
+FileNotFoundError: [Errno 2] No such file or directory: './outputs/voc12/results/distilled_more_resnet152//cam/2007_000033.npy'
+{'num_workers': 1, 'voc12_root': './datasets/voc2012/VOCdevkit/VOC2012/', 'class_label_dict_path': './data/voc12/cls_labels.npy', 'train_list': './data/voc12/train_aug.txt', 'val_list': './data/voc12/val.txt', 'infer_list': './data/voc12/train.txt', 'chainer_eval_set': 'train', 'cam_network': 'ResNet152', 'cam_network_module': 'wsl_survey.segmentation.irn.net.distilled_more.resnet_cam', 'cam_crop_size': 512, 'cam_batch_size': 16, 'cam_num_epoches': 5, 'cam_learning_rate': 0.1, 'cam_weight_decay': 0.0001, 'cam_eval_thres': 0.15, 'cam_scales': (1.0, 0.5, 1.5, 2.0), 'conf_fg_thres': 0.3, 'conf_bg_thres': 0.05, 'irn_network': 'ResNet152', 'irn_network_module': 'wsl_survey.segmentation.irn.net.distilled_more.resnet_irn', 'irn_crop_size': 512, 'irn_batch_size': 16, 'irn_num_epoches': 3, 'irn_learning_rate': 0.1, 'irn_weight_decay': 0.0001, 'beta': 10, 'exp_times': 8, 'ins_seg_bg_thres': 0.25, 'sem_seg_bg_thres': 0.25, 'log_name': './outputs/voc12/results/distilled_more_resnet152//logs', 'cam_weights_name': './outputs/voc12/results/distilled_more_resnet152//sess/cam.pth', 'irn_weights_name': './outputs/voc12/results/distilled_more_resnet152//sess/irn.pth', 'cam_out_dir': './outputs/voc12/results/distilled_more_resnet152//cam', 'ir_label_out_dir': './outputs/voc12/results/distilled_more_resnet152//irn_label', 'sem_seg_out_dir': './outputs/voc12/results/distilled_more_resnet152//sem_seg', 'ins_seg_out_dir': './outputs/voc12/results/distilled_more_resnet152//ins_seg', 'train_cam_pass': False, 'make_cam_pass': True, 'eval_cam_pass': True, 'cam_to_ir_label_pass': True, 'train_irn_pass': True, 'make_ins_seg_pass': False, 'eval_ins_seg_pass': False, 'make_sem_seg_pass': True, 'eval_sem_seg_pass': True}
+make_cam
+step.make_cam: Tue Jan 21 07:37:36 2020
+100%|##########| 10582/10582 [28:55<00:00,  6.10it/s]0 5 10 15 20
+100%|##########| 1464/1464 [00:05<00:00, 249.21it/s]]
+eval_cam
+step.eval_cam: Tue Jan 21 08:06:46 2020
+{'iou': array([0.78709621, 0.43131066, 0.31390839, 0.45055561, 0.27251151,
+       0.47660749, 0.63006455, 0.54552996, 0.37282128, 0.26859819,
+       0.50462687, 0.4746445 , 0.47556698, 0.55841168, 0.60492442,
+       0.55046528, 0.46973624, 0.52733026, 0.50423071, 0.39039903,
+       0.45820608]), 'miou': 0.47940694756295055}
+cam_to_ir_label
+step.cam_to_ir_label: Tue Jan 21 08:06:57 2020
+[
+100%|##########| 10582/10582 [4:03:48<00:00,  1.38s/it]0 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100
+]
+train_irn
+step.train_irn: Tue Jan 21 12:10:47 2020
+Epoch 1/3
+  0%|          | 0/661 [00:00<?, ?it/s]step:    0/ 1983 loss:0.6254 0.7303 4.0652 0.1565 imps:9.6 lr: 0.1000 etc:Tue Jan 21 13:05:53 2020
+  8%|7         | 50/661 [00:39<08:02,  1.27it/s]step:   50/ 1983 loss:0.6164 0.5528 4.0565 0.0144 imps:20.3 lr: 0.0977 etc:Tue Jan 21 12:36:50 2020
+ 15%|#5        | 100/661 [01:17<07:17,  1.28it/s]step:  100/ 1983 loss:0.5648 0.5087 4.0459 0.0038 imps:20.6 lr: 0.0954 etc:Tue Jan 21 12:36:31 2020
+ 23%|##2       | 150/661 [01:56<06:39,  1.28it/s]step:  150/ 1983 loss:0.5300 0.4688 4.0581 0.0026 imps:20.6 lr: 0.0932 etc:Tue Jan 21 12:36:28 2020
+ 30%|###       | 200/661 [02:34<05:53,  1.30it/s]step:  200/ 1983 loss:0.5184 0.4523 4.0532 0.0019 imps:20.6 lr: 0.0909 etc:Tue Jan 21 12:36:25 2020
+ 38%|###7      | 250/661 [03:13<05:22,  1.28it/s]step:  250/ 1983 loss:0.5300 0.4790 4.0512 0.0016 imps:20.6 lr: 0.0886 etc:Tue Jan 21 12:36:25 2020
+ 45%|####5     | 300/661 [03:52<04:37,  1.30it/s]step:  300/ 1983 loss:0.5166 0.4527 4.0512 0.0014 imps:20.7 lr: 0.0863 etc:Tue Jan 21 12:36:22 2020
+ 53%|#####2    | 350/661 [04:30<04:00,  1.30it/s]step:  350/ 1983 loss:0.5121 0.4525 4.0471 0.0012 imps:20.7 lr: 0.0840 etc:Tue Jan 21 12:36:21 2020
+ 61%|######    | 400/661 [05:09<03:22,  1.29it/s]step:  400/ 1983 loss:0.5061 0.4626 4.0563 0.0010 imps:20.7 lr: 0.0816 etc:Tue Jan 21 12:36:21 2020
+ 68%|######8   | 450/661 [05:47<02:43,  1.29it/s]step:  450/ 1983 loss:0.5166 0.4564 4.0499 0.0009 imps:20.7 lr: 0.0793 etc:Tue Jan 21 12:36:20 2020
+ 76%|#######5  | 500/661 [06:25<02:03,  1.30it/s]step:  500/ 1983 loss:0.5096 0.4483 4.0537 0.0008 imps:20.7 lr: 0.0770 etc:Tue Jan 21 12:36:18 2020
+ 83%|########3 | 550/661 [07:04<01:25,  1.30it/s]step:  550/ 1983 loss:0.5037 0.4692 4.0562 0.0008 imps:20.7 lr: 0.0747 etc:Tue Jan 21 12:36:18 2020
+ 91%|######### | 600/661 [07:42<00:46,  1.31it/s]step:  600/ 1983 loss:0.5071 0.4512 4.0555 0.0007 imps:20.7 lr: 0.0723 etc:Tue Jan 21 12:36:17 2020
+ 98%|#########8| 650/661 [08:21<00:08,  1.29it/s]step:  650/ 1983 loss:0.5135 0.4620 4.0518 0.0006 imps:20.8 lr: 0.0699 etc:Tue Jan 21 12:36:17 2020
+100%|##########| 661/661 [08:29<00:00,  1.30it/s]Epoch 2/3
+
+  6%|5         | 39/661 [00:30<07:50,  1.32it/s]step:  700/ 1983 loss:0.4989 0.4388 4.0543 0.0006 imps:20.4 lr: 0.0676 etc:Tue Jan 21 12:36:18 2020
+ 13%|#3        | 89/661 [01:08<07:10,  1.33it/s]step:  750/ 1983 loss:0.4988 0.4510 4.0480 0.0005 imps:20.7 lr: 0.0652 etc:Tue Jan 21 12:36:17 2020
+ 21%|##1       | 139/661 [01:46<06:46,  1.29it/s]step:  800/ 1983 loss:0.5075 0.4576 4.0528 0.0005 imps:20.8 lr: 0.0628 etc:Tue Jan 21 12:36:16 2020
+ 29%|##8       | 189/661 [02:25<06:04,  1.29it/s]step:  850/ 1983 loss:0.5124 0.4648 4.0482 0.0005 imps:20.8 lr: 0.0604 etc:Tue Jan 21 12:36:16 2020
+ 36%|###6      | 239/661 [03:03<05:22,  1.31it/s]step:  900/ 1983 loss:0.4982 0.4422 4.0514 0.0004 imps:20.8 lr: 0.0580 etc:Tue Jan 21 12:36:16 2020
+ 44%|####3     | 289/661 [03:42<04:45,  1.30it/s]step:  950/ 1983 loss:0.4995 0.4406 4.0553 0.0004 imps:20.8 lr: 0.0556 etc:Tue Jan 21 12:36:16 2020
+ 51%|#####1    | 339/661 [04:20<04:09,  1.29it/s]step: 1000/ 1983 loss:0.4990 0.4404 4.0561 0.0004 imps:20.8 lr: 0.0532 etc:Tue Jan 21 12:36:16 2020
+ 59%|#####8    | 389/661 [04:59<03:29,  1.30it/s]step: 1050/ 1983 loss:0.4966 0.4447 4.0571 0.0004 imps:20.8 lr: 0.0507 etc:Tue Jan 21 12:36:16 2020
+ 66%|######6   | 439/661 [05:37<02:49,  1.31it/s]step: 1100/ 1983 loss:0.5042 0.4602 4.0478 0.0003 imps:20.8 lr: 0.0483 etc:Tue Jan 21 12:36:15 2020
+ 74%|#######3  | 489/661 [06:15<02:11,  1.31it/s]step: 1150/ 1983 loss:0.5014 0.4407 4.0522 0.0003 imps:20.8 lr: 0.0458 etc:Tue Jan 21 12:36:14 2020
+ 82%|########1 | 539/661 [06:53<01:30,  1.34it/s]step: 1200/ 1983 loss:0.4968 0.4388 4.0512 0.0003 imps:20.9 lr: 0.0433 etc:Tue Jan 21 12:36:13 2020
+ 89%|########9 | 589/661 [07:31<00:55,  1.31it/s]step: 1250/ 1983 loss:0.4994 0.4542 4.0549 0.0003 imps:20.9 lr: 0.0408 etc:Tue Jan 21 12:36:13 2020
+ 97%|#########6| 639/661 [08:09<00:16,  1.30it/s]step: 1300/ 1983 loss:0.4921 0.4369 4.0535 0.0002 imps:20.9 lr: 0.0383 etc:Tue Jan 21 12:36:13 2020
+100%|##########| 661/661 [08:26<00:00,  1.30it/s]Epoch 3/3
+
+  4%|4         | 28/661 [00:22<08:09,  1.29it/s]step: 1350/ 1983 loss:0.5044 0.4483 4.0481 0.0002 imps:20.2 lr: 0.0358 etc:Tue Jan 21 12:36:14 2020
+ 12%|#1        | 78/661 [01:00<07:43,  1.26it/s]step: 1400/ 1983 loss:0.4897 0.4360 4.0510 0.0002 imps:20.5 lr: 0.0332 etc:Tue Jan 21 12:36:14 2020
+ 19%|#9        | 128/661 [01:39<06:56,  1.28it/s]step: 1450/ 1983 loss:0.4836 0.4376 4.0592 0.0002 imps:20.5 lr: 0.0307 etc:Tue Jan 21 12:36:14 2020
+ 27%|##6       | 178/661 [02:18<06:11,  1.30it/s]step: 1500/ 1983 loss:0.4899 0.4421 4.0573 0.0002 imps:20.6 lr: 0.0281 etc:Tue Jan 21 12:36:14 2020
+ 34%|###4      | 228/661 [02:56<05:38,  1.28it/s]step: 1550/ 1983 loss:0.5041 0.4570 4.0568 0.0002 imps:20.6 lr: 0.0254 etc:Tue Jan 21 12:36:14 2020
+ 42%|####2     | 278/661 [03:34<04:52,  1.31it/s]step: 1600/ 1983 loss:0.4989 0.4415 4.0518 0.0001 imps:20.7 lr: 0.0228 etc:Tue Jan 21 12:36:14 2020
+ 50%|####9     | 328/661 [04:13<04:12,  1.32it/s]step: 1650/ 1983 loss:0.4996 0.4564 4.0645 0.0001 imps:20.7 lr: 0.0201 etc:Tue Jan 21 12:36:14 2020
+ 57%|#####7    | 378/661 [04:51<03:37,  1.30it/s]step: 1700/ 1983 loss:0.4986 0.4340 4.0493 0.0001 imps:20.8 lr: 0.0173 etc:Tue Jan 21 12:36:13 2020
+ 65%|######4   | 428/661 [05:29<03:01,  1.29it/s]step: 1750/ 1983 loss:0.4930 0.4412 4.0464 0.0001 imps:20.8 lr: 0.0146 etc:Tue Jan 21 12:36:13 2020
+ 72%|#######2  | 478/661 [06:07<02:19,  1.32it/s]step: 1800/ 1983 loss:0.4942 0.4346 4.0478 0.0001 imps:20.8 lr: 0.0117 etc:Tue Jan 21 12:36:13 2020
+ 80%|#######9  | 528/661 [06:46<01:43,  1.29it/s]step: 1850/ 1983 loss:0.4911 0.4454 4.0572 0.0001 imps:20.8 lr: 0.0088 etc:Tue Jan 21 12:36:13 2020
+ 87%|########7 | 578/661 [07:24<01:03,  1.31it/s]step: 1900/ 1983 loss:0.4946 0.4297 4.0524 0.0000 imps:20.8 lr: 0.0057 etc:Tue Jan 21 12:36:12 2020
+ 95%|#########5| 628/661 [08:02<00:25,  1.30it/s]step: 1950/ 1983 loss:0.4857 0.4314 4.0499 0.0000 imps:20.8 lr: 0.0025 etc:Tue Jan 21 12:36:12 2020
+100%|##########| 661/661 [08:27<00:00,  1.30it/s]Analyzing displacements mean ...
+100%|##########| 91/91 [00:17<00:00,  5.28it/s]done.
+make_sem_seg_labels
+step.make_sem_seg_labels: Tue Jan 21 12:36:30 2020
+[
+100%|##########| 1464/1464 [57:12<00:00,  2.34s/it]0 5 10 15
+100%|##########| 1464/1464 [00:01<00:00, 841.81it/s]
+]
+eval_sem_seg
+step.eval_sem_seg: Tue Jan 21 13:33:51 2020
+0.09304951508255188 0.057493556204094465
+0.17831038437390467 0.2520993065349727
+{'iou': array([0.84945693, 0.68047894, 0.37569071, 0.65134804, 0.32680417,
+       0.57009496, 0.68240819, 0.57383398, 0.61541766, 0.30742141,
+       0.69919516, 0.43917862, 0.634236  , 0.71945623, 0.65546063,
+       0.64465021, 0.43880653, 0.68098121, 0.59273222, 0.49643388,
+       0.60717743]), 'miou': 0.5829172909778956}
+{'num_workers': 1, 'voc12_root': './datasets/voc2012/VOCdevkit/VOC2012/', 'class_label_dict_path': './data/voc12/cls_labels.npy', 'train_list': './data/voc12/val.txt', 'val_list': './data/voc12/val.txt', 'infer_list': './data/voc12/val.txt', 'chainer_eval_set': 'val', 'cam_network': 'ResNet152', 'cam_network_module': 'wsl_survey.segmentation.irn.net.distilled_more.resnet_cam', 'cam_crop_size': 512, 'cam_batch_size': 16, 'cam_num_epoches': 5, 'cam_learning_rate': 0.1, 'cam_weight_decay': 0.0001, 'cam_eval_thres': 0.15, 'cam_scales': (1.0, 0.5, 1.5, 2.0), 'conf_fg_thres': 0.3, 'conf_bg_thres': 0.05, 'irn_network': 'ResNet152', 'irn_network_module': 'wsl_survey.segmentation.irn.net.distilled_more.resnet_irn', 'irn_crop_size': 512, 'irn_batch_size': 16, 'irn_num_epoches': 3, 'irn_learning_rate': 0.1, 'irn_weight_decay': 0.0001, 'beta': 10, 'exp_times': 8, 'ins_seg_bg_thres': 0.25, 'sem_seg_bg_thres': 0.25, 'log_name': './outputs/voc12/results/distilled_more_resnet152//logs', 'cam_weights_name': './outputs/voc12/results/distilled_more_resnet152//sess/cam.pth', 'irn_weights_name': './outputs/voc12/results/distilled_more_resnet152//sess/irn.pth', 'cam_out_dir': './outputs/voc12/results/distilled_more_resnet152//cam', 'ir_label_out_dir': './outputs/voc12/results/distilled_more_resnet152//irn_label', 'sem_seg_out_dir': './outputs/voc12/results/distilled_more_resnet152//sem_seg', 'ins_seg_out_dir': './outputs/voc12/results/distilled_more_resnet152//ins_seg', 'train_cam_pass': False, 'make_cam_pass': True, 'eval_cam_pass': True, 'cam_to_ir_label_pass': True, 'train_irn_pass': False, 'make_ins_seg_pass': False, 'eval_ins_seg_pass': False, 'make_sem_seg_pass': True, 'eval_sem_seg_pass': True}
+make_cam
+step.make_cam: Tue Jan 21 13:33:59 2020
+100%|##########| 1449/1449 [03:57<00:00,  6.11it/s]0 5 10 15 20
+100%|##########| 1449/1449 [00:05<00:00, 249.20it/s]]
+eval_cam
+step.eval_cam: Tue Jan 21 13:38:10 2020
+{'iou': array([0.7866658 , 0.44478373, 0.27340915, 0.48531543, 0.30104899,
+       0.44546109, 0.6274409 , 0.54378043, 0.37566675, 0.27202144,
+       0.47131525, 0.43645023, 0.50043186, 0.52152425, 0.59447724,
+       0.5557348 , 0.443975  , 0.50631291, 0.50994206, 0.38210256,
+       0.51452866]), 'miou': 0.47582802492072485}
+eval_sem_seg
+0.09342969111584143 0.06003423590987855
+0.19303021035386242 0.24959549892495017
+{'iou': array([0.84653607, 0.65053708, 0.29147006, 0.69774162, 0.34852457,
+       0.50273782, 0.66290108, 0.58482036, 0.58387209, 0.30101997,
+       0.70133379, 0.42298302, 0.62153621, 0.67140137, 0.65745891,
+       0.63688689, 0.44199587, 0.68073714, 0.59822071, 0.49136802,
+       0.59993923]), 'miou': 0.571143899399906}
+^C
