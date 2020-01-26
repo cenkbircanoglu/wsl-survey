@@ -27,7 +27,8 @@ def decode_int_filename(int_filename):
     return s[:4] + '_' + s[4:]
 
 
-def load_image_label_from_xml(img_name, voc12_root, cat_list=CAT_LIST, cat_name_to_num=CAT_NAME_TO_NUM):
+def load_image_label_from_xml(img_name, voc12_root, cat_list=CAT_LIST,
+                              cat_name_to_num=CAT_NAME_TO_NUM):
     from xml.dom import minidom
 
     elem_list = minidom.parse(
@@ -46,9 +47,12 @@ def load_image_label_from_xml(img_name, voc12_root, cat_list=CAT_LIST, cat_name_
     return multi_cls_lab
 
 
-def load_image_label_list_from_xml(img_name_list, voc12_root, cat_list=CAT_LIST, cat_name_to_num=CAT_NAME_TO_NUM):
+def load_image_label_list_from_xml(img_name_list, voc12_root,
+                                   cat_list=CAT_LIST,
+                                   cat_name_to_num=CAT_NAME_TO_NUM):
     return [
-        load_image_label_from_xml(img_name, voc12_root, cat_list, cat_name_to_num)
+        load_image_label_from_xml(img_name, voc12_root, cat_list,
+                                  cat_name_to_num)
         for img_name in img_name_list
     ]
 
@@ -341,6 +345,36 @@ class VOC12AffinityDataset(VOC12SegmentationDataset):
 
 
 if __name__ == '__main__':
+    train_dataset = VOC12ClassificationDataset(
+        './data/voc12/cat_dog/train_aug.txt',
+        voc12_root='./datasets/voc2012/VOCdevkit/VOC2012',
+        resize_long=(320, 640),
+        hor_flip=True,
+        crop_size=512,
+        crop_method="random",
+        class_label_dict_path='./data/voc12/cat_dog/cls_labels.npy')
+
+    print(len(train_dataset))
+    for item in train_dataset:
+        print(item['name'], item['img'].shape, item['label'].shape)
+        print(item['name'], item['img'].max(), item['img'].min(),
+              item['label'])
+        break
+
+    train_dataset = VOC12ClassificationDatasetMSF(
+        './data/voc12/cat_dog/train_aug.txt',
+        voc12_root='./datasets/voc2012/VOCdevkit/VOC2012',
+        scales=(1.0, 0.5, 1.5, 2.0),
+        class_label_dict_path='./data/voc12/cat_dog/cls_labels.npy')
+
+    print(len(train_dataset))
+    for item in train_dataset:
+        print(item['name'], [img.shape for img in item['img']],
+              item['label'].shape)
+        print(item['name'], [img.max() for img in item['img']],
+              [img.min() for img in item['img']], item['label'], item['size'])
+        break
+
     train_dataset = VOC12ClassificationDataset(
         './data/test1/VOC2012/ImageSets/Segmentation/train_aug.txt',
         voc12_root='./data/test1/VOC2012',

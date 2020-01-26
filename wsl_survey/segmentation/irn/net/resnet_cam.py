@@ -12,7 +12,7 @@ class ResNet18(cam.Net):
     >>> sum(p.numel() for p in ResNet18().parameters())
     11186752
     """
-    def __init__(self, num_classes=20):
+    def __init__(self, num_classes=2):
         backbone = resnet18(pretrained=True, strides=(2, 2, 2, 1))
         conv_output = 512
         super(ResNet18, self).__init__(backbone=backbone,
@@ -40,7 +40,7 @@ class ResNet34(cam.Net):
     >>> sum(p.numel() for p in ResNet34().parameters())
     21294912
     """
-    def __init__(self, num_classes=20):
+    def __init__(self, num_classes=2):
         backbone = resnet34(pretrained=True, strides=(2, 2, 2, 1))
         conv_output = 512
         super(ResNet34, self).__init__(backbone=backbone,
@@ -68,7 +68,7 @@ class ResNet50(cam.Net):
     >>> sum(p.numel() for p in ResNet50().parameters())
     23548992
     """
-    def __init__(self, num_classes=20):
+    def __init__(self, num_classes=2):
         backbone = resnet50(pretrained=True, strides=(2, 2, 2, 1))
         conv_output = 2048
         super(ResNet50, self).__init__(backbone=backbone,
@@ -96,7 +96,7 @@ class ResNet101(cam.Net):
     >>> sum(p.numel() for p in ResNet101().parameters())
     42541120
     """
-    def __init__(self, num_classes=20):
+    def __init__(self, num_classes=2):
         backbone = resnet101(pretrained=True, strides=(2, 2, 2, 1))
         conv_output = 2048
         super(ResNet101, self).__init__(backbone=backbone,
@@ -124,7 +124,7 @@ class ResNet152(cam.Net):
     >>> sum(p.numel() for p in ResNet152().parameters())
     58184768
     """
-    def __init__(self, num_classes=20):
+    def __init__(self, num_classes=2):
         backbone = resnet152(pretrained=True, strides=(2, 2, 2, 1))
         conv_output = 2048
         super(ResNet152, self).__init__(backbone=backbone,

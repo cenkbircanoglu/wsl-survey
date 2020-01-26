@@ -117,6 +117,7 @@ def run(args):
 
             img = pack['img']
             label = pack['label']
+
             if use_gpu:
                 label = label.cuda(non_blocking=True)
 
