@@ -152,7 +152,7 @@ def run(args):
         class_label_dict_path=args.class_label_dict_path)
 
     model = getattr(importlib.import_module(args.cam_network_module),
-                    args.cam_network + 'CAM')()
+                    args.cam_network + 'CAM')(num_classes=dataset.label_list[0].shape[0])
     if use_gpu:
         model.load_state_dict(torch.load(args.cam_weights_name + '.pth'),
                               strict=True)
