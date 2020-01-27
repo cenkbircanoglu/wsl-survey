@@ -1,6 +1,7 @@
 import importlib
 
 import torch
+from torch import optim
 from torch.backends import cudnn
 from tqdm import tqdm
 
@@ -8,7 +9,7 @@ cudnn.enabled = True
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
 from wsl_survey.segmentation.irn.voc12 import dataloader
-from wsl_survey.segmentation.irn.misc import pyutils, torchutils
+from wsl_survey.segmentation.irn.misc import pyutils
 
 use_gpu = torch.cuda.is_available()
 
@@ -82,22 +83,11 @@ def run(args):
         num_classes=train_dataset.label_list[0].shape[0])
 
     param_groups = model.trainable_parameters()
-    print(max_step, args.cam_weight_decay,args.cam_learning_rate )
-    optimizer = torchutils.PolyOptimizer([
-        {
-            'params': param_groups[0],
-            'lr': args.cam_learning_rate,
-            'weight_decay': args.cam_weight_decay
-        },
-        {
-            'params': param_groups[1],
-            'lr': 10 * args.cam_learning_rate,
-            'weight_decay': args.cam_weight_decay
-        },
-    ],
-        lr=args.cam_learning_rate,
-        weight_decay=args.cam_weight_decay,
-        max_step=max_step)
+    print(max_step, args.cam_weight_decay, args.cam_learning_rate)
+    optimizer = torch.optim.AdamW([
+        {'params': param_groups[0]},
+        {'params': param_groups[1]}
+    ])
 
     if use_gpu:
         model = torch.nn.DataParallel(model).cuda()
@@ -122,6 +112,11 @@ def run(args):
                 label = label.cuda(non_blocking=True)
             x = model(img)
 
+            correct = (torch.argmax(x, dim=1).numpy() == torch.argmax(label,
+                                                                      dim=1).numpy().astype(
+                int)).sum()
+            acc = 100 * correct / label.shape[0]
+            print()
             loss = F.multilabel_soft_margin_loss(x, label)
 
             avg_meter.add({'loss1': loss.item()})
@@ -139,6 +134,8 @@ def run(args):
                                      timer.get_stage_elapsed()),
                       'lr: %.4f' % (optimizer.param_groups[0]['lr']),
                       'etc:%s' % (timer.str_estimated_complete()),
+                      'acc:%s' % acc,
+
                       flush=True)
 
         else:
