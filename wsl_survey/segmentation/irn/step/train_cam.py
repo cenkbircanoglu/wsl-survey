@@ -125,10 +125,8 @@ def run(args):
             optimizer.step()
 
             if (step - 1) % 100 == 0:
-                timer.update_progress(optimizer.global_step / max_step)
 
-                print('step:%5d/%5d' % (optimizer.global_step - 1, max_step),
-                      'loss:%.4f' % (avg_meter.pop('loss1')),
+                print('loss:%.4f' % (avg_meter.pop('loss1')),
                       'imps:%.1f' % ((step + 1) * args.cam_batch_size /
                                      timer.get_stage_elapsed()),
                       'lr: %.4f' % (optimizer.param_groups[0]['lr']),
