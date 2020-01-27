@@ -346,84 +346,83 @@ class VOC12AffinityDataset(VOC12SegmentationDataset):
 
 if __name__ == '__main__':
     train_dataset = VOC12ClassificationDataset(
-        './data/voc12/cat_dog/train_aug.txt',
+        './data/voc12/subset1/val.txt',
         voc12_root='./datasets/voc2012/VOCdevkit/VOC2012',
         resize_long=(320, 640),
         hor_flip=True,
         crop_size=512,
         crop_method="random",
-        class_label_dict_path='./data/voc12/cat_dog/cls_labels.npy')
+        class_label_dict_path='./data/voc12/subset1/cls_labels.npy')
 
     print(len(train_dataset))
     for item in train_dataset:
         print(item['name'], item['img'].shape, item['label'].shape)
         print(item['name'], item['img'].max(), item['img'].min(),
               item['label'])
-        break
-
-    train_dataset = VOC12ClassificationDatasetMSF(
-        './data/voc12/cat_dog/train_aug.txt',
-        voc12_root='./datasets/voc2012/VOCdevkit/VOC2012',
-        scales=(1.0, 0.5, 1.5, 2.0),
-        class_label_dict_path='./data/voc12/cat_dog/cls_labels.npy')
-
-    print(len(train_dataset))
-    for item in train_dataset:
-        print(item['name'], [img.shape for img in item['img']],
-              item['label'].shape)
-        print(item['name'], [img.max() for img in item['img']],
-              [img.min() for img in item['img']], item['label'], item['size'])
-        break
-
-    train_dataset = VOC12ClassificationDataset(
-        './data/test1/VOC2012/ImageSets/Segmentation/train_aug.txt',
-        voc12_root='./data/test1/VOC2012',
-        resize_long=(320, 640),
-        hor_flip=True,
-        crop_size=512,
-        crop_method="random",
-        class_label_dict_path='./data/voc12/cls_labels.npy')
-
-    print(len(train_dataset))
-    for item in train_dataset:
-        print(item['name'], item['img'].shape, item['label'].shape)
-        print(item['name'], item['img'].max(), item['img'].min(),
-              item['label'])
-        break
-
-    train_dataset = VOC12ClassificationDatasetMSF(
-        './data/test1/VOC2012/ImageSets/Segmentation/train_aug.txt',
-        voc12_root='./data/test1/VOC2012',
-        scales=(1.0, 0.5, 1.5, 2.0),
-        class_label_dict_path='./data/voc12/cls_labels.npy')
-
-    print(len(train_dataset))
-    for item in train_dataset:
-        print(item['name'], [img.shape for img in item['img']],
-              item['label'].shape)
-        print(item['name'], [img.max() for img in item['img']],
-              [img.min() for img in item['img']], item['label'], item['size'])
-        break
-
-    path_index = indexing.PathIndex(radius=10,
-                                    default_size=(512 // 4,
-                                                  512 // 4))
-
-    train_dataset = VOC12AffinityDataset(
-        './data/test1/VOC2012/ImageSets/Segmentation/train_aug.txt',
-        voc12_root='./data/test1/VOC2012',
-        label_dir='./outputs/test1/results/resnet18/irn_label',
-        indices_from=path_index.src_indices,
-        indices_to=path_index.dst_indices,
-        hor_flip=True,
-        crop_size=512,
-        crop_method="random",
-        rescale=(0.5, 1.5))
-
-    print(len(train_dataset))
-    for item in train_dataset:
-        print(item['name'], item['img'].shape, item['label'].shape)
-        print(item['name'], item['img'].max(), item['img'].min(),
-              item['label'].shape, item['aff_bg_pos_label'].shape,
-              item['aff_fg_pos_label'].shape, item['aff_neg_label'].shape)
-        break
+    #
+    # train_dataset = VOC12ClassificationDatasetMSF(
+    #     './data/voc12/cat_dog/train_aug.txt',
+    #     voc12_root='./datasets/voc2012/VOCdevkit/VOC2012',
+    #     scales=(1.0, 0.5, 1.5, 2.0),
+    #     class_label_dict_path='./data/voc12/cat_dog/cls_labels.npy')
+    #
+    # print(len(train_dataset))
+    # for item in train_dataset:
+    #     print(item['name'], [img.shape for img in item['img']],
+    #           item['label'].shape)
+    #     print(item['name'], [img.max() for img in item['img']],
+    #           [img.min() for img in item['img']], item['label'], item['size'])
+    #     break
+    #
+    # train_dataset = VOC12ClassificationDataset(
+    #     './data/test1/VOC2012/ImageSets/Segmentation/train_aug.txt',
+    #     voc12_root='./data/test1/VOC2012',
+    #     resize_long=(320, 640),
+    #     hor_flip=True,
+    #     crop_size=512,
+    #     crop_method="random",
+    #     class_label_dict_path='./data/voc12/cls_labels.npy')
+    #
+    # print(len(train_dataset))
+    # for item in train_dataset:
+    #     print(item['name'], item['img'].shape, item['label'].shape)
+    #     print(item['name'], item['img'].max(), item['img'].min(),
+    #           item['label'])
+    #     break
+    #
+    # train_dataset = VOC12ClassificationDatasetMSF(
+    #     './data/test1/VOC2012/ImageSets/Segmentation/train_aug.txt',
+    #     voc12_root='./data/test1/VOC2012',
+    #     scales=(1.0, 0.5, 1.5, 2.0),
+    #     class_label_dict_path='./data/voc12/cls_labels.npy')
+    #
+    # print(len(train_dataset))
+    # for item in train_dataset:
+    #     print(item['name'], [img.shape for img in item['img']],
+    #           item['label'].shape)
+    #     print(item['name'], [img.max() for img in item['img']],
+    #           [img.min() for img in item['img']], item['label'], item['size'])
+    #     break
+    #
+    # path_index = indexing.PathIndex(radius=10,
+    #                                 default_size=(512 // 4,
+    #                                               512 // 4))
+    #
+    # train_dataset = VOC12AffinityDataset(
+    #     './data/test1/VOC2012/ImageSets/Segmentation/train_aug.txt',
+    #     voc12_root='./data/test1/VOC2012',
+    #     label_dir='./outputs/test1/results/resnet18/irn_label',
+    #     indices_from=path_index.src_indices,
+    #     indices_to=path_index.dst_indices,
+    #     hor_flip=True,
+    #     crop_size=512,
+    #     crop_method="random",
+    #     rescale=(0.5, 1.5))
+    #
+    # print(len(train_dataset))
+    # for item in train_dataset:
+    #     print(item['name'], item['img'].shape, item['label'].shape)
+    #     print(item['name'], item['img'].max(), item['img'].min(),
+    #           item['label'].shape, item['aff_bg_pos_label'].shape,
+    #           item['aff_fg_pos_label'].shape, item['aff_neg_label'].shape)
+    #     break

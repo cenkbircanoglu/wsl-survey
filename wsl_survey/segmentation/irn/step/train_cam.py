@@ -86,13 +86,13 @@ def run(args):
     optimizer = torchutils.PolyOptimizer([
         {
             'params': param_groups[0],
-            'lr': args.cam_learning_rate,
-            'weight_decay': args.cam_weight_decay
+            'lr': args.cam_learning_rate /2,
+            'weight_decay': args.cam_weight_decay /2
         },
         {
             'params': param_groups[1],
-            'lr': 10 * args.cam_learning_rate,
-            'weight_decay': args.cam_weight_decay
+            'lr': args.cam_learning_rate /2,
+            'weight_decay': args.cam_weight_decay /2
         },
     ],
         lr=args.cam_learning_rate,
