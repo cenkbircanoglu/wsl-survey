@@ -121,26 +121,26 @@ def run(args):
 
             if use_gpu:
                 label = label.cuda(non_blocking=True)
+            if np.any(label):
+                x = model(img)
+                loss = F.multilabel_soft_margin_loss(x, label)
 
-            x = model(img)
-            loss = F.multilabel_soft_margin_loss(x, label)
+                avg_meter.add({'loss1': loss.item()})
 
-            avg_meter.add({'loss1': loss.item()})
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
 
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
+                if (optimizer.global_step - 1) % 100 == 0:
+                    timer.update_progress(optimizer.global_step / max_step)
 
-            if (optimizer.global_step - 1) % 100 == 0:
-                timer.update_progress(optimizer.global_step / max_step)
-
-                print('step:%5d/%5d' % (optimizer.global_step - 1, max_step),
-                      'loss:%.4f' % (avg_meter.pop('loss1')),
-                      'imps:%.1f' % ((step + 1) * args.cam_batch_size /
-                                     timer.get_stage_elapsed()),
-                      'lr: %.4f' % (optimizer.param_groups[0]['lr']),
-                      'etc:%s' % (timer.str_estimated_complete()),
-                      flush=True)
+                    print('step:%5d/%5d' % (optimizer.global_step - 1, max_step),
+                          'loss:%.4f' % (avg_meter.pop('loss1')),
+                          'imps:%.1f' % ((step + 1) * args.cam_batch_size /
+                                         timer.get_stage_elapsed()),
+                          'lr: %.4f' % (optimizer.param_groups[0]['lr']),
+                          'etc:%s' % (timer.str_estimated_complete()),
+                          flush=True)
 
         else:
             validate(model, val_data_loader)
