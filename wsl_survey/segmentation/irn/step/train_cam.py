@@ -62,7 +62,7 @@ def run(args):
                                    num_workers=args.num_workers,
                                    pin_memory=True,
                                    drop_last=True)
-    max_step = (len(train_dataset) * 10 //
+    max_step = (len(train_dataset) //
                 args.cam_batch_size) * args.cam_num_epoches
 
     val_dataset = dataloader.VOC12ClassificationDataset(
@@ -82,6 +82,7 @@ def run(args):
         num_classes=train_dataset.label_list[0].shape[0])
 
     param_groups = model.trainable_parameters()
+    print(max_step, args.cam_weight_decay,args.cam_learning_rate )
     optimizer = torchutils.PolyOptimizer([
         {
             'params': param_groups[0],
@@ -120,6 +121,7 @@ def run(args):
             if use_gpu:
                 label = label.cuda(non_blocking=True)
             x = model(img)
+
             loss = F.multilabel_soft_margin_loss(x, label)
 
             avg_meter.add({'loss1': loss.item()})
