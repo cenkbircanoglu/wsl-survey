@@ -32,7 +32,7 @@ def run(args):
             preds.append(pred)
             labels.append(label)
         except Exception as e:
-            print(e)
+            pass
     confusion = calc_semantic_segmentation_confusion(preds, labels)
     gtj = confusion.sum(axis=1)
     resj = confusion.sum(axis=0)

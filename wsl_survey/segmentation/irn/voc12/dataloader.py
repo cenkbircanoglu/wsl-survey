@@ -346,7 +346,7 @@ class VOC12AffinityDataset(VOC12SegmentationDataset):
 
 if __name__ == '__main__':
     train_dataset = VOC12ClassificationDataset(
-        './data/voc12/subset1/val.txt',
+        './data/voc12/subset1/train_aug.txt',
         voc12_root='./datasets/voc2012/VOCdevkit/VOC2012',
         resize_long=(320, 640),
         hor_flip=True,
@@ -356,9 +356,10 @@ if __name__ == '__main__':
 
     print(len(train_dataset))
     for item in train_dataset:
-        print(item['name'], item['img'].shape, item['label'].shape)
-        print(item['name'], item['img'].max(), item['img'].min(),
-              item['label'])
+        print(item['label'])
+        #print(item['name'], item['img'].shape, item['label'].shape)
+        #print(item['name'], item['img'].max(), item['img'].min(),
+        #      item['label'])
     #
     # train_dataset = VOC12ClassificationDatasetMSF(
     #     './data/voc12/cat_dog/train_aug.txt',

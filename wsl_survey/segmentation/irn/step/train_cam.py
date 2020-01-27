@@ -7,7 +7,6 @@ from tqdm import tqdm
 cudnn.enabled = True
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
-import numpy as np
 from wsl_survey.segmentation.irn.voc12 import dataloader
 from wsl_survey.segmentation.irn.misc import pyutils, torchutils
 
@@ -86,13 +85,13 @@ def run(args):
     optimizer = torchutils.PolyOptimizer([
         {
             'params': param_groups[0],
-            'lr': args.cam_learning_rate /2,
-            'weight_decay': args.cam_weight_decay /2
+            'lr': args.cam_learning_rate,
+            'weight_decay': args.cam_weight_decay
         },
         {
             'params': param_groups[1],
-            'lr': args.cam_learning_rate /2,
-            'weight_decay': args.cam_weight_decay /2
+            'lr': 10 * args.cam_learning_rate,
+            'weight_decay': args.cam_weight_decay
         },
     ],
         lr=args.cam_learning_rate,
