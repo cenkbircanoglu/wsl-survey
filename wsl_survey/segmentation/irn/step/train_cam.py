@@ -124,7 +124,7 @@ def run(args):
             loss.backward()
             optimizer.step()
 
-            if (optimizer.global_step - 1) % 100 == 0:
+            if (step - 1) % 100 == 0:
                 timer.update_progress(optimizer.global_step / max_step)
 
                 print('step:%5d/%5d' % (optimizer.global_step - 1, max_step),
