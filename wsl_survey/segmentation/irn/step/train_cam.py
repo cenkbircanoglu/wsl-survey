@@ -30,7 +30,7 @@ def validate(model, data_loader):
                 label = label.cuda(non_blocking=True)
             x = model(img)
             loss1 = F.multilabel_soft_margin_loss(x, label)
-
+            print(x, label)
             val_loss_meter.add({'loss1': loss1.item()})
 
     model.train()
@@ -78,7 +78,7 @@ def run(args):
                                  num_workers=args.num_workers,
                                  pin_memory=True,
                                  drop_last=True)
-    print(train_dataset.label_list[0].shape[0])
+
     model = getattr(importlib.import_module(args.cam_network_module),
                     args.cam_network)(
         num_classes=train_dataset.label_list[0].shape[0])
