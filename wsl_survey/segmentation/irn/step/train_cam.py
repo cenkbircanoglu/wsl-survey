@@ -1,7 +1,6 @@
 import importlib
 
 import torch
-from torch import optim
 from torch.backends import cudnn
 from tqdm import tqdm
 
@@ -83,7 +82,6 @@ def run(args):
         num_classes=train_dataset.label_list[0].shape[0])
 
     param_groups = model.trainable_parameters()
-    print(max_step, args.cam_weight_decay, args.cam_learning_rate)
     optimizer = torch.optim.AdamW([
         {'params': param_groups[0]},
         {'params': param_groups[1]}
@@ -112,9 +110,10 @@ def run(args):
                 label = label.cuda(non_blocking=True)
             x = model(img)
 
-            correct = (torch.argmax(x, dim=1).numpy() == torch.argmax(label,
-                                                                      dim=1).numpy().astype(
-                int)).sum()
+            correct = (
+                    torch.argmax(x, dim=1).cpu().numpy() == torch.argmax(label,
+                                                                         dim=1).cpu().numpy().astype(
+                    int)).sum()
             acc = 100 * correct / label.shape[0]
             print()
             loss = F.multilabel_soft_margin_loss(x, label)
