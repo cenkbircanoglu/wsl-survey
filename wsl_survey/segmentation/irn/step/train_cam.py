@@ -115,7 +115,6 @@ def run(args):
                                                                          dim=1).cpu().numpy().astype(
                     int)).sum()
             acc = 100 * correct / label.shape[0]
-            print()
             loss = F.multilabel_soft_margin_loss(x, label)
 
             avg_meter.add({'loss1': loss.item()})
@@ -130,9 +129,7 @@ def run(args):
                       'imps:%.1f' % ((step + 1) * args.cam_batch_size /
                                      timer.get_stage_elapsed()),
                       'lr: %.4f' % (optimizer.param_groups[0]['lr']),
-                      'etc:%s' % (timer.str_estimated_complete()),
                       'acc:%s' % acc,
-
                       flush=True)
 
         else:
