@@ -7,7 +7,7 @@ from tqdm import tqdm
 cudnn.enabled = True
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
-
+import numpy as np
 from wsl_survey.segmentation.irn.voc12 import dataloader
 from wsl_survey.segmentation.irn.misc import pyutils, torchutils
 
@@ -26,12 +26,12 @@ def validate(model, data_loader):
             img = pack['img']
 
             label = pack['label']
-            if use_gpu:
-                label = label.cuda(non_blocking=True)
-            x = model(img)
-            loss1 = F.multilabel_soft_margin_loss(x, label)
-            print(x, label)
-            val_loss_meter.add({'loss1': loss1.item()})
+            if np.any(label):
+                if use_gpu:
+                    label = label.cuda(non_blocking=True)
+                x = model(img)
+                loss1 = F.multilabel_soft_margin_loss(x, label)
+                val_loss_meter.add({'loss1': loss1.item()})
 
     model.train()
 
