@@ -887,7 +887,7 @@ eval_sem_seg
 
 
 
-
+distilled
 cat dog
 {'iou': array([0.25172996,        nan,        nan,        nan, 0.        ,
        0.        ,        nan, 0.        , 0.33058889, 0.        ,
@@ -903,3 +903,7 @@ dog train
               nan, 0.        , 0.23312177, 0.        ,        nan,
        0.        , 0.        , 0.        , 0.        , 0.27774402,
        0.        ]), 'miou': 0.03653960607076884}
+
+
+original
+cat dog

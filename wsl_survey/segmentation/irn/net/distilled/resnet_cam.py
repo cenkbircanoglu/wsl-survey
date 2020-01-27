@@ -13,7 +13,7 @@ class ResNet50(cam.Net):
     23528512
     """
 
-    def __init__(self, num_classes=2):
+    def __init__(self, num_classes=20):
         backbone = resnet50(pretrained=True, strides=(2, 2, 2, 1))
         conv_output = 1024
         super(ResNet50, self).__init__(backbone=backbone,
@@ -42,7 +42,7 @@ class ResNet101(cam.Net):
     42520640
     """
 
-    def __init__(self, num_classes=2):
+    def __init__(self, num_classes=20):
         backbone = resnet101(pretrained=True, strides=(2, 2, 2, 1))
         conv_output = 1024
         super(ResNet101, self).__init__(backbone=backbone,
@@ -71,7 +71,7 @@ class ResNet152(cam.Net):
     58164288
     """
 
-    def __init__(self, num_classes=2):
+    def __init__(self, num_classes=20):
         backbone = resnet152(pretrained=True, strides=(2, 2, 2, 1))
         conv_output = 1024
         super(ResNet152, self).__init__(backbone=backbone,

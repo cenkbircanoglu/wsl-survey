@@ -25,28 +25,47 @@ if __name__ == '__main__':
         "--test_list",
         default='./data/test1/VOC2012/ImageSets/Segmentation/test.txt',
         type=str)
-    parser.add_argument(
-        "--out",
-        default='./data/voc12/dog_train/',
-        type=str)
+    parser.add_argument("--out", default='./data/voc12/', type=str)
+    parser.add_argument("--subset", default=None, type=str)
     parser.add_argument(
         "--voc12_root",
         default="./datasets/voc2012/VOCdevkit/VOC2012",
         type=str)
     args = parser.parse_args()
-
+    out_dir = os.path.join(args.out, args.subset)
+    os.makedirs(out_dir, exist_ok=True)
     train_aug_list = dataloader.load_img_name_list(args.train_aug_list)
     train_list = dataloader.load_img_name_list(args.train_list)
     val_list = dataloader.load_img_name_list(args.val_list)
 
-    train_val_name_list = np.concatenate([train_aug_list, train_list, val_list], axis=0)
+    train_val_name_list = np.concatenate(
+        [train_aug_list, train_list, val_list], axis=0)
     train_val_name_list = np.unique(train_val_name_list)
-    cat_list = ['dog', 'train']
-    cat_name_to_num = dict(zip(cat_list, range(len(cat_list))))
-    label_list = dataloader.load_image_label_list_from_xml(
-        train_val_name_list, args.voc12_root, cat_list=cat_list, cat_name_to_num=cat_name_to_num)
+    cat_list = [
+        'aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus', 'car', 'cat',
+        'chair', 'cow', 'diningtable', 'dog', 'horse', 'motorbike', 'person',
+        'pottedplant', 'sheep', 'sofa', 'train', 'tvmonitor'
+    ]
 
-    total_label = np.zeros(2)
+    subsets = {
+        'subset1': ['cat', 'dog'],
+        'subset2': ['bus', 'car'],
+        'subset3': ['cat', 'dog', 'horse'],
+        'subset4': ['bus', 'car', 'train'],
+        'subset5': ['cat', 'dog', 'bus'],
+        'subset6': ['cat', 'dog', 'horse', 'bus'],
+        'subset7': ['cat', 'bus', 'car', 'train'],
+        'subset8': ['cat', 'dog', 'horse', 'bus', 'car'],
+        'subset9': ['cat', 'dog', 'bus', 'car', 'train'],
+        'subset10': ['cat', 'dog', 'horse', 'bus', 'car', 'train']
+    }
+    if subsets:
+        cat_list = subsets.get(args.subset, cat_list)
+    print(cat_list)
+    label_list = dataloader.load_image_label_list_from_xml(
+        train_val_name_list, args.voc12_root, cat_list=cat_list)
+
+    total_label = np.zeros(20)
 
     d = dict()
     out_train_aug = []
@@ -64,13 +83,13 @@ if __name__ == '__main__':
                 out_val.append(decode_int_filename(img_name))
 
     print(total_label)
-    np.save(os.path.join(args.out, 'cls_labels.npy'), d)
-    with open(os.path.join(args.out, 'train_aug.txt'), mode='w')as f:
+    np.save(os.path.join(out_dir, 'cls_labels.npy'), d)
+    with open(os.path.join(out_dir, 'train_aug.txt'), mode='w')as f:
         for i in out_train_aug:
             f.write(i + '\n')
-    with open(os.path.join(args.out, 'train.txt'), mode='w')as f:
+    with open(os.path.join(out_dir, 'train.txt'), mode='w')as f:
         for i in out_train:
             f.write(i + '\n')
-    with open(os.path.join(args.out, 'val.txt'), mode='w')as f:
+    with open(os.path.join(out_dir, 'val.txt'), mode='w')as f:
         for i in out_val:
             f.write(i + '\n')

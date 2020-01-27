@@ -5,7 +5,7 @@ from wsl_survey.segmentation.irn.misc import torchutils
 
 
 class Net(nn.Module):
-    def __init__(self, backbone=None, num_classes=2, conv_output=2048):
+    def __init__(self, backbone=None, num_classes=20, conv_output=2048):
         super(Net, self).__init__()
 
         self.backbone_model = backbone

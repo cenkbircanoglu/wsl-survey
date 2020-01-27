@@ -36,7 +36,7 @@ def load_image_label_from_xml(img_name, voc12_root, cat_list=CAT_LIST,
                      decode_int_filename(img_name) +
                      '.xml')).getElementsByTagName('name')
 
-    multi_cls_lab = np.zeros((len(cat_list)), np.float32)
+    multi_cls_lab = np.zeros((len(CAT_LIST)), np.float32)
 
     for elem in elem_list:
         cat_name = elem.firstChild.data
