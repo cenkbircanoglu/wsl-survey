@@ -26,7 +26,7 @@ if __name__ == '__main__':
         default='./data/test1/VOC2012/ImageSets/Segmentation/test.txt',
         type=str)
     parser.add_argument("--out", default='./data/voc12/', type=str)
-    parser.add_argument("--subset", default=None, type=str)
+    parser.add_argument("--subset", default='subset1', type=str)
     parser.add_argument(
         "--voc12_root",
         default="./datasets/voc2012/VOCdevkit/VOC2012",
@@ -74,8 +74,15 @@ if __name__ == '__main__':
     out_train_aug = []
     out_train = []
     out_val = []
+    all_cnt = 0
+    total_cnt = 0
     for img_name, label in zip(train_val_name_list, label_list):
+        if np.sum(label) >1:
+            total_cnt += 1
+            all_cnt += 1
+            continue
         if np.any(label):
+            total_cnt += 1
             d[img_name] = label
             total_label += label
             if img_name in train_aug_list:
@@ -96,3 +103,4 @@ if __name__ == '__main__':
     with open(os.path.join(out_dir, 'val.txt'), mode='w')as f:
         for i in out_val:
             f.write(i + '\n')
+    print(all_cnt / total_cnt)

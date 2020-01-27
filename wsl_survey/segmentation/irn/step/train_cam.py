@@ -111,10 +111,9 @@ def run(args):
                 label = label.cuda(non_blocking=True)
             x = model(img)
 
-            correct += (
-                torch.argmax(x, dim=1).cpu().numpy() == torch.argmax(label,
-                                                                     dim=1).cpu().numpy().astype(
-                int)).sum()
+            _, predicted = torch.max(x.data, 1)
+            _, actual = torch.max(label.data, 1)
+            correct += (predicted == actual).sum()
             total += label.shape[0]
             loss = F.multilabel_soft_margin_loss(x, label)
 
@@ -125,11 +124,12 @@ def run(args):
             optimizer.step()
 
             if (step - 1) % 100 == 0:
+                acc = 100 * correct / total
                 print('loss:%.4f' % (avg_meter.pop('loss1')),
                       'imps:%.1f' % ((step + 1) * args.cam_batch_size /
                                      timer.get_stage_elapsed()),
                       'lr: %.4f' % (optimizer.param_groups[0]['lr']),
-                      'acc:%s' % 100 * correct / label.shape[0],
+                      'acc:%s' % acc,
                       flush=True)
 
         else:
