@@ -50,9 +50,6 @@ def run(args):
     assert args.cam_num_epoches is not None
     assert args.cam_network_module is not None
 
-    model = getattr(importlib.import_module(args.cam_network_module),
-                    args.cam_network)()
-
     train_dataset = dataloader.VOC12ClassificationDataset(
         args.train_list,
         voc12_root=args.voc12_root,
@@ -67,7 +64,7 @@ def run(args):
                                    num_workers=args.num_workers,
                                    pin_memory=True,
                                    drop_last=True)
-    max_step = (len(train_dataset) //
+    max_step = (len(train_dataset) * 10 //
                 args.cam_batch_size) * args.cam_num_epoches
 
     val_dataset = dataloader.VOC12ClassificationDataset(
@@ -81,6 +78,10 @@ def run(args):
                                  num_workers=args.num_workers,
                                  pin_memory=True,
                                  drop_last=True)
+    print(train_dataset.label_list[0].shape[0])
+    model = getattr(importlib.import_module(args.cam_network_module),
+                    args.cam_network)(
+        num_classes=train_dataset.label_list[0].shape[0])
 
     param_groups = model.trainable_parameters()
     optimizer = torchutils.PolyOptimizer([
@@ -95,9 +96,9 @@ def run(args):
             'weight_decay': args.cam_weight_decay
         },
     ],
-                                         lr=args.cam_learning_rate,
-                                         weight_decay=args.cam_weight_decay,
-                                         max_step=max_step)
+        lr=args.cam_learning_rate,
+        weight_decay=args.cam_weight_decay,
+        max_step=max_step)
 
     if use_gpu:
         model = torch.nn.DataParallel(model).cuda()
@@ -113,7 +114,7 @@ def run(args):
 
         for step, pack in tqdm(enumerate(train_data_loader),
                                total=len(train_dataset) //
-                               args.cam_batch_size):
+                                     args.cam_batch_size):
 
             img = pack['img']
             label = pack['label']

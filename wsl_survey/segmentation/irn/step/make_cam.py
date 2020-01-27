@@ -145,6 +145,12 @@ def run(args):
     assert args.cam_out_dir is not None
     assert args.cam_network_module is not None
 
+    dataset = dataloader.VOC12ClassificationDatasetMSF(
+        args.train_list,
+        voc12_root=args.voc12_root,
+        scales=args.cam_scales,
+        class_label_dict_path=args.class_label_dict_path)
+
     model = getattr(importlib.import_module(args.cam_network_module),
                     args.cam_network + 'CAM')()
     if use_gpu:
@@ -155,11 +161,7 @@ def run(args):
                                          map_location=torch.device('cpu')),
                               strict=True)
     model.eval()
-    dataset = dataloader.VOC12ClassificationDatasetMSF(
-        args.train_list,
-        voc12_root=args.voc12_root,
-        scales=args.cam_scales,
-        class_label_dict_path=args.class_label_dict_path)
+
     print('[ ', end='')
     if use_gpu:
         n_gpus = torch.cuda.device_count()
