@@ -110,7 +110,8 @@ def run(args):
     for ep in range(args.cam_num_epoches):
 
         print('Epoch %d/%d' % (ep + 1, args.cam_num_epoches))
-
+        correct = 0.
+        total = 0.
         for step, pack in tqdm(enumerate(train_data_loader),
                                total=len(train_dataset) //
                                args.cam_batch_size):
@@ -121,6 +122,12 @@ def run(args):
                 label = label.cuda(non_blocking=True)
 
             x = model(img)
+
+            _, predicted = torch.max(x.data, 1)
+            _, actual = torch.max(label.data, 1)
+            correct += (predicted == actual).sum()
+            total += label.shape[0]
+
             loss = F.multilabel_soft_margin_loss(x, label)
 
             avg_meter.add({'loss1': loss.item()})
@@ -130,6 +137,7 @@ def run(args):
             optimizer.step()
 
             if (optimizer.global_step - 1) % 100 == 0:
+                acc = 100 * correct / total
                 timer.update_progress(optimizer.global_step / max_step)
 
                 print('step:%5d/%5d' % (optimizer.global_step - 1, max_step),
@@ -138,6 +146,7 @@ def run(args):
                                      timer.get_stage_elapsed()),
                       'lr: %.4f' % (optimizer.param_groups[0]['lr']),
                       'etc:%s' % (timer.str_estimated_complete()),
+                      'acc:%s' % acc,
                       flush=True)
 
         else:
