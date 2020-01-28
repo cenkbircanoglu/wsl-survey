@@ -5,7 +5,7 @@ export NETWORK=ResNet152
 export ROOT_FOLDER=./datasets/voc2012/VOCdevkit/VOC2012/
 
 for subset in subset1 subset2 subset3 subset4 subset5 subset6 subset7 subset8 subset9 subset19; do
-    export OUTPUT_FOLDER=./outputs/voc12/results/${subset}_$MODEL
+    export OUTPUT_FOLDER=./outputs2/voc12/results/${subset}_$MODEL
 
     python3 wsl_survey/segmentation/irn/main.py \
         --voc12_root=$ROOT_FOLDER \
@@ -42,7 +42,7 @@ export NETWORK=ResNet152
 export ROOT_FOLDER=./datasets/voc2012/VOCdevkit/VOC2012/
 
 for subset in subset1 subset2 subset3 subset4 subset5 subset6 subset7 subset8 subset9 subset19; do
-    export OUTPUT_FOLDER=./outputs/voc12/results/${subset}_$MODEL
+    export OUTPUT_FOLDER=./outputs2/voc12/results/${subset}_$MODEL
 
     python3 wsl_survey/segmentation/irn/main.py \
         --voc12_root=$ROOT_FOLDER \
