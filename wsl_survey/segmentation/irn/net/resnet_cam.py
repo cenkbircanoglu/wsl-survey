@@ -12,6 +12,7 @@ class ResNet18(cam.Net):
     >>> sum(p.numel() for p in ResNet18().parameters())
     11186752
     """
+
     def __init__(self, num_classes=20):
         backbone = resnet18(pretrained=True, strides=(2, 2, 2, 1))
         conv_output = 512
@@ -40,6 +41,7 @@ class ResNet34(cam.Net):
     >>> sum(p.numel() for p in ResNet34().parameters())
     21294912
     """
+
     def __init__(self, num_classes=20):
         backbone = resnet34(pretrained=True, strides=(2, 2, 2, 1))
         conv_output = 512
@@ -68,6 +70,7 @@ class ResNet50(cam.Net):
     >>> sum(p.numel() for p in ResNet50().parameters())
     23548992
     """
+
     def __init__(self, num_classes=20):
         backbone = resnet50(pretrained=True, strides=(2, 2, 2, 1))
         conv_output = 2048
@@ -96,6 +99,7 @@ class ResNet101(cam.Net):
     >>> sum(p.numel() for p in ResNet101().parameters())
     42541120
     """
+
     def __init__(self, num_classes=20):
         backbone = resnet101(pretrained=True, strides=(2, 2, 2, 1))
         conv_output = 2048
@@ -124,6 +128,7 @@ class ResNet152(cam.Net):
     >>> sum(p.numel() for p in ResNet152().parameters())
     58184768
     """
+
     def __init__(self, num_classes=20):
         backbone = resnet152(pretrained=True, strides=(2, 2, 2, 1))
         conv_output = 2048
@@ -139,6 +144,35 @@ class ResNet152CAM(cam.CAM, ResNet152):
     >>> y = ResNet152CAM()(x)
     >>> assert y.shape == torch.Size([20, 32, 32])
     >>> sum(p.numel() for p in ResNet152CAM().parameters())
+    58184768
+    """
+
+
+class DeepLabV3(cam.Net):
+    """
+    >>> import torch
+    >>> x = torch.randn((3, 3, 512, 512))
+    >>> y = DeepLabV3()(x)
+    >>> assert y.shape == torch.Size([3, 20])
+    >>> sum(p.numel() for p in DeepLabV3().parameters())
+    58184768
+    """
+
+    def __init__(self, num_classes=20):
+        backbone = resnet152(pretrained=True, strides=(2, 2, 2, 1))
+        conv_output = 2048
+        super(DeepLabV3, self).__init__(backbone=backbone,
+                                        num_classes=num_classes,
+                                        conv_output=conv_output)
+
+
+class DeepLabV3CAM(cam.CAM, ResNet152):
+    """
+    >>> import torch
+    >>> x = torch.randn((3, 3, 512, 512))
+    >>> y = DeepLabV3CAM()(x)
+    >>> assert y.shape == torch.Size([20, 32, 32])
+    >>> sum(p.numel() for p in DeepLabV3CAM().parameters())
     58184768
     """
 

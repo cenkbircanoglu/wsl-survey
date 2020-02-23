@@ -1,6 +1,6 @@
 from wsl_survey.segmentation.irn.net import irn
 from wsl_survey.segmentation.irn.net.resnet import resnet18, resnet34, \
-    resnet50, resnet101, resnet152
+    resnet50, resnet101, resnet152, deeplabv3
 
 
 class ResNet18(irn.SmallNet):
@@ -242,6 +242,53 @@ class ResNet152EdgeDisplacement(irn.EdgeDisplacement):
         backbone = resnet152(pretrained=True, strides=(2, 2, 2, 1))
         super(ResNet152EdgeDisplacement, self).__init__(backbone=backbone)
 
+
+class DeepLabV3(irn.Net):
+    """
+    >>> import torch
+    >>> from wsl_survey.segmentation.irn.misc import indexing
+    >>> path_index = indexing.PathIndex(radius=10, default_size=(512 // 4, 512 // 4))
+    >>> x = torch.randn((3, 3, 512, 512))
+    >>> edge_out, dp_out = ResNet152()(x)
+    >>> assert edge_out.shape == torch.Size([3, 1, 128, 128])
+    >>> assert dp_out.shape == torch.Size([3, 2, 128, 128])
+    """
+    def __init__(self):
+        backbone = deeplabv3(pretrained=True)
+        super(DeepLabV3, self).__init__(backbone=backbone)
+
+
+class DeepLabV3AffinityDisplacementLoss(irn.AffinityDisplacementLoss):
+    """
+    >>> import torch
+    >>> from wsl_survey.segmentation.irn.misc import indexing
+    >>> path_index = indexing.PathIndex(radius=10, default_size=(512 // 4, 512 // 4))
+    >>> x = torch.randn((3, 3, 512, 512))
+    >>> pos_aff_loss, neg_aff_loss, dp_fg_loss, dp_bg_loss = DeepLabV3AffinityDisplacementLoss(path_index)(x, True)
+    >>> assert pos_aff_loss.shape == torch.Size([3, 152, 13090])
+    >>> assert neg_aff_loss.shape == torch.Size([3, 152, 13090])
+    >>> assert dp_fg_loss.shape == torch.Size([3, 2, 152, 13090])
+    >>> assert dp_bg_loss.shape == torch.Size([3, 2, 152, 13090])
+    """
+    def __init__(self, path_index):
+        backbone = deeplabv3(pretrained=True)
+        super(DeepLabV3AffinityDisplacementLoss,
+              self).__init__(path_index, backbone=backbone)
+
+
+class DeepLabV3EdgeDisplacement(irn.EdgeDisplacement):
+    """
+    >>> import torch
+    >>> from wsl_survey.segmentation.irn.misc import indexing
+    >>> path_index = indexing.PathIndex(radius=10, default_size=(512 // 4, 512 // 4))
+    >>> x = torch.randn((3, 3, 512, 512))
+    >>> edge, dp = DeepLabV3EdgeDisplacement()(x)
+    >>> assert edge.shape == torch.Size([1, 128, 128])
+    >>> assert dp.shape == torch.Size([2, 128, 128])
+    """
+    def __init__(self):
+        backbone = deeplabv3(pretrained=True)
+        super(DeepLabV3EdgeDisplacement, self).__init__(backbone=backbone)
 
 if __name__ == '__main__':
     import doctest

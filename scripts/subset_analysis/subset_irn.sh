@@ -30,7 +30,8 @@ for subset in subset1 subset2 subset3 subset4 subset5 subset6 subset7 subset8 su
         --num_workers=8 \
         --cam_network_module=wsl_survey.segmentation.irn.net.resnet_cam \
         --irn_network_module=wsl_survey.segmentation.irn.net.resnet_irn \
-        --cam_learning_rate=0.01
+        --cam_learning_rate=0.01 \
+        --cam_num_epoches=10
 done
 
 

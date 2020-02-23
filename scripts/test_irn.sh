@@ -12,11 +12,11 @@ export PYTHONPATH='.'
 
 ###### MORE DISTILLED TRAIN and INFERENCE ######
 
-export MODEL=resnet50
-export NETWORK=ResNet50
-export ROOT_FOLDER=./data/test1/VOC2012
-export SEGMENTATION_DATA_FOLDER=./data/test1/VOC2012/ImageSets/Segmentation
-export OUTPUT_FOLDER=./outputs/test1/results/distilled_more_$MODEL/
+export MODEL=deeplabv3
+export NETWORK=DeepLabV3
+export ROOT_FOLDER=./datasets/voc2012/VOCdevkit/VOC2012
+export SEGMENTATION_DATA_FOLDER=./data/test1/subset1
+export OUTPUT_FOLDER=./outputs/test1/results/$MODEL/
 
 python3 wsl_survey/segmentation/irn/main.py \
     --voc12_root=$ROOT_FOLDER \
@@ -42,8 +42,8 @@ python3 wsl_survey/segmentation/irn/main.py \
     --make_sem_seg_pass=True \
     --eval_sem_seg_pass=True \
     --num_workers=1 \
-    --cam_network_module=wsl_survey.segmentation.irn.net.distilled_more.resnet_cam \
-    --irn_network_module=wsl_survey.segmentation.irn.net.distilled_more.resnet_irn \
+    --cam_network_module=wsl_survey.segmentation.irn.net.resnet_cam \
+    --irn_network_module=wsl_survey.segmentation.irn.net.resnet_irn \
     --cam_batch_size=4 \
     --irn_batch_size=4
 
