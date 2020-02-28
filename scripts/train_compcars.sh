@@ -2,8 +2,7 @@ export PYTHONPATH='.'
 
 export MODEL=resnet50
 export NETWORK=ResNet50
-export SEGMENTATION_DATA_FOLDER=./data/test1/VOC2012/ImageSets/Segmentation
-export OUTPUT_FOLDER=./outputs/compcars/results/$MODEL/
+export OUTPUT_FOLDER=./outputs/compcars/make_id/results/$MODEL/
 
 python3 wsl_survey/segmentation/irn_compcars/main.py \
     --voc12_root=/home/ubuntu/icpr/data/image \
@@ -31,6 +30,7 @@ python3 wsl_survey/segmentation/irn_compcars/main.py \
     --cam_batch_size=16 \
     --irn_batch_size=16
 
+export OUTPUT_FOLDER=./outputs/compcars/model_id/results/$MODEL/
 python3 wsl_survey/segmentation/irn_compcars/main.py \
     --voc12_root=/home/ubuntu/icpr/data/image \
     --category_name=model_id \
