@@ -1,0 +1,33 @@
+./outputs/voc12/results/subset1_resnet50/cam
+{'iou': array([0.78565363, 0.36668376, 0.39447664]), 'miou': 0.5156046754578426}
+
+./outputs/voc12/results/subset2_resnet50/cam
+{'iou': array([0.79465801, 0.62457991, 0.43353406]), 'miou': 0.6175906603608561}
+
+./outputs/voc12/results/subset3_resnet50/cam
+{'iou': array([0.75294314, 0.28974398, 0.38545758, 0.48826021]), 'miou': 0.4791012262936942}
+
+./outputs/voc12/results/subset4_resnet50/cam
+{'iou': array([0.76762363, 0.60831073, 0.44636287, 0.42720293]), 'miou': 0.5623750384859426}
+
+./outputs/voc12/results/subset5_resnet50/cam
+{'iou': array([0.79660495, 0.36808663, 0.43653185, 0.63722773]), 'miou': 0.5596127901373813}
+
+./outputs/voc12/results/subset6_resnet50/cam
+{'iou': array([0.80609718, 0.40668433, 0.4319818 , 0.49407063, 0.65181541]), 'miou': 0.5581298704512092}
+
+./outputs/voc12/results/subset7_resnet50/cam
+{'iou': array([0.7740056 , 0.56042672, 0.62026939, 0.44391189, 0.46216843]), 'miou': 0.5721564050029719}
+
+./outputs/voc12/results/subset8_resnet50/cam
+{'iou': array([0.81164809, 0.44552385, 0.43982538, 0.50654826, 0.67184858,
+       0.44664589]), 'miou': 0.5536733401080641}
+{'num_workers': 8, 'voc12_root': './datasets/voc2012/VOCdevkit/VOC2012/', 'class_label_dict_path': './data/voc12/subset9/cls_labels.npy', 'train_list': './data/voc12/subset9/train_aug.txt', 'val_list': './data/voc12/subset9/val.txt', 'infer_list': './data/voc12/subset9/train.txt', 'chainer_eval_set': 'train', 'cam_network': 'ResNet50', 'cam_network_module': 'wsl_survey.segmentation.irn.net.resnet_cam', 'cam_crop_size': 512, 'cam_batch_size': 16, 'cam_num_epoches': 10, 'cam_learning_rate': 0.01, 'cam_weight_decay': 0.0001, 'cam_eval_thres': 0.15, 'cam_scales': (1.0, 0.5, 1.5, 2.0), 'conf_fg_thres': 0.3, 'conf_bg_thres': 0.05, 'irn_network': 'ResNet50', 'irn_network_module': 'wsl_survey.segmentation.irn.net.resnet_irn', 'irn_crop_size': 512, 'irn_batch_size': 32, 'irn_num_epoches': 3, 'irn_learning_rate': 0.1, 'irn_weight_decay': 0.0001, 'beta': 10, 'exp_times': 8, 'ins_seg_bg_thres': 0.25, 'sem_seg_bg_thres': 0.25, 'log_name': './outputs/voc12/results/subset9_resnet50/logs', 'cam_weights_name': './outputs/voc12/results/subset9_resnet50/sess/cam.pth', 'irn_weights_name': './outputs/voc12/results/subset9_resnet50/sess/irn.pth', 'cam_out_dir': './outputs/voc12/results/subset9_resnet50/cam', 'ir_label_out_dir': './outputs/voc12/results/subset9_resnet50/irn_label', 'sem_seg_out_dir': './outputs/voc12/results/subset9_resnet50/sem_seg', 'ins_seg_out_dir': './outputs/voc12/results/subset9_resnet50/ins_seg', 'train_cam_pass': False, 'make_cam_pass': False, 'eval_cam_pass': True, 'cam_to_ir_label_pass': False, 'train_irn_pass': False, 'make_ins_seg_pass': False, 'eval_ins_seg_pass': False, 'make_sem_seg_pass': False, 'eval_sem_seg_pass': False}
+
+./outputs/voc12/results/subset9_resnet50/cam
+{'iou': array([0.79126226, 0.44288935, 0.42844187, 0.640262  , 0.46148243,
+       0.46370464]), 'miou': 0.5380070908500948}
+
+./outputs/voc12/results/subset10_resnet50/cam
+{'iou': array([0.79686044, 0.4528679 , 0.44794959, 0.48719844, 0.64585122,
+       0.45589207, 0.47186911]), 'miou': 0.5369269686576997}

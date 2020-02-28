@@ -5,7 +5,7 @@ export NETWORK=ResNet50
 export ROOT_FOLDER=./datasets/voc2012/VOCdevkit/VOC2012/
 
 for subset in subset1 subset2 subset3 subset4 subset5 subset6 subset7 subset8 subset9 subset10; do
-    export OUTPUT_FOLDER=./outputs2/voc12/results/${subset}_$MODEL
+    export OUTPUT_FOLDER=./outputs/voc12/results/${subset}_$MODEL
 
     python3 wsl_survey/segmentation/irn/main.py \
         --voc12_root=$ROOT_FOLDER \
@@ -26,7 +26,6 @@ for subset in subset1 subset2 subset3 subset4 subset5 subset6 subset7 subset8 su
         --train_cam_pass=True \
         --make_cam_pass=True \
         --eval_cam_pass=True \
-        --cam_to_ir_label_pass=True \
         --num_workers=8 \
         --cam_network_module=wsl_survey.segmentation.irn.net.resnet_cam \
         --irn_network_module=wsl_survey.segmentation.irn.net.resnet_irn \
@@ -38,12 +37,12 @@ done
 
 export PYTHONPATH='.'
 
-export MODEL=resnet152
-export NETWORK=ResNet152
+export MODEL=resnet50
+export NETWORK=ResNet50
 export ROOT_FOLDER=./datasets/voc2012/VOCdevkit/VOC2012/
 
-for subset in subset1 subset2 subset3 subset4 subset5 subset6 subset7 subset8 subset9 subset19; do
-    export OUTPUT_FOLDER=./outputs2/voc12/results/${subset}_$MODEL
+for subset in subset1 subset2 subset3 subset4 subset5 subset6 subset7 subset8 subset9 subset10; do
+    export OUTPUT_FOLDER=./outputs1/voc12/results/${subset}_$MODEL
 
     python3 wsl_survey/segmentation/irn/main.py \
         --voc12_root=$ROOT_FOLDER \
@@ -61,7 +60,6 @@ for subset in subset1 subset2 subset3 subset4 subset5 subset6 subset7 subset8 su
         --cam_network=$NETWORK \
         --irn_network=$NETWORK \
         --log_name=$OUTPUT_FOLDER/logs \
-        --make_cam_pass=True \
         --eval_cam_pass=True \
         --cam_to_ir_label_pass=True \
         --num_workers=1 \

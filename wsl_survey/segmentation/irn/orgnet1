@@ -1,0 +1,152 @@
+digraph {
+	graph [size="19.65,19.65"]
+	node [align=left fontsize=12 height=0.2 ranksep=0.1 shape=box style=filled]
+	9376881352 [label=MeanBackward0 fillcolor=darkolivegreen1]
+	9376881688 -> 9376881352
+	9376881688 [label=MkldnnConvolutionBackward]
+	9376881128 -> 9376881688
+	9376881128 [label=CatBackward]
+	9376881520 -> 9376881128
+	9376881520 [label=ReluBackward1]
+	9376881632 -> 9376881520
+	9376881632 [label=AddcmulBackward]
+	9376880960 -> 9376881632
+	9376880960 [label=ViewBackward]
+	9376881744 -> 9376880960
+	9376881744 [label="fc_edge1.1.bias
+ (32)" fillcolor=lightblue]
+	9376880456 -> 9376881632
+	9376880456 [label=ViewBackward]
+	9376881968 -> 9376880456
+	9376881968 [label=NativeBatchNormBackward]
+	9376882080 -> 9376881968
+	9376882080 [label=ViewBackward]
+	9376882192 -> 9376882080
+	9376882192 [label=MkldnnConvolutionBackward]
+	9376882304 -> 9376882192
+	9376882304 [label="fc_edge1.0.weight
+ (32, 64, 1, 1)" fillcolor=lightblue]
+	9376880008 -> 9376881632
+	9376880008 [label=ViewBackward]
+	9376882024 -> 9376880008
+	9376882024 [label="fc_edge1.1.weight
+ (32)" fillcolor=lightblue]
+	9376881576 -> 9376881128
+	9376881576 [label=ReluBackward1]
+	9376881408 -> 9376881576
+	9376881408 [label=AddcmulBackward]
+	9376882136 -> 9376881408
+	9376882136 [label=ViewBackward]
+	9376882528 -> 9376882136
+	9376882528 [label="fc_edge2.1.bias
+ (32)" fillcolor=lightblue]
+	9376882248 -> 9376881408
+	9376882248 [label=ViewBackward]
+	9376882416 -> 9376882248
+	9376882416 [label=NativeBatchNormBackward]
+	9376882640 -> 9376882416
+	9376882640 [label=ViewBackward]
+	9809838208 -> 9376882640
+	9809838208 [label=MkldnnConvolutionBackward]
+	9809838320 -> 9809838208
+	9809838320 [label="fc_edge2.0.weight
+ (32, 256, 1, 1)" fillcolor=lightblue]
+	9376882360 -> 9376881408
+	9376882360 [label=ViewBackward]
+	9376882584 -> 9376882360
+	9376882584 [label="fc_edge2.1.weight
+ (32)" fillcolor=lightblue]
+	9376881912 -> 9376881128
+	9376881912 [label=AliasBackward]
+	9376881016 -> 9376881912
+	9376881016 [label=ReluBackward1]
+	9809838152 -> 9376881016
+	9809838152 [label=UpsampleBilinear2DBackward]
+	9809838376 -> 9809838152
+	9809838376 [label=AddcmulBackward]
+	9809838544 -> 9809838376
+	9809838544 [label=ViewBackward]
+	9809838712 -> 9809838544
+	9809838712 [label="fc_edge3.1.bias
+ (32)" fillcolor=lightblue]
+	9809838432 -> 9809838376
+	9809838432 [label=ViewBackward]
+	9809838768 -> 9809838432
+	9809838768 [label=NativeBatchNormBackward]
+	9809838880 -> 9809838768
+	9809838880 [label=ViewBackward]
+	9809838992 -> 9809838880
+	9809838992 [label=MkldnnConvolutionBackward]
+	9809839104 -> 9809838992
+	9809839104 [label="fc_edge3.0.weight
+ (32, 512, 1, 1)" fillcolor=lightblue]
+	9809838600 -> 9809838376
+	9809838600 [label=ViewBackward]
+	9809838824 -> 9809838600
+	9809838824 [label="fc_edge3.1.weight
+ (32)" fillcolor=lightblue]
+	9376881856 -> 9376881128
+	9376881856 [label=AliasBackward]
+	9376882472 -> 9376881856
+	9376882472 [label=ReluBackward1]
+	9809838488 -> 9376882472
+	9809838488 [label=UpsampleBilinear2DBackward]
+	9809838936 -> 9809838488
+	9809838936 [label=AddcmulBackward]
+	9809839160 -> 9809838936
+	9809839160 [label=ViewBackward]
+	9809839384 -> 9809839160
+	9809839384 [label="fc_edge4.1.bias
+ (32)" fillcolor=lightblue]
+	9809839272 -> 9809838936
+	9809839272 [label=ViewBackward]
+	9809839440 -> 9809839272
+	9809839440 [label=NativeBatchNormBackward]
+	9809839552 -> 9809839440
+	9809839552 [label=ViewBackward]
+	9809839664 -> 9809839552
+	9809839664 [label=MkldnnConvolutionBackward]
+	9809839776 -> 9809839664
+	9809839776 [label="fc_edge4.0.weight
+ (32, 1024, 1, 1)" fillcolor=lightblue]
+	9809839328 -> 9809838936
+	9809839328 [label=ViewBackward]
+	9809839496 -> 9809839328
+	9809839496 [label="fc_edge4.1.weight
+ (32)" fillcolor=lightblue]
+	9376881240 -> 9376881128
+	9376881240 [label=AliasBackward]
+	9809838264 -> 9376881240
+	9809838264 [label=ReluBackward1]
+	9809839048 -> 9809838264
+	9809839048 [label=UpsampleBilinear2DBackward]
+	9809839608 -> 9809839048
+	9809839608 [label=AddcmulBackward]
+	9809839832 -> 9809839608
+	9809839832 [label=ViewBackward]
+	9809840056 -> 9809839832
+	9809840056 [label="fc_edge5.1.bias
+ (32)" fillcolor=lightblue]
+	9809839944 -> 9809839608
+	9809839944 [label=ViewBackward]
+	9809840112 -> 9809839944
+	9809840112 [label=NativeBatchNormBackward]
+	9809840224 -> 9809840112
+	9809840224 [label=ViewBackward]
+	9809840336 -> 9809840224
+	9809840336 [label=MkldnnConvolutionBackward]
+	9809840448 -> 9809840336
+	9809840448 [label="fc_edge5.0.weight
+ (32, 2048, 1, 1)" fillcolor=lightblue]
+	9809840000 -> 9809839608
+	9809840000 [label=ViewBackward]
+	9809840168 -> 9809840000
+	9809840168 [label="fc_edge5.1.weight
+ (32)" fillcolor=lightblue]
+	9376881072 -> 9376881688
+	9376881072 [label="fc_edge6.weight
+ (1, 160, 1, 1)" fillcolor=lightblue]
+	9376881296 -> 9376881688
+	9376881296 [label="fc_edge6.bias
+ (1)" fillcolor=lightblue]
+}

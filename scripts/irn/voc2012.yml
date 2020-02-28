@@ -1,0 +1,47 @@
+version: '2.3'
+services:
+    train:
+        volumes:
+            - ~/wsl/datasets:/datasets
+            - ~/wsl/results:/results
+        image: ${IMAGE}
+        environment:
+            NVIDIA_VISIBLE_DEVICES: all
+            COMMAND: >
+                export MODEL=resnet18
+
+                export ROOT_FOLDER=./data/test/VOC2012
+
+                export SEGMENTATION_DATA_FOLDER=./data/test/VOC2012/ImageSets/Segmentation
+
+                export OUTPUT_FOLDER=./outputs/test/results/$MODEL/
+
+                python3 wsl_survey/segmentation/irn/main.py
+                    --voc12_root=$ROOT_FOLDER
+                    --chainer_eval_set=train
+                    --class_label_dict_path=$SEGMENTATION_DATA_FOLDER/cls_labels.npy
+                    --train_list=$SEGMENTATION_DATA_FOLDER/train_aug.txt
+                    --val_list=$SEGMENTATION_DATA_FOLDER/val.txt
+                    --infer_list=$SEGMENTATION_DATA_FOLDER/train.txt
+                    --cam_weights_name=$OUTPUT_FOLDER/sess/cam.pth
+                    --irn_weights_name=$OUTPUT_FOLDER/sess/irn.pth
+                    --cam_out_dir=$OUTPUT_FOLDER/cam
+                    --sem_seg_out_dir=$OUTPUT_FOLDER/sem_seg
+                    --ins_seg_out_dir=$OUTPUT_FOLDER/ins_seg
+                    --ir_label_out_dir=$OUTPUT_FOLDER/irn_label
+                    --cam_network=net.${MODEL}_cam
+                    --irn_network=net.${MODEL}_irn
+                    --log_name=$OUTPUT_FOLDER/logs
+                    --train_cam_pass=True
+                    --make_cam_pass=True
+                    --eval_cam_pass=True
+                    --cam_to_ir_label_pass=True
+                    --train_irn_pass=True
+                    --make_sem_seg_pass=True
+                    --eval_sem_seg_pass=True
+                    --num_workers=4
+
+        runtime: ${RUNTIME}
+        shm_size: '8gb'
+
+

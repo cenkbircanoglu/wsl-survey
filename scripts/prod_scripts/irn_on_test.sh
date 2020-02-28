@@ -1,0 +1,25 @@
+################# TRAIN AND EVAL ALL #################
+python3 wsl_survey/segmentation/irn/main.py \
+    --voc12_root=./datasets/voc2012/VOCdevkit/VOC2012 \
+    --cam_num_epoches=5 \
+    --irn_num_epoches=3 \
+    --train_cam_pass=True \
+    --make_cam_pass=True \
+    --eval_cam_pass=True \
+    --cam_to_ir_label_pass=True \
+    --train_irn_pass=True \
+    --make_ins_seg_pass=True \
+    --eval_ins_seg_pass=True \
+    --make_sem_seg_pass=True \
+    --eval_sem_seg_pass=True \
+    --class_label_dict_path=./data/voc12/cls_labels.npy \
+    --train_list=./data/voc12/train_aug.txt \
+    --val_list=./data/voc12/train.txt \
+    --infer_list=./data/voc12/val.txt \
+    --cam_weights_name=./outputs/voc12/models//sess/res50_cam.pth \
+    --irn_weights_name=./outputs/voc12/models/sess/res50_irn.pth \
+    --cam_out_dir=./outputs/voc12/results/cam \
+    --sem_seg_out_dir=./outputs/voc12/results/sem_seg \
+    --ins_seg_out_dir=./outputs/voc12/results/ins_seg \
+    --ins_seg_out_dir=./outputs/voc12/results/ins_seg \
+    --log_name=./outputs/voc12/logs/test

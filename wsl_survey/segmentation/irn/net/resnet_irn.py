@@ -271,7 +271,7 @@ class DeepLabV3AffinityDisplacementLoss(irn.AffinityDisplacementLoss):
     >>> assert dp_bg_loss.shape == torch.Size([3, 2, 152, 13090])
     """
     def __init__(self, path_index):
-        backbone = deeplabv3(pretrained=True)
+        backbone = deeplabv3(pretrained=True).backbone
         super(DeepLabV3AffinityDisplacementLoss,
               self).__init__(path_index, backbone=backbone)
 
@@ -287,7 +287,7 @@ class DeepLabV3EdgeDisplacement(irn.EdgeDisplacement):
     >>> assert dp.shape == torch.Size([2, 128, 128])
     """
     def __init__(self):
-        backbone = deeplabv3(pretrained=True)
+        backbone = deeplabv3(pretrained=True).backbone
         super(DeepLabV3EdgeDisplacement, self).__init__(backbone=backbone)
 
 if __name__ == '__main__':
