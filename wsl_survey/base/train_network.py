@@ -5,6 +5,7 @@ import copy
 import time
 
 import torch
+from tqdm import tqdm
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -32,7 +33,7 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=25, is_ince
             running_loss = 0.0
             running_corrects = 0
             # Iterate over data.
-            for inputs, labels in dataloaders[phase]:
+            for inputs, labels in tqdm(dataloaders[phase]):
                 X = parse_input_fn(inputs)
                 y = parse_label_fn(labels)
                 inputs = X.to(device)
