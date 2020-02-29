@@ -87,30 +87,19 @@ class ClassificationDataset(data.Dataset):
 
 
 def data_loader(args, split_type='train'):
-    image_size = int(args.image_size)
-
     img_mean = [0.485, 0.456, 0.406]
     img_std = [0.229, 0.224, 0.225]
 
     tsfm = transforms.Compose([
-        transforms.Resize((image_size, image_size)),
+        transforms.Resize((int(args.image_size), int(args.image_size))),
         transforms.ToTensor(),
         transforms.Normalize(mean=img_mean, std=img_std)
     ])
 
-    dataset = ClassificationDataset(args.dataset_dir,
-                                    args.image_dir,
-                                    split_type,
-                                    transform=tsfm,
-                                    one_hot=args.onehot)
+    dataset = ClassificationDataset(args.dataset_dir, args.image_dir, split_type, transform=tsfm, one_hot=args.onehot)
 
-    loader = torch.utils.data.DataLoader(
-        dataset,
-        batch_size=args.batch_size,
-        shuffle=split_type == 'train',
-        num_workers=args.num_workers,
-        pin_memory=True,
-        drop_last=True)
+    loader = torch.utils.data.DataLoader(dataset, batch_size=args.batch_size, shuffle=split_type == 'train',
+                                         num_workers=args.num_workers, pin_memory=True, drop_last=True)
     return loader
 
 

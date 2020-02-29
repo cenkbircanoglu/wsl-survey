@@ -138,7 +138,6 @@ def _work_gpu(process_id, model, dataset, args):
 
 def run(args):
     assert args.voc12_root is not None
-    assert args.class_label_dict_path is not None
     assert args.train_list is not None
     assert args.cam_weights_name is not None
     assert args.cam_network is not None
@@ -146,7 +145,7 @@ def run(args):
     assert args.cam_network_module is not None
 
     model = getattr(importlib.import_module(args.cam_network_module),
-                    args.cam_network + 'CAM')()
+                    args.cam_network + 'CAM')(num_classes=75)
     if use_gpu:
         model.load_state_dict(torch.load(args.cam_weights_name + '.pth'),
                               strict=True)
@@ -159,7 +158,7 @@ def run(args):
         args.train_list,
         voc12_root=args.voc12_root,
         scales=args.cam_scales,
-        class_label_dict_path=args.class_label_dict_path)
+        category_name=args.category_name)
     print('[ ', end='')
     if use_gpu:
         n_gpus = torch.cuda.device_count()
