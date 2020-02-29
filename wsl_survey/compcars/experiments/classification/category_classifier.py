@@ -13,6 +13,7 @@ from wsl_survey.compcars.dataset import data_loader
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--image_size", default=299, type=int)
+parser.add_argument("--finetune", default=False, type=bool)
 parser.add_argument("--onehot", default=False, type=bool)
 parser.add_argument("--num_workers", default=32, type=int)
 parser.add_argument("--batch_size", default=128, type=int)
@@ -34,7 +35,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 num_classes = dataloaders_dict['train'].dataset.get_number_classes(args.category_name)
 
-model_ft = load_network(args.network_name, pretrained=True, num_classes=num_classes, finetune=True,
+model_ft = load_network(args.network_name, pretrained=True, num_classes=num_classes, finetune=args.finetune,
                         image_size=args.image_size)
 
 print(model_ft)
