@@ -2,6 +2,7 @@ from __future__ import division
 from __future__ import print_function
 
 import argparse
+import os
 
 import torch
 import torch.nn as nn
@@ -64,6 +65,8 @@ try:
     state_dict = model_ft.module.state_dict()
 except:
     state_dict = model_ft.state_dict()
+
+os.makedirs(os.path.dirname(args.model_file), exist_ok=Trur)
 torch.save(state_dict, args.model_file + '.pth')
 ohist = [h.cpu().numpy() for h in hist]
 print(ohist)

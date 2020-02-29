@@ -64,7 +64,7 @@ def find_centroids_with_refinement(displacement, iterations=300):
 def cluster_centroids(centroids, displacement, thres=2.5):
     # thres: threshold for grouping centroid (see supp)
 
-    dp_strength = np.sqrt(displacement[1]**2 + displacement[0]**2)
+    dp_strength = np.sqrt(displacement[1] ** 2 + displacement[0] ** 2)
     height, width = dp_strength.shape
 
     weak_dp_region = dp_strength < thres
@@ -159,7 +159,7 @@ def _work_cpu(process_id, model, dataset, args):
                                   scale_factor=4,
                                   mode='bilinear',
                                   align_corners=False)[:,
-                                                       0, :size[0], :size[1]]
+                    0, :size[0], :size[1]]
             rw_up = rw_up / torch.max(rw_up)
 
             rw_up_bg = F.pad(rw_up, (0, 0, 0, 0, 1, 0),
@@ -178,10 +178,10 @@ def _work_cpu(process_id, model, dataset, args):
                                        instance_shape,
                                        instance_class_id,
                                        max_fragment_size=size[0] * size[1] *
-                                       0.01)
-
-            np.save(os.path.join(args.ins_seg_out_dir, img_name + '.npy'),
-                    detected)
+                                                         0.01)
+            path = os.path.join(args.ins_seg_out_dir, img_name + '.npy')
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            np.save(path, detected)
 
             if process_id == args.num_workers - 1 and iter % (len(databin) //
                                                               4) == 0:
@@ -228,7 +228,7 @@ def _work_gpu(process_id, model, dataset, args):
                                   scale_factor=4,
                                   mode='bilinear',
                                   align_corners=False)[:,
-                                                       0, :size[0], :size[1]]
+                    0, :size[0], :size[1]]
             rw_up = rw_up / torch.max(rw_up)
 
             rw_up_bg = F.pad(rw_up, (0, 0, 0, 0, 1, 0),
@@ -247,10 +247,10 @@ def _work_gpu(process_id, model, dataset, args):
                                        instance_shape,
                                        instance_class_id,
                                        max_fragment_size=size[0] * size[1] *
-                                       0.01)
-
-            np.save(os.path.join(args.ins_seg_out_dir, img_name + '.npy'),
-                    detected)
+                                                         0.01)
+            path = os.path.join(args.ins_seg_out_dir, img_name + '.npy')
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            np.save(path, detected)
 
             if process_id == n_gpus - 1 and iter % (len(databin) // 4) == 0:
                 print("%d " % ((5 * iter + 1) // (len(databin) // 4)), end='')
@@ -274,7 +274,7 @@ def run(args):
     dataset = dataloader.VOC12ClassificationDatasetMSF(
         args.infer_list,
         voc12_root=args.voc12_root,
-        scales=(1.0, ),
+        scales=(1.0,),
         category_name=args.category_name)
 
     if use_gpu:

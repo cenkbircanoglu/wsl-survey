@@ -58,8 +58,11 @@ def _work_cpu(process_id, model, dataset, args):
 
             rw_pred = keys[rw_pred]
 
+            path = os.path.join(args.sem_seg_out_dir, img_name + '.png')
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+
             imageio.imsave(
-                os.path.join(args.sem_seg_out_dir, img_name + '.png'),
+                path,
                 rw_pred.astype(np.uint8))
 
             if process_id == args.num_workers - 1 and iter % (len(databin) //
@@ -111,9 +114,10 @@ def _work_gpu(process_id, model, dataset, args):
 
             rw_pred = keys[rw_pred]
 
-            imageio.imsave(
-                os.path.join(args.sem_seg_out_dir, img_name + '.png'),
-                rw_pred.astype(np.uint8))
+            path = os.path.join(args.sem_seg_out_dir, img_name + '.png')
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+
+            imageio.imsave(path, rw_pred.astype(np.uint8))
 
             if process_id == n_gpus - 1 and iter % (len(databin) // 4) == 0:
                 print("%d " % ((5 * iter + 1) // (len(databin) // 4)), end='')

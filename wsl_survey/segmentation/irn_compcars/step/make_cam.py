@@ -62,8 +62,10 @@ def _work_cpu(process_id, model, dataset, args):
             highres_cam = highres_cam[valid_cat]
             highres_cam /= F.adaptive_max_pool2d(highres_cam, (1, 1)) + 1e-5
             # save cams
+            path = os.path.join(args.cam_out_dir, img_name + '.npy')
+            os.makedirs(os.path.dirname(path), exist_ok=True)
             np.save(
-                os.path.join(args.cam_out_dir, img_name + '.npy'), {
+                path, {
                     "keys": valid_cat,
                     "cam": strided_cam.cpu(),
                     "high_res": highres_cam.cpu().numpy()
@@ -124,9 +126,11 @@ def _work_gpu(process_id, model, dataset, args):
             highres_cam = highres_cam[valid_cat]
             highres_cam /= F.adaptive_max_pool2d(highres_cam, (1, 1)) + 1e-5
 
+            path = os.path.join(args.cam_out_dir, img_name + '.npy')
+            os.makedirs(os.path.dirname(path), exist_ok=True)
             # save cams
             np.save(
-                os.path.join(args.cam_out_dir, img_name + '.npy'), {
+                path, {
                     "keys": valid_cat,
                     "cam": strided_cam.cpu(),
                     "high_res": highres_cam.cpu().numpy()
