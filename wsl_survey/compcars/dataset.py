@@ -7,21 +7,17 @@ import torch.utils.data as data
 from PIL import Image
 from torchvision import transforms
 
+from wsl_survey.compcars.utils.parse_path import parse_path
 from wsl_survey.datasets.utils import make_one_hot
 
 
-def parse_path(x):
-    x = x.strip()
-    splitted = x.split('/')
-    make_id = int(splitted[0])
-    model_id = int(splitted[1])
-    try:
-        year = int(splitted[2])
-    except ValueError:
-        year = -1
-    image_name = str(splitted[3])
-    image_path = os.path.join('data/image', x)
-    return make_id, model_id, year, image_name, image_path
+def load_mapping(path):
+    mapping = {}
+    with open(path, mode='r') as f:
+        for line in f.readlines():
+            ind, uid = tuple(line.strip().split(','))
+            mapping[int(uid)] = int(ind)
+    return mapping
 
 
 class ClassificationDataset(data.Dataset):
@@ -35,11 +31,17 @@ class ClassificationDataset(data.Dataset):
         self.image_folder = image_folder
         self.one_hot = one_hot
         self.images = []
-
+        make_mapping = load_mapping(dataset_folder + '_make_mapping.txt')
+        model_mapping = load_mapping(dataset_folder + '_model_mapping.txt')
+        year_mapping = load_mapping(dataset_folder + '_year_mapping.txt')
         with open(dataset_folder + '_%s.txt' % split_type, mode='r') as f:
             for line in f.readlines():
-                make_id, model_id, year, image_name, image_path = parse_path(line)
-                self.images.append((image_path, {'make_id': make_id, 'model_id': model_id, 'year': year}))
+                make_uid, model_uid, year_uid, image_name, image_path = parse_path(line)
+                make_id = make_mapping[make_uid]
+                model_id = model_mapping[model_uid]
+                year_id = year_mapping[year_uid]
+
+                self.images.append((image_path, {'make_id': make_id, 'model_id': model_id, 'year': year_id}))
 
         self.transform = transform
         self.target_transform = target_transform
@@ -99,7 +101,7 @@ def data_loader(args, split_type='train'):
     dataset = ClassificationDataset(args.dataset_dir, args.image_dir, split_type, transform=tsfm, one_hot=args.onehot)
 
     loader = torch.utils.data.DataLoader(dataset, batch_size=args.batch_size, shuffle=split_type == 'train',
-                                         num_workers=args.num_workers, pin_memory=True, drop_last=True)
+                                         num_workers=args.num_workers, pin_memory=True, drop_last=False)
     return loader
 
 

@@ -149,7 +149,7 @@ def run(args):
     assert args.cam_network_module is not None
 
     model = getattr(importlib.import_module(args.cam_network_module),
-                    args.cam_network + 'CAM')(num_classes=75)
+                    args.cam_network + 'CAM')()
     if use_gpu:
         model.load_state_dict(torch.load(args.cam_weights_name + '.pth'),
                               strict=True)

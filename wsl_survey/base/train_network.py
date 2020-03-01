@@ -34,10 +34,8 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=25, is_ince
             running_corrects = 0
             # Iterate over data.
             for inputs, labels in tqdm(dataloaders[phase]):
-                X = parse_input_fn(inputs)
-                y = parse_label_fn(labels)
-                inputs = X.to(device)
-                labels = y.long().to(device)
+                inputs = parse_input_fn(inputs, device)
+                labels = parse_label_fn(labels, device)
 
                 # zero the parameter gradients
                 optimizer.zero_grad()

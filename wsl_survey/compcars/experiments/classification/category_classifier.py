@@ -44,17 +44,17 @@ print(model_ft)
 model_ft = model_ft.to(device)
 
 params_to_update = model_ft.trainable_parameters()
-optimizer_ft = optim.Adam(params_to_update)
+optimizer_ft = optim.AdamW(params_to_update)
 
 criterion = nn.CrossEntropyLoss()
 
 
-def parse_input_fn(inputs):
-    return inputs[0]
+def parse_input_fn(inputs, device):
+    return inputs[0].to(device)
 
 
-def parse_label_fn(labels):
-    return labels.get(args.category_name)
+def parse_label_fn(labels, device):
+    return labels.get(args.category_name).long().to(device)
 
 
 model_ft, hist = train_model(model_ft, dataloaders_dict, criterion, optimizer_ft, num_epochs=args.epochs,
@@ -66,7 +66,7 @@ try:
 except:
     state_dict = model_ft.state_dict()
 
-os.makedirs(os.path.dirname(args.model_file), exist_ok=Trur)
+os.makedirs(os.path.dirname(args.model_file), exist_ok=True)
 torch.save(state_dict, args.model_file + '.pth')
 ohist = [h.cpu().numpy() for h in hist]
-print(ohist)
+print(args.model_file, ohist)

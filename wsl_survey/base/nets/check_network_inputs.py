@@ -12,7 +12,7 @@ def check_network_input_size(image_size, version):
         assert image_size == 224
 
     if version.startswith('resne'):
-        assert image_size == 224
+        assert image_size == 299
 
     if version.startswith('shufflenet'):
         assert image_size == 224

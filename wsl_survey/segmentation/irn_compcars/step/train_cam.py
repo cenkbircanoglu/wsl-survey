@@ -77,7 +77,15 @@ def run(args):
                                  num_workers=args.num_workers,
                                  pin_memory=True,
                                  drop_last=True)
-    model = getattr(importlib.import_module(args.cam_network_module), args.cam_network)(num_classes=75)
+    num_classes = 0
+    if args.category_name == 'make_id':
+        num_classes = 75
+    if args.category_name == 'model_id':
+        num_classes = 431
+    if args.category_name == 'year':
+        num_classes = 16
+    model = getattr(importlib.import_module(args.cam_network_module), args.cam_network)(
+        num_classes=num_classes)
 
     param_groups = model.trainable_parameters()
     optimizer = torchutils.PolyOptimizer([
