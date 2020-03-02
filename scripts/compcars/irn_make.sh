@@ -2,7 +2,7 @@ export PYTHONPATH='.'
 
 export MODEL=resnet50
 export NETWORK=ResNet50
-export OUTPUT_FOLDER=./outputs/compcars/make_id/results/$MODEL/
+export OUTPUT_FOLDER=./outputs/compcars/make_id/results/$MODEL
 
 python3 wsl_survey/segmentation/irn_compcars/main.py \
     --voc12_root=./data/compcars/data/image/ \
@@ -24,13 +24,13 @@ python3 wsl_survey/segmentation/irn_compcars/main.py \
     --cam_to_ir_label_pass=True \
     --train_irn_pass=True \
     --make_sem_seg_pass=True \
-    --num_workers=16 \
+    --num_workers=64 \
     --cam_network_module=wsl_survey.segmentation.irn.net.resnet_cam \
     --irn_network_module=wsl_survey.segmentation.irn.net.resnet_irn \
     --cam_batch_size=16 \
     --irn_batch_size=16
 
-python3 wsl_survey/segmentation/irn_compcars/main.py \
+python wsl_survey/segmentation/irn_compcars/main.py \
     --voc12_root=./data/compcars/data/image/ \
     --category_name=make_id \
     --train_list=./data/compcars/arxiv_data/train_test_split/classification_test.txt \

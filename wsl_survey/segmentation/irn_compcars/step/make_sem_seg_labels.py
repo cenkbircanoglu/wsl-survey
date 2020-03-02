@@ -30,46 +30,48 @@ def _work_cpu(process_id, model, dataset, args):
             img_name = pack['name'][0]
             path = os.path.join(args.sem_seg_out_dir, img_name + '.png')
             if not os.path.exists(path):
-                orig_img_size = np.asarray(pack['size'])
+                try:
+                    orig_img_size = np.asarray(pack['size'])
 
-                edge, dp = model(pack['img'][0])
+                    edge, dp = model(pack['img'][0])
 
-                cam_dict = np.load(args.cam_out_dir + '/' + img_name + '.npy',
-                                   allow_pickle=True).item()
+                    cam_dict = np.load(args.cam_out_dir + '/' + img_name + '.npy',
+                                       allow_pickle=True).item()
 
-                cams = cam_dict['cam']
-                keys = np.pad(cam_dict['keys'] + 1, (1, 0), mode='constant')
+                    cams = cam_dict['cam']
+                    keys = np.pad(cam_dict['keys'] + 1, (1, 0), mode='constant')
 
-                cam_downsized_values = cams
+                    cam_downsized_values = cams
 
-                rw = indexing.propagate_to_edge(cam_downsized_values,
-                                                edge,
-                                                beta=args.beta,
-                                                exp_times=args.exp_times,
-                                                radius=5)
+                    rw = indexing.propagate_to_edge(cam_downsized_values,
+                                                    edge,
+                                                    beta=args.beta,
+                                                    exp_times=args.exp_times,
+                                                    radius=5)
 
-                rw_up = F.interpolate(
-                    rw, scale_factor=4, mode='bilinear',
-                    align_corners=False)[...,
-                        0, :orig_img_size[0], :orig_img_size[1]]
-                rw_up = rw_up / torch.max(rw_up)
+                    rw_up = F.interpolate(
+                        rw, scale_factor=4, mode='bilinear',
+                        align_corners=False)[...,
+                            0, :orig_img_size[0], :orig_img_size[1]]
+                    rw_up = rw_up / torch.max(rw_up)
 
-                rw_up_bg = F.pad(rw_up, (0, 0, 0, 0, 1, 0),
-                                 value=args.sem_seg_bg_thres)
-                rw_pred = torch.argmax(rw_up_bg, dim=0).cpu().numpy()
+                    rw_up_bg = F.pad(rw_up, (0, 0, 0, 0, 1, 0),
+                                     value=args.sem_seg_bg_thres)
+                    rw_pred = torch.argmax(rw_up_bg, dim=0).cpu().numpy()
 
-                rw_pred = keys[rw_pred]
+                    rw_pred = keys[rw_pred]
 
-                os.makedirs(os.path.dirname(path), exist_ok=True)
+                    os.makedirs(os.path.dirname(path), exist_ok=True)
 
-                imageio.imsave(
-                    path,
-                    rw_pred.astype(np.uint8))
+                    imageio.imsave(
+                        path,
+                        rw_pred.astype(np.uint8))
 
-                if process_id == args.num_workers - 1 and iter % (len(databin) //
-                                                                  4) == 0:
-                    print("%d " % ((5 * iter + 1) // (len(databin) // 4)), end='')
-
+                    if process_id == args.num_workers - 1 and iter % (len(databin) //
+                                                                      4) == 0:
+                        print("%d " % ((5 * iter + 1) // (len(databin) // 4)), end='')
+                except Exception as e:
+                    print(e, img_name)
 
 def _work_gpu(process_id, model, dataset, args):
     n_gpus = torch.cuda.device_count()
@@ -87,6 +89,7 @@ def _work_gpu(process_id, model, dataset, args):
             img_name = pack['name'][0]
             path = os.path.join(args.sem_seg_out_dir, img_name + '.png')
             if not os.path.exists(path):
+                print(path)
                 orig_img_size = np.asarray(pack['size'])
 
                 edge, dp = model(pack['img'][0].cuda(non_blocking=True))
@@ -116,7 +119,7 @@ def _work_gpu(process_id, model, dataset, args):
                 rw_pred = torch.argmax(rw_up_bg, dim=0).cpu().numpy()
 
                 rw_pred = keys[rw_pred]
-
+                print(os.path.dirname(path))
                 os.makedirs(os.path.dirname(path), exist_ok=True)
 
                 imageio.imsave(path, rw_pred.astype(np.uint8))

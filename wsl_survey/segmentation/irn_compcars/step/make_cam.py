@@ -96,7 +96,7 @@ def _work_gpu(process_id, model, dataset, args):
                 img_name = pack['name'][0]
                 path = os.path.join(args.cam_out_dir, img_name + '.npy')
                 if not os.path.exists(path):
-
+                    print(path)
                     label = pack['label'][0]
                     size = pack['size']
 
