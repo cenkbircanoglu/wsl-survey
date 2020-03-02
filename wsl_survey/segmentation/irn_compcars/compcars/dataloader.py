@@ -236,7 +236,7 @@ class VOC12SegmentationDataset(Dataset):
         name = self.img_name_list[idx]
 
         img = imageio.imread(get_img_path(name, self.voc12_root))
-        label = imageio.imread(os.path.join(self.label_dir, name))
+        label = imageio.imread(os.path.join(self.label_dir, name + '.png'))
 
         img = np.asarray(img)
 

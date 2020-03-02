@@ -202,6 +202,10 @@ def _work_gpu(process_id, model, dataset, args):
 
         for iter, pack in tqdm(enumerate(data_loader), total=len(databin)):
             img_name = pack['name'][0]
+            path = os.path.join(args.ins_seg_out_dir, img_name + '.npy')
+            if os.path.exists(path):
+                break
+
             size = np.asarray(pack['size'])
 
             edge, dp = model(pack['img'][0].cuda(non_blocking=True))
@@ -248,7 +252,7 @@ def _work_gpu(process_id, model, dataset, args):
                                        instance_class_id,
                                        max_fragment_size=size[0] * size[1] *
                                                          0.01)
-            path = os.path.join(args.ins_seg_out_dir, img_name + '.npy')
+
             os.makedirs(os.path.dirname(path), exist_ok=True)
             np.save(path, detected)
 
@@ -258,7 +262,6 @@ def _work_gpu(process_id, model, dataset, args):
 
 def run(args):
     assert args.voc12_root is not None
-    assert args.class_label_dict_path is not None
     assert args.infer_list is not None
     assert args.ins_seg_out_dir is not None
     assert args.irn_weights_name is not None

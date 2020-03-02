@@ -1,8 +1,11 @@
 import importlib
+import os
 
 import torch
 from torch.backends import cudnn
 from tqdm import tqdm
+
+from wsl_survey.segmentation.irn.config import make_parser
 
 cudnn.enabled = True
 from torch.utils.data import DataLoader
@@ -48,6 +51,9 @@ def run(args):
     assert args.cam_network is not None
     assert args.cam_num_epoches is not None
     assert args.cam_network_module is not None
+
+    if os.path.exists(args.cam_weights_name + '.pth'):
+        return
 
     train_dataset = dataloader.VOC12ClassificationDataset(
         args.train_list,
@@ -166,9 +172,6 @@ def run(args):
 
 
 if __name__ == '__main__':
-    from wsl_survey.segmentation.irn.config import make_parser
-    import os
-
     parser = make_parser()
     parser.set_defaults(
         voc12_root='/Users/cenk.bircanoglu/workspace/icpr/data/image',

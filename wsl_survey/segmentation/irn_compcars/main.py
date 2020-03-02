@@ -49,7 +49,7 @@ if __name__ == '__main__':
     if args.make_ins_seg_pass:
         import step.make_ins_seg_labels
 
-        print('eval_ins_seg_pass')
+        print('make_ins_seg_pass')
         timer = pyutils.Timer('step.make_ins_seg_labels:')
         step.make_ins_seg_labels.run(args)
 

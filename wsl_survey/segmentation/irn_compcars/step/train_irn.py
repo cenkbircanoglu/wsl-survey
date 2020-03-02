@@ -1,8 +1,11 @@
 import importlib
+import os
 
 import torch
 from torch.backends import cudnn
 from tqdm import tqdm
+
+from wsl_survey.segmentation.irn.config import make_parser
 
 cudnn.enabled = True
 from torch.utils.data import DataLoader
@@ -14,12 +17,14 @@ use_gpu = torch.cuda.is_available()
 
 def run(args):
     assert args.voc12_root is not None
-    assert args.class_label_dict_path is not None
     assert args.train_list is not None
     assert args.ir_label_out_dir is not None
     assert args.infer_list is not None
     assert args.irn_network is not None
     assert args.irn_network_module is not None
+
+    if os.path.exists(args.irn_weights_name):
+        return
 
     path_index = indexing.PathIndex(radius=10,
                                     default_size=(args.irn_crop_size // 4,
@@ -58,9 +63,9 @@ def run(args):
         'lr': 10 * args.irn_learning_rate,
         'weight_decay': args.irn_weight_decay
     }],
-                                         lr=args.irn_learning_rate,
-                                         weight_decay=args.irn_weight_decay,
-                                         max_step=max_step)
+        lr=args.irn_learning_rate,
+        weight_decay=args.irn_weight_decay,
+        max_step=max_step)
 
     if use_gpu:
         model = torch.nn.DataParallel(model).cuda()
@@ -76,7 +81,7 @@ def run(args):
 
         for iter, pack in tqdm(enumerate(train_data_loader),
                                total=len(train_dataset) //
-                               args.irn_batch_size):
+                                     args.irn_batch_size):
 
             img = pack['img']
             bg_pos_label = pack['aff_bg_pos_label']
@@ -152,7 +157,7 @@ def run(args):
     with torch.no_grad():
         for iter, pack in tqdm(enumerate(infer_data_loader),
                                total=len(infer_dataset) //
-                               args.irn_batch_size):
+                                     args.irn_batch_size):
 
             img = pack['img']
             if use_gpu:
@@ -178,9 +183,6 @@ def run(args):
 
 
 if __name__ == '__main__':
-    from wsl_survey.segmentation.irn.config import make_parser
-    import os
-
     parser = make_parser()
     parser.set_defaults(
         voc12_root='./data/test1/VOC2012',
