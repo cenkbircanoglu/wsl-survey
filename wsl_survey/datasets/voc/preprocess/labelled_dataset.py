@@ -16,7 +16,8 @@ def load_dataset_splits(data_folder):
     trainval_split = load_dataset_split(data_folder, split_type='trainval')
     tr_split = load_dataset_split(data_folder, split_type='train')
     val_split = load_dataset_split(data_folder, split_type='val')
-    test_split = load_dataset_split(data_folder, split_type='test')
+    #test_split = load_dataset_split(data_folder, split_type='test')
+    test_split = []
 
     return generate_class_id(trainval_split, tr_split, val_split, test_split)
 
@@ -62,13 +63,13 @@ def main(data_folder, output_folder):
     filename = os.path.join(output_folder, 'val.csv')
     dict_to_file(val_set, filename, header, item_extractor)
 
-    filename = os.path.join(output_folder, 'test.csv')
-    dict_to_file(test_set, filename, header, item_extractor)
+    #filename = os.path.join(output_folder, 'test.csv')
+    #dict_to_file(test_set, filename, header, item_extractor)
 
     header = 'class_id,class_name\n'
     filename = os.path.join(output_folder, 'class_mapping.csv')
     dict_to_file(class_mapping, filename, header, mapping_extractor)
-    for filename in ['test.txt', 'train.txt', 'trainval.txt', 'val.txt']:
+    for filename in [ 'train.txt', 'trainval.txt', 'val.txt']:
         segmentation_file = os.path.join(data_folder, 'ImageSets',
                                          'Segmentation', filename)
         output_file = os.path.join(output_folder, filename)

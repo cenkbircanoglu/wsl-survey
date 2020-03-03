@@ -7,8 +7,7 @@ from wsl_survey.datasets.utils import download_if_not_exists
 
 urls = {
     'trval':
-    'http://host.robots.ox.ac.uk/pascal/VOC/voc2012/VOCtrainval_11-May-2012.tar',
-    'test': 'http://pjreddie.com/media/files/VOC2012test.tar'
+    'http://host.robots.ox.ac.uk/pascal/VOC/voc2012/VOCtrainval_11-May-2012.tar'
 }
 
 
@@ -31,22 +30,19 @@ def download(output):
     tmp_dir = os.path.join(output, 'tmp')
     os.makedirs(tmp_dir, exist_ok=True)
 
-    for data_type in ['trval', 'test']:
+    for data_type in ['trval']:
         filename, cached_file = download_if_not_exists(data_type, tmp_dir,
                                                        urls)
         untar_file(cached_file, output)
 
     file_list = [
         'VOCdevkit/VOC2012/Annotations/2007_000027.xml',
-        'VOCdevkit/VOC2012/ImageSets/Layout/test.txt',
         'VOCdevkit/VOC2012/ImageSets/Layout/train.txt',
         'VOCdevkit/VOC2012/ImageSets/Layout/trainval.txt',
         'VOCdevkit/VOC2012/ImageSets/Layout/val.txt',
-        'VOCdevkit/VOC2012/ImageSets/Main/aeroplane_test.txt',
         'VOCdevkit/VOC2012/ImageSets/Main/aeroplane_train.txt',
         'VOCdevkit/VOC2012/ImageSets/Main/aeroplane_trainval.txt',
         'VOCdevkit/VOC2012/ImageSets/Main/aeroplane_val.txt',
-        'VOCdevkit/VOC2012/ImageSets/Segmentation/test.txt',
         'VOCdevkit/VOC2012/ImageSets/Segmentation/train.txt',
         'VOCdevkit/VOC2012/ImageSets/Segmentation/trainval.txt',
         'VOCdevkit/VOC2012/ImageSets/Segmentation/val.txt',

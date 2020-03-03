@@ -3,15 +3,15 @@ export PYTHONPATH='.'
 export MODEL=resnet152
 export NETWORK=ResNet152
 export ROOT_FOLDER=./datasets/voc2012/VOCdevkit/VOC2012/
-export SEGMENTATION_DATA_FOLDER=./data/test1/VOC2012/ImageSets/Segmentation
-export OUTPUT_FOLDER=./outputs/voc12/results/distilled_more_$MODEL/
+export SEGMENTATION_DATA_FOLDER=./data/voc12/VOC2012/ImageSets/Segmentation
+export OUTPUT_FOLDER=./outputs/voc12/results/$MODEL/
 
-python3 wsl_survey/segmentation/irn/main.py \
+python3 wsl_survey/segmentation/irn_unique/main.py \
     --voc12_root=$ROOT_FOLDER \
     --chainer_eval_set=train \
-    --class_label_dict_path=./data/voc12/cls_labels.npy \
+    --class_label_dict_path=./data/voc12/cls_labels_unique.npy \
     --train_list=./data/voc12/train_aug.txt \
-    --val_list=./data/voc12/val.txt \
+    --val_list=./data/voc12/train.txt \
     --infer_list=./data/voc12/train.txt \
     --cam_weights_name=$OUTPUT_FOLDER/sess/cam.pth \
     --irn_weights_name=$OUTPUT_FOLDER/sess/irn.pth \
@@ -29,18 +29,18 @@ python3 wsl_survey/segmentation/irn/main.py \
     --train_irn_pass=True \
     --make_sem_seg_pass=True \
     --eval_sem_seg_pass=True \
-    --num_workers=1 \
-    --cam_network_module=wsl_survey.segmentation.irn.net.distilled_more.resnet_cam \
-    --irn_network_module=wsl_survey.segmentation.irn.net.distilled_more.resnet_irn \
+    --num_workers=4 \
+    --cam_network_module=wsl_survey.segmentation.irn.net.resnet_cam \
+    --irn_network_module=wsl_survey.segmentation.irn.net.resnet_irn \
     --cam_batch_size=16 \
     --irn_batch_size=16
 
 
 
-python3 wsl_survey/segmentation/irn/main.py \
+python3 wsl_survey/segmentation/irn_unique/main.py \
     --voc12_root=$ROOT_FOLDER \
     --chainer_eval_set=val \
-    --class_label_dict_path=./data/voc12/cls_labels.npy \
+    --class_label_dict_path=./data/voc12/cls_labels_unique.npy \
     --train_list=./data/voc12/val.txt \
     --val_list=./data/voc12/val.txt \
     --infer_list=./data/voc12/val.txt \
@@ -58,8 +58,8 @@ python3 wsl_survey/segmentation/irn/main.py \
     --cam_to_ir_label_pass=True \
     --make_sem_seg_pass=True \
     --eval_sem_seg_pass=True \
-    --num_workers=1 \
-    --cam_network_module=wsl_survey.segmentation.irn.net.distilled_more.resnet_cam \
-    --irn_network_module=wsl_survey.segmentation.irn.net.distilled_more.resnet_irn \
+    --num_workers=4 \
+    --cam_network_module=wsl_survey.segmentation.irn.net.resnet_cam \
+    --irn_network_module=wsl_survey.segmentation.irn.net.resnet_irn \
     --cam_batch_size=16 \
     --irn_batch_size=16
