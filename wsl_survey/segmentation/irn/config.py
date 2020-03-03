@@ -6,12 +6,12 @@ def make_parser():
 
     # Environment
     parser.add_argument("--num_workers", default=64, type=int)
+    parser.add_argument("--num_classes", default=20, type=int)
     parser.add_argument(
         "--voc12_root",
         type=str,
         help=
         "Path to VOC 2012 Devkit, must contain ./JPEGImages as subdirectory.")
-
     # Dataset
     parser.add_argument("--class_label_dict_path", type=str)
     parser.add_argument("--train_list", type=str)
@@ -20,7 +20,7 @@ def make_parser():
         "--infer_list",
         type=str,
         help="voc12/train_aug.txt to train a fully supervised model, "
-        "voc12/train.txt or voc12/val.txt to quickly check the quality of the labels."
+             "voc12/train.txt or voc12/val.txt to quickly check the quality of the labels."
     )
     parser.add_argument("--chainer_eval_set", type=str)
 

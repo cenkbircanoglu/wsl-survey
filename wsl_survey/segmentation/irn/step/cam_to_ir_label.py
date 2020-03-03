@@ -1,5 +1,6 @@
 import os
 
+import cv2
 import imageio
 import numpy as np
 from torch import multiprocessing
@@ -8,6 +9,26 @@ from tqdm import tqdm
 
 from wsl_survey.segmentation.irn.misc import torchutils, imutils
 from wsl_survey.segmentation.irn.voc12 import dataloader
+
+
+def generate_bbox(path, output_path):
+    if not os.path.exists(output_path):
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    mask_img = cv2.imread(path)
+    ret, threshed_img = cv2.threshold(cv2.cvtColor(mask_img, cv2.COLOR_BGR2GRAY), 100, 255, cv2.THRESH_BINARY)
+    kernel = np.ones((3, 3), np.uint8)
+    closing = cv2.morphologyEx(threshed_img, cv2.MORPH_CLOSE, kernel, iterations=4)
+
+    contours, hierarchy = cv2.findContours(closing, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    biggest_area = float('-inf')
+    x, y, w, h = None, None, None, None
+    for cnt in contours:
+        area = cv2.contourArea(cnt)
+        if area > biggest_area:
+            biggest_area = area
+            x, y, w, h = cv2.boundingRect(cnt)
+    with open(output_path, mode='w') as f:
+        f.write('%s\t%s\t%s\t%s\n' % (x, y, w, h))
 
 
 def _work(process_id, infer_dataset, args):
@@ -19,43 +40,47 @@ def _work(process_id, infer_dataset, args):
 
     for iter, pack in tqdm(enumerate(infer_data_loader), total=len(databin)):
         img_name = dataloader.decode_int_filename(pack['name'][0])
-        img = pack['img'][0].numpy()
-        cam_dict = np.load(os.path.join(args.cam_out_dir, img_name + '.npy'),
-                           allow_pickle=True).item()
+        path = os.path.join(args.ir_label_out_dir, img_name + '.png')
+        bbox_path = os.path.join(args.ir_label_out_dir.replace('irn_label', 'bbox'), img_name + '.txt')
+        if not os.path.exists(path):
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            img = pack['img'][0].numpy()
+            cam_dict = np.load(os.path.join(args.cam_out_dir, img_name + '.npy'),
+                               allow_pickle=True).item()
 
-        cams = cam_dict['high_res']
-        keys = np.pad(cam_dict['keys'] + 1, (1, 0), mode='constant')
+            cams = cam_dict['high_res']
+            keys = np.pad(cam_dict['keys'] + 1, (1, 0), mode='constant')
 
-        # 1. find confident fg & bg
-        fg_conf_cam = np.pad(cams, ((1, 0), (0, 0), (0, 0)),
-                             mode='constant',
-                             constant_values=args.conf_fg_thres)
-        fg_conf_cam = np.argmax(fg_conf_cam, axis=0)
-        pred = imutils.crf_inference_label(img,
-                                           fg_conf_cam,
-                                           n_labels=keys.shape[0])
-        fg_conf = keys[pred]
+            # 1. find confident fg & bg
+            fg_conf_cam = np.pad(cams, ((1, 0), (0, 0), (0, 0)),
+                                 mode='constant',
+                                 constant_values=args.conf_fg_thres)
+            fg_conf_cam = np.argmax(fg_conf_cam, axis=0)
+            pred = imutils.crf_inference_label(img,
+                                               fg_conf_cam,
+                                               n_labels=keys.shape[0])
+            fg_conf = keys[pred]
 
-        bg_conf_cam = np.pad(cams, ((1, 0), (0, 0), (0, 0)),
-                             mode='constant',
-                             constant_values=args.conf_bg_thres)
-        bg_conf_cam = np.argmax(bg_conf_cam, axis=0)
-        pred = imutils.crf_inference_label(img,
-                                           bg_conf_cam,
-                                           n_labels=keys.shape[0])
-        bg_conf = keys[pred]
+            bg_conf_cam = np.pad(cams, ((1, 0), (0, 0), (0, 0)),
+                                 mode='constant',
+                                 constant_values=args.conf_bg_thres)
+            bg_conf_cam = np.argmax(bg_conf_cam, axis=0)
+            pred = imutils.crf_inference_label(img,
+                                               bg_conf_cam,
+                                               n_labels=keys.shape[0])
+            bg_conf = keys[pred]
 
-        # 2. combine confident fg & bg
-        conf = fg_conf.copy()
-        conf[fg_conf == 0] = 255
-        conf[bg_conf + fg_conf == 0] = 0
+            # 2. combine confident fg & bg
+            conf = fg_conf.copy()
+            conf[fg_conf == 0] = 255
+            conf[bg_conf + fg_conf == 0] = 0
 
-        imageio.imwrite(os.path.join(args.ir_label_out_dir, img_name + '.png'),
-                        conf.astype(np.uint8))
+            imageio.imwrite(path, conf.astype(np.uint8))
 
-        if process_id == args.num_workers - 1 and iter % (len(databin) //
-                                                          20) == 0:
-            print("%d " % ((5 * iter + 1) // (len(databin) // 20)), end='')
+            if process_id == args.num_workers - 1 and iter % (len(databin) //
+                                                              20) == 0:
+                print("%d " % ((5 * iter + 1) // (len(databin) // 20)), end='')
+        generate_bbox(path, bbox_path)
 
 
 def run(args):

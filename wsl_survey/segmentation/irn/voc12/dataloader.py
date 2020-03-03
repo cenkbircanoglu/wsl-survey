@@ -23,8 +23,11 @@ CAT_NAME_TO_NUM = dict(zip(CAT_LIST, range(len(CAT_LIST))))
 
 
 def decode_int_filename(int_filename):
-    s = str(int(int_filename))
-    return s[:4] + '_' + s[4:]
+    try:
+        s = str(int(int_filename))
+        return s[:4] + '_' + s[4:]
+    except:
+        return int_filename
 
 
 def load_image_label_from_xml(img_name, voc12_root):
@@ -61,11 +64,13 @@ def load_image_label_list_from_npy(img_name_list, class_label_dict_path):
 def get_img_path(img_name, voc12_root):
     if not isinstance(img_name, str):
         img_name = decode_int_filename(img_name)
+    if 'compcars' in voc12_root:
+        return os.path.join(voc12_root, img_name + '.jpg')
     return os.path.join(voc12_root, IMG_FOLDER_NAME, img_name + '.jpg')
 
 
 def load_img_name_list(dataset_path):
-    img_name_list = np.loadtxt(dataset_path, dtype=np.int32)
+    img_name_list = np.loadtxt(dataset_path, dtype=np.str)
 
     return img_name_list
 
