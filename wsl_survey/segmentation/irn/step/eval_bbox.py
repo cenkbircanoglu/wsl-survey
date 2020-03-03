@@ -7,6 +7,8 @@ from wsl_survey.segmentation.irn.voc12 import dataloader
 
 
 def bb_intersection_over_union(boxA, boxB):
+    boxA = [int(i) for i in boxA]
+    boxB = [int(i) for i in boxB]
     # determine the (x, y)-coordinates of the intersection rectangle
     xA = max(boxA[0], boxB[0])
     yA = max(boxA[1], boxB[1])
@@ -28,9 +30,8 @@ def bb_intersection_over_union(boxA, boxB):
 
 def run(args):
     assert args.voc12_root is not None
-    assert args.chainer_eval_set is not None
 
-    dataset = dataloader.VOC12ImageDataset(args.chainer_eval_set,
+    dataset = dataloader.VOC12ImageDataset(args.infer_list,
                                            voc12_root=args.voc12_root,
                                            img_normal=None,
                                            to_torch=False)
@@ -38,14 +39,13 @@ def run(args):
     preds = []
     for data in tqdm(dataset):
         img_name = data['name']
-        bbox_org_path = os.path.join(args.voc12_root, img_name.replace('image', 'label').replace('.jpg', 'txt'))
+        bbox_org_path = os.path.join(args.voc12_root, img_name.replace('image', 'label') + '.txt')
         with open(bbox_org_path, mode='r') as f:
             bbox_org = f.readlines()[-1].strip().split(' ')
-        bbox_path = os.path.join(args.bbox_out_dir, img_name.replace('.jpg', 'txt'))
+        bbox_path = os.path.join(args.bbox_out_dir, img_name + '.txt')
         with open(bbox_path, mode='r') as f:
-            bbox = f.readlines()[0].strip().split(' ')
+            bbox = f.readlines()[0].strip().split('\t')
         iou = bb_intersection_over_union(bbox, bbox_org)
-        print(iou)
         preds.append(iou)
     print({'miou': mean(preds)})
 
