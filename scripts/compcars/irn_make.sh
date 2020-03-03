@@ -24,13 +24,13 @@ python3 wsl_survey/segmentation/irn_compcars/main.py \
     --cam_to_ir_label_pass=True \
     --train_irn_pass=True \
     --make_sem_seg_pass=True \
-    --num_workers=64 \
+    --num_workers=8 \
     --cam_network_module=wsl_survey.segmentation.irn.net.resnet_cam \
     --irn_network_module=wsl_survey.segmentation.irn.net.resnet_irn \
     --cam_batch_size=16 \
     --irn_batch_size=16
 
-python wsl_survey/segmentation/irn_compcars/main.py \
+python3 wsl_survey/segmentation/irn_compcars/main.py \
     --voc12_root=./data/compcars/data/image/ \
     --category_name=make_id \
     --train_list=./data/compcars/arxiv_data/train_test_split/classification_test.txt \
@@ -48,7 +48,7 @@ python wsl_survey/segmentation/irn_compcars/main.py \
     --make_cam_pass=True \
     --cam_to_ir_label_pass=True \
     --make_sem_seg_pass=True \
-    --num_workers=64 \
+    --num_workers=8 \
     --cam_network_module=wsl_survey.segmentation.irn.net.resnet_cam \
     --irn_network_module=wsl_survey.segmentation.irn.net.resnet_irn \
     --cam_batch_size=16 \

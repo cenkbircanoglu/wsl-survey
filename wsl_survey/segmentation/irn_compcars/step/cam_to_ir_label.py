@@ -22,7 +22,6 @@ def _work(process_id, infer_dataset, args):
             img_name = pack['name'][0]
             path = os.path.join(args.ir_label_out_dir, img_name + '.png')
             if not os.path.exists(path):
-                print(path)
                 img = pack['img'][0].numpy()
                 cam_dict = np.load(os.path.join(args.cam_out_dir, img_name + '.npy'), allow_pickle=True).item()
 
