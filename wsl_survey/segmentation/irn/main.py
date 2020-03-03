@@ -80,3 +80,10 @@ if __name__ == '__main__':
         print('eval_sem_seg')
         timer = pyutils.Timer('step.eval_sem_seg:')
         step.eval_sem_seg.run(args)
+
+    if args.eval_bbox_pass:
+        import step.eval_bbox
+
+        print('eval_bbox_pass')
+        timer = pyutils.Timer('step.eval_bbox_pass:')
+        step.eval_bbox.run(args)

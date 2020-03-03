@@ -41,7 +41,7 @@ def _work(process_id, infer_dataset, args):
     for iter, pack in tqdm(enumerate(infer_data_loader), total=len(databin)):
         img_name = dataloader.decode_int_filename(pack['name'][0])
         path = os.path.join(args.ir_label_out_dir, img_name + '.png')
-        bbox_path = os.path.join(args.ir_label_out_dir.replace('irn_label', 'bbox'), img_name + '.txt')
+        bbox_path = os.path.join(args.bbox_out_dir, img_name + '.txt')
         if not os.path.exists(path):
             os.makedirs(os.path.dirname(path), exist_ok=True)
             img = pack['img'][0].numpy()

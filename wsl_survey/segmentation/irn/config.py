@@ -69,6 +69,7 @@ def make_parser():
     parser.add_argument("--ir_label_out_dir", type=str)
     parser.add_argument("--sem_seg_out_dir", type=str)
     parser.add_argument("--ins_seg_out_dir", type=str)
+    parser.add_argument("--bbox_out_dir", type=str)
 
     # Step
     parser.add_argument("--train_cam_pass", default=False, type=bool)
@@ -80,5 +81,6 @@ def make_parser():
     parser.add_argument("--eval_ins_seg_pass", default=False, type=bool)
     parser.add_argument("--make_sem_seg_pass", default=False, type=bool)
     parser.add_argument("--eval_sem_seg_pass", default=False, type=bool)
+    parser.add_argument("--eval_bbox_pass", default=False, type=bool)
 
     return parser
