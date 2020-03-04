@@ -12,9 +12,7 @@ from wsl_survey.segmentation.irn.voc12 import dataloader
 
 
 def generate_bbox(path, output_path):
-    print(output_path)
     if not os.path.exists(output_path):
-        print(output_path)
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         mask_img = cv2.imread(path)
         ret, threshed_img = cv2.threshold(cv2.cvtColor(mask_img, cv2.COLOR_BGR2GRAY), 100, 255, cv2.THRESH_BINARY)

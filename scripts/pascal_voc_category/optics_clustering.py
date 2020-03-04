@@ -10,7 +10,7 @@ features = tr_aug_features.tolist() + tr_features.tolist() + val_features.tolist
 df = pd.DataFrame.from_records(features)
 df.drop_duplicates('img_name', inplace=True)
 
-cluster = cluster.OPTICS(min_samples=10, min_cluster_size=10)
+cluster = cluster.OPTICS(min_samples=10, min_cluster_size=3)
 
 df['feature'] = df['feature'].apply(lambda x: x[0].reshape(-1).tolist())
 X = np.array(df['feature'].values.tolist())
