@@ -40,13 +40,17 @@ def run(args):
     for data in tqdm(dataset):
         img_name = data['name']
         bbox_org_path = os.path.join(args.voc12_root, img_name.replace('image', 'label') + '.txt')
-        with open(bbox_org_path, mode='r') as f:
-            bbox_org = f.readlines()[-1].strip().split(' ')
-        bbox_path = os.path.join(args.bbox_out_dir, img_name + '.txt')
-        with open(bbox_path, mode='r') as f:
-            bbox = f.readlines()[0].strip().split('\t')
-        iou = bb_intersection_over_union(bbox, bbox_org)
-        preds.append(iou)
+        try:
+            with open(bbox_org_path, mode='r') as f:
+                bbox_org = f.readlines()[-1].strip().split(' ')
+            bbox_path = os.path.join(args.bbox_out_dir, img_name + '.txt')
+            with open(bbox_path, mode='r') as f:
+                bbox = f.readlines()[0].strip().split('\t')
+            iou = bb_intersection_over_union(bbox, bbox_org)
+            preds.append(iou)
+        except Exception as e:
+            print(img_name)
+
     print({'miou': mean(preds)})
 
 
