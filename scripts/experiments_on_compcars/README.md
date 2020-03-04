@@ -1,7 +1,11 @@
 
 
 ```.env
-python3 scripts/compcars_make/format_data.py
+python3 scripts/experiments_on_compcars/format_data.py
+```
+
+```.env
+python3 scripts/experiments_on_compcars/random_labels.py
 ```
 
 ### TRAIN USING MAKE ID

@@ -24,7 +24,6 @@ python3 wsl_survey/segmentation/irn/main.py \
     --train_cam_pass=True \
     --make_cam_pass=True \
     --cam_to_ir_label_pass=True \
-    --eval_bbox_pass=True \
     --num_workers=8 \
     --cam_network_module=wsl_survey.segmentation.irn.net.resnet_cam \
     --irn_network_module=wsl_survey.segmentation.irn.net.resnet_irn \

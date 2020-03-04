@@ -2,7 +2,7 @@ export PYTHONPATH='.'
 
 export MODEL=resnet50
 export NETWORK=ResNet50
-export CATEGORY=year
+export CATEGORY=random_100
 export OUTPUT_FOLDER=./compcars_outputs/compcars/${CATEGORY}/results/$MODEL
 
 python3 wsl_survey/segmentation/irn/main.py \
@@ -29,7 +29,7 @@ python3 wsl_survey/segmentation/irn/main.py \
     --irn_network_module=wsl_survey.segmentation.irn.net.resnet_irn \
     --cam_batch_size=16 \
     --irn_batch_size=16 \
-    --num_classes=16
+    --num_classes=100
 
 
 
@@ -57,4 +57,5 @@ python3 wsl_survey/segmentation/irn/main.py \
     --irn_network_module=wsl_survey.segmentation.irn.net.resnet_irn \
     --cam_batch_size=16 \
     --irn_batch_size=16 \
-    --num_classes=16
+    --num_classes=100
+
