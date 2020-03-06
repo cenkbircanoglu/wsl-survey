@@ -82,5 +82,7 @@ def make_parser():
     parser.add_argument("--make_sem_seg_pass", default=False, type=bool)
     parser.add_argument("--eval_sem_seg_pass", default=False, type=bool)
     parser.add_argument("--eval_bbox_pass", default=False, type=bool)
+    parser.add_argument("--eval_cam_accuracy_pass", default=False, type=bool)
+
 
     return parser

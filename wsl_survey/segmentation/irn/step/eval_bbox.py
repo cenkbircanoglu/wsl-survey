@@ -8,6 +8,8 @@ from wsl_survey.segmentation.irn.voc12 import dataloader
 
 def bb_intersection_over_union(boxA, boxB):
     boxA = [int(i) for i in boxA]
+    boxA[2] = boxA[2] + boxA[0]
+    boxA[3] = boxA[3] + boxA[1]
     boxB = [int(i) for i in boxB]
     # determine the (x, y)-coordinates of the intersection rectangle
     xA = max(boxA[0], boxB[0])
@@ -37,6 +39,7 @@ def run(args):
                                            to_torch=False)
 
     preds = []
+    error_cnt = 0
     for data in tqdm(dataset):
         img_name = data['name']
         bbox_org_path = os.path.join(args.voc12_root, img_name.replace('image', 'label') + '.txt')
@@ -49,9 +52,9 @@ def run(args):
             iou = bb_intersection_over_union(bbox, bbox_org)
             preds.append(iou)
         except Exception as e:
-            print(img_name)
+            error_cnt += 1
 
-    print({'miou': mean(preds)})
+    print({'miou': mean(preds)}, len(preds), error_cnt, args.bbox_out_dir)
 
 
 if __name__ == '__main__':

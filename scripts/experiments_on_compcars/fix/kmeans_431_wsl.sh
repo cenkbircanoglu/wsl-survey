@@ -2,7 +2,7 @@ export PYTHONPATH='.'
 
 export MODEL=resnet50
 export NETWORK=ResNet50
-export CATEGORY=random_75
+export CATEGORY=kmeans_431
 export OUTPUT_FOLDER=./compcars_outputs/compcars/${CATEGORY}/results/$MODEL
 
 python3 wsl_survey/segmentation/irn/main.py \
@@ -27,9 +27,7 @@ python3 wsl_survey/segmentation/irn/main.py \
     --irn_network_module=wsl_survey.segmentation.irn.net.resnet_irn \
     --cam_batch_size=16 \
     --irn_batch_size=16 \
-    --num_classes=75
-
-
+    --num_classes=431
 
 python3 wsl_survey/segmentation/irn/main.py \
     --class_label_dict_path=./data/compcars/train/cls_labels_${CATEGORY}.npy \
@@ -48,11 +46,11 @@ python3 wsl_survey/segmentation/irn/main.py \
     --irn_network=$NETWORK \
     --log_name=$OUTPUT_FOLDER/logs \
     --make_cam_pass=True \
-    --num_workers=8 \
+    --num_workers=1 \
     --cam_network_module=wsl_survey.segmentation.irn.net.resnet_cam \
     --irn_network_module=wsl_survey.segmentation.irn.net.resnet_irn \
-    --cam_batch_size=16 \
-    --irn_batch_size=16 \
+    --cam_batch_size=1 \
+    --irn_batch_size=1 \
     --num_classes=75
 
 python3 wsl_survey/segmentation/irn/main.py \
@@ -72,11 +70,10 @@ python3 wsl_survey/segmentation/irn/main.py \
     --irn_network=$NETWORK \
     --log_name=$OUTPUT_FOLDER/logs \
     --cam_to_ir_label_pass=True \
-    --num_workers=8 \
+    --num_workers=16 \
     --cam_network_module=wsl_survey.segmentation.irn.net.resnet_cam \
     --irn_network_module=wsl_survey.segmentation.irn.net.resnet_irn \
-    --cam_batch_size=16 \
-    --irn_batch_size=16 \
+    --cam_batch_size=1 \
+    --irn_batch_size=1 \
     --num_classes=75
-
 

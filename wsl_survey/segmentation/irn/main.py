@@ -87,3 +87,10 @@ if __name__ == '__main__':
         print('eval_bbox_pass')
         timer = pyutils.Timer('step.eval_bbox_pass:')
         step.eval_bbox.run(args)
+
+    if args.eval_cam_accuracy_pass:
+        import step.cam_accuracy
+
+        print('cam_accuracy')
+        timer = pyutils.Timer('step.cam_accuracy:')
+        step.cam_accuracy.run(args)

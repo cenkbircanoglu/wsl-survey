@@ -186,3 +186,9 @@ python3 wsl_survey/segmentation/irn/main.py \
     --num_classes=1631
 ```
 
+
+
+python3 scripts/experiments_on_compcars/generate_features.py
+python3 scripts/experiments_on_compcars/kmeans_clustering.py
+
+python3 scripts/experiments_on_compcars/query_yolo.py

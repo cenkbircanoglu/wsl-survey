@@ -12,23 +12,22 @@ from wsl_survey.segmentation.irn.voc12 import dataloader
 
 
 def generate_bbox(path, output_path):
-    if not os.path.exists(output_path):
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        mask_img = cv2.imread(path)
-        ret, threshed_img = cv2.threshold(cv2.cvtColor(mask_img, cv2.COLOR_BGR2GRAY), 100, 255, cv2.THRESH_BINARY)
-        kernel = np.ones((3, 3), np.uint8)
-        closing = cv2.morphologyEx(threshed_img, cv2.MORPH_CLOSE, kernel, iterations=4)
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    mask_img = cv2.imread(path)
+    ret, threshed_img = cv2.threshold(cv2.cvtColor(mask_img, cv2.COLOR_BGR2GRAY), 100, 255, cv2.THRESH_BINARY)
+    kernel = np.ones((3, 3), np.uint8)
+    closing = cv2.morphologyEx(threshed_img, cv2.MORPH_CLOSE, kernel, iterations=8)
 
-        contours, hierarchy = cv2.findContours(closing, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        biggest_area = float('-inf')
-        x, y, w, h = None, None, None, None
-        for cnt in contours:
-            area = cv2.contourArea(cnt)
-            if area > biggest_area:
-                biggest_area = area
-                x, y, w, h = cv2.boundingRect(cnt)
-        with open(output_path, mode='w') as f:
-            f.write('%s\t%s\t%s\t%s\n' % (x, y, w, h))
+    contours, hierarchy = cv2.findContours(closing, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    biggest_area = float('-inf')
+    x, y, w, h = None, None, None, None
+    for cnt in contours:
+        area = cv2.contourArea(cnt)
+        if area > biggest_area:
+            biggest_area = area
+            x, y, w, h = cv2.boundingRect(cnt)
+    with open(output_path, mode='w') as f:
+        f.write('%s\t%s\t%s\t%s\n' % (x, y, w, h))
 
 
 def _work(process_id, infer_dataset, args):
@@ -51,7 +50,6 @@ def _work(process_id, infer_dataset, args):
 
                 cams = cam_dict['high_res']
                 keys = np.pad(cam_dict['keys'] + 1, (1, 0), mode='constant')
-
                 # 1. find confident fg & bg
                 fg_conf_cam = np.pad(cams, ((1, 0), (0, 0), (0, 0)),
                                      mode='constant',

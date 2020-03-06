@@ -7,8 +7,8 @@ if __name__ == '__main__':
     random_d = {}
 
     for i in make_d.item().items():
-        label = np.zeros(100)
-        label[randrange(100)] = 1
+        label = np.zeros(75)
+        label[randrange(75)] = 1
         random_d[i[0]] = label
 
-    np.save('./data/compcars/train/cls_labels_random_100.npy', random_d)
+    np.save('./data/compcars/train/cls_labels_random_75.npy', random_d)

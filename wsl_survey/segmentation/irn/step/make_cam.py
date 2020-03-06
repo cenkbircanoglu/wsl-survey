@@ -21,60 +21,120 @@ def _work_cpu(process_id, model, dataset, args):
 
     data_loader = DataLoader(databin,
                              shuffle=False,
-                             num_workers=1,
+                             num_workers=16,
                              pin_memory=False)
 
     with torch.no_grad():
 
         for iter, pack in tqdm(enumerate(data_loader), total=len(databin)):
+            try:
+                img_name = pack['name'][0]
+                path = os.path.join(args.cam_out_dir, img_name + '.npy')
+                if not os.path.exists(path):
+                    os.makedirs(os.path.dirname(path), exist_ok=True)
+                    label = pack['label'][0]
+                    size = pack['size']
 
-            img_name = pack['name'][0]
-            path = os.path.join(args.cam_out_dir, img_name + '.npy')
-            if not os.path.exists(path):
-                os.makedirs(os.path.dirname(path), exist_ok=True)
-                label = pack['label'][0]
-                size = pack['size']
+                    strided_size = imutils.get_strided_size(size, 4)
+                    strided_up_size = imutils.get_strided_up_size(size, 16)
 
-                strided_size = imutils.get_strided_size(size, 4)
-                strided_up_size = imutils.get_strided_up_size(size, 16)
+                    outputs = [model(img[0]) for img in pack['img']]
 
-                outputs = [model(img[0]) for img in pack['img']]
+                    strided_cam = torch.sum(
+                        torch.stack([
+                            F.interpolate(torch.unsqueeze(o, 0),
+                                          strided_size,
+                                          mode='bilinear',
+                                          align_corners=False)[0] for o in outputs
+                        ]), 0)
 
-                strided_cam = torch.sum(
-                    torch.stack([
-                        F.interpolate(torch.unsqueeze(o, 0),
-                                      strided_size,
+                    highres_cam = [
+                        F.interpolate(torch.unsqueeze(o, 1),
+                                      strided_up_size,
                                       mode='bilinear',
-                                      align_corners=False)[0] for o in outputs
-                    ]), 0)
+                                      align_corners=False) for o in outputs
+                    ]
+                    highres_cam = torch.sum(torch.stack(highres_cam, 0),
+                                            0)[:, 0, :size[0], :size[1]]
 
-                highres_cam = [
-                    F.interpolate(torch.unsqueeze(o, 1),
-                                  strided_up_size,
-                                  mode='bilinear',
-                                  align_corners=False) for o in outputs
-                ]
-                highres_cam = torch.sum(torch.stack(highres_cam, 0),
-                                        0)[:, 0, :size[0], :size[1]]
+                    valid_cat = torch.nonzero(label)[:, 0]
 
-                valid_cat = torch.nonzero(label)[:, 0]
+                    strided_cam = strided_cam[valid_cat]
+                    strided_cam /= F.adaptive_max_pool2d(strided_cam, (1, 1)) + 1e-5
 
-                strided_cam = strided_cam[valid_cat]
-                strided_cam /= F.adaptive_max_pool2d(strided_cam, (1, 1)) + 1e-5
+                    highres_cam = highres_cam[valid_cat]
+                    highres_cam /= F.adaptive_max_pool2d(highres_cam, (1, 1)) + 1e-5
+                    # save cams
+                    np.save(
+                        os.path.join(args.cam_out_dir, img_name + '.npy'), {
+                            "keys": valid_cat,
+                            "cam": strided_cam.cpu(),
+                            "high_res": highres_cam.cpu().numpy()
+                        })
 
-                highres_cam = highres_cam[valid_cat]
-                highres_cam /= F.adaptive_max_pool2d(highres_cam, (1, 1)) + 1e-5
-                # save cams
-                np.save(
-                    os.path.join(args.cam_out_dir, img_name + '.npy'), {
-                        "keys": valid_cat,
-                        "cam": strided_cam.cpu(),
-                        "high_res": highres_cam.cpu().numpy()
-                    })
+                    if process_id == args.num_workers - 1 and iter % (len(databin) //
+                                                                      4) == 0:
+                        print("%d " % ((5 * iter + 1) // (len(databin) // 4)), end='')
+            except Exception as e:
+                print(e)
 
-                if process_id == args.num_workers - 1 and iter % (len(databin) //
-                                                                  4) == 0:
-                    print("%d " % ((5 * iter + 1) // (len(databin) // 4)), end='')
+
+def _work_cpu_1(model, dataset, args):
+    data_loader = DataLoader(dataset,
+                             shuffle=False,
+                             num_workers=1,
+                             pin_memory=False)
+
+    with torch.no_grad():
+
+        for iter, pack in tqdm(enumerate(data_loader), total=len(dataset)):
+            try:
+                img_name = pack['name'][0]
+                path = os.path.join(args.cam_out_dir, img_name + '.npy')
+                if not os.path.exists(path):
+                    os.makedirs(os.path.dirname(path), exist_ok=True)
+                    label = pack['label'][0]
+                    size = pack['size']
+
+                    strided_size = imutils.get_strided_size(size, 4)
+                    strided_up_size = imutils.get_strided_up_size(size, 16)
+
+                    outputs = [model(img[0]) for img in pack['img']]
+
+                    strided_cam = torch.sum(
+                        torch.stack([
+                            F.interpolate(torch.unsqueeze(o, 0),
+                                          strided_size,
+                                          mode='bilinear',
+                                          align_corners=False)[0] for o in outputs
+                        ]), 0)
+
+                    highres_cam = [
+                        F.interpolate(torch.unsqueeze(o, 1),
+                                      strided_up_size,
+                                      mode='bilinear',
+                                      align_corners=False) for o in outputs
+                    ]
+                    highres_cam = torch.sum(torch.stack(highres_cam, 0),
+                                            0)[:, 0, :size[0], :size[1]]
+
+                    valid_cat = torch.nonzero(label)[:, 0]
+
+                    strided_cam = strided_cam[valid_cat]
+                    strided_cam /= F.adaptive_max_pool2d(strided_cam, (1, 1)) + 1e-5
+
+                    highres_cam = highres_cam[valid_cat]
+                    highres_cam /= F.adaptive_max_pool2d(highres_cam, (1, 1)) + 1e-5
+                    # save cams
+                    np.save(
+                        os.path.join(args.cam_out_dir, img_name + '.npy'), {
+                            "keys": valid_cat,
+                            "cam": strided_cam.cpu(),
+                            "high_res": highres_cam.cpu().numpy()
+                        })
+
+            except Exception as e:
+                print(e)
 
 
 def _work_gpu(process_id, model, dataset, args):
@@ -142,6 +202,70 @@ def _work_gpu(process_id, model, dataset, args):
                     print("%d " % ((5 * iter + 1) // (len(databin) // 4)), end='')
 
 
+def _work_gpu_1(model, dataset, args):
+    n_gpus = torch.cuda.device_count()
+    data_loader = DataLoader(dataset,
+                             shuffle=False,
+                             num_workers=args.num_workers // n_gpus,
+                             pin_memory=False)
+
+    with torch.no_grad():
+
+        model.cuda()
+
+        for iter, pack in tqdm(enumerate(data_loader), total=len(dataset)):
+            try:
+                img_name = pack['name'][0]
+                path = os.path.join(args.cam_out_dir, img_name + '.npy')
+                if not os.path.exists(path):
+                    os.makedirs(os.path.dirname(path), exist_ok=True)
+                    label = pack['label'][0]
+                    size = pack['size']
+
+                    strided_size = imutils.get_strided_size(size, 4)
+                    strided_up_size = imutils.get_strided_up_size(size, 16)
+
+                    outputs = [
+                        model(img[0].cuda(non_blocking=True)) for img in pack['img']
+                    ]
+
+                    strided_cam = torch.sum(
+                        torch.stack([
+                            F.interpolate(torch.unsqueeze(o, 0),
+                                          strided_size,
+                                          mode='bilinear',
+                                          align_corners=False)[0] for o in outputs
+                        ]), 0)
+
+                    highres_cam = [
+                        F.interpolate(torch.unsqueeze(o, 1),
+                                      strided_up_size,
+                                      mode='bilinear',
+                                      align_corners=False) for o in outputs
+                    ]
+                    highres_cam = torch.sum(torch.stack(highres_cam, 0),
+                                            0)[:, 0, :size[0], :size[1]]
+
+                    valid_cat = torch.nonzero(label)[:, 0]
+
+                    strided_cam = strided_cam[valid_cat]
+                    strided_cam /= F.adaptive_max_pool2d(strided_cam, (1, 1)) + 1e-5
+
+                    highres_cam = highres_cam[valid_cat]
+                    highres_cam /= F.adaptive_max_pool2d(highres_cam, (1, 1)) + 1e-5
+
+                    # save cams
+                    np.save(
+                        path, {
+                            "keys": valid_cat,
+                            "cam": strided_cam.cpu(),
+                            "high_res": highres_cam.cpu().numpy()
+                        })
+
+            except Exception as e:
+                print(e)
+
+
 def run(args):
     assert args.voc12_root is not None
     assert args.class_label_dict_path is not None
@@ -169,18 +293,24 @@ def run(args):
     print('[ ', end='')
     if use_gpu:
         n_gpus = torch.cuda.device_count()
+        if n_gpus == 1:
+            _work_gpu_1(model, dataset, args)
+        else:
 
-        dataset = torchutils.split_dataset(dataset, n_gpus)
-        multiprocessing.spawn(_work_gpu,
-                              nprocs=n_gpus,
-                              args=(model, dataset, args),
-                              join=True)
+            dataset = torchutils.split_dataset(dataset, n_gpus)
+            multiprocessing.spawn(_work_gpu,
+                                  nprocs=n_gpus,
+                                  args=(model, dataset, args),
+                                  join=True)
     else:
-        dataset = torchutils.split_dataset(dataset, args.num_workers)
-        multiprocessing.spawn(_work_cpu,
-                              nprocs=args.num_workers,
-                              args=(model, dataset, args),
-                              join=True)
+        if args.num_workers == 1:
+            _work_cpu_1(model, dataset, args)
+        else:
+            dataset = torchutils.split_dataset(dataset, 2)
+            multiprocessing.spawn(_work_cpu,
+                                  nprocs=2,
+                                  args=(model, dataset, args),
+                                  join=True)
     print(']')
 
     torch.cuda.empty_cache()
