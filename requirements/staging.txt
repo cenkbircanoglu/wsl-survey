@@ -1,5 +1,5 @@
 Cython==0.29.16
-numpy
+numpy==1.18.2
 pip==20.0.2
 torch==1.4.0
 torchnet==0.0.4
