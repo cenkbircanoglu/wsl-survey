@@ -8,7 +8,7 @@ Sphinx==2.4.4
 twine==3.1.1
 pillow==7.0.0
 
-pytest==5.3.2
+pytest==5.4.1
 pytest-runner==5.2
 
 Cython
