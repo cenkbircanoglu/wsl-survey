@@ -10,7 +10,7 @@ features = tr_aug_features.tolist() + tr_features.tolist() + val_features.tolist
 df = pd.DataFrame.from_records(features)
 df.drop_duplicates('img_name', inplace=True)
 
-cluster = cluster.KMeans(n_clusters=20)
+cluster = cluster.KMeans(n_clusters=20, n_jobs=-1)
 
 df['feature'] = df['feature'].apply(lambda x: x[0].reshape(-1).tolist())
 X = np.array(df['feature'].values.tolist())

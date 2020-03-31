@@ -2,32 +2,9 @@ import os
 from statistics import mean
 
 from tqdm import tqdm
-
+import numpy as np
 from wsl_survey.segmentation.irn.voc12 import dataloader
-
-
-def bb_intersection_over_union(boxA, boxB):
-    boxA = [int(i) for i in boxA]
-    boxA[2] = boxA[2] + boxA[0]
-    boxA[3] = boxA[3] + boxA[1]
-    boxB = [int(i) for i in boxB]
-    # determine the (x, y)-coordinates of the intersection rectangle
-    xA = max(boxA[0], boxB[0])
-    yA = max(boxA[1], boxB[1])
-    xB = min(boxA[2], boxB[2])
-    yB = min(boxA[3], boxB[3])
-    # compute the area of intersection rectangle
-    interArea = max(0, xB - xA + 1) * max(0, yB - yA + 1)
-    # compute the area of both the prediction and ground-truth
-    # rectangles
-    boxAArea = (boxA[2] - boxA[0] + 1) * (boxA[3] - boxA[1] + 1)
-    boxBArea = (boxB[2] - boxB[0] + 1) * (boxB[3] - boxB[1] + 1)
-    # compute the intersection over union by taking the intersection
-    # area and dividing it by the sum of prediction + ground-truth
-    # areas - the interesection area
-    iou = interArea / float(boxAArea + boxBArea - interArea)
-    # return the intersection over union value
-    return iou
+from wsl_survey.utils.iou import bb_intersection_over_union
 
 
 def run(args):
@@ -39,9 +16,12 @@ def run(args):
                                            to_torch=False)
 
     preds = []
+    preds_dict = {}
     error_cnt = 0
+    label_dict = np.load(args.class_label_dict_path, allow_pickle=True).item()
     for data in tqdm(dataset):
         img_name = data['name']
+        label = np.argmax(label_dict[img_name])
         bbox_org_path = os.path.join(args.voc12_root, img_name.replace('image', 'label') + '.txt')
         try:
             with open(bbox_org_path, mode='r') as f:
@@ -51,10 +31,12 @@ def run(args):
                 bbox = f.readlines()[0].strip().split('\t')
             iou = bb_intersection_over_union(bbox, bbox_org)
             preds.append(iou)
+            preds_dict.setdefault(label, []).append(iou)
         except Exception as e:
             error_cnt += 1
 
     print({'miou': mean(preds)}, len(preds), error_cnt, args.bbox_out_dir)
+    print({key: mean(value) for key, value in preds_dict.items()})
 
 
 if __name__ == '__main__':

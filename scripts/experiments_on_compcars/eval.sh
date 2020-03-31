@@ -2,12 +2,12 @@ export PYTHONPATH='.'
 
 export MODEL=resnet50
 export NETWORK=ResNet50
-export CATEGORY=random_75
-for CATEGORY in random_75 make model year make_year
+export CATEGORY=cv_results
+for CATEGORY in  make model year make_year kmeans_75 kmeans_431
 do
     export OUTPUT_FOLDER=./compcars_outputs/compcars/${CATEGORY}/results/$MODEL
     python3 wsl_survey/segmentation/irn/main.py \
-        --class_label_dict_path=./data/compcars/train/cls_labels_${CATEGORY}.npy \
+        --class_label_dict_path=./data/compcars/train/cls_labels_make.npy \
         --voc12_root=./data/compcars/ \
         --train_list=./data/compcars/train/test.txt \
         --val_list=./data/compcars/train/test.txt \

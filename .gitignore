@@ -110,3 +110,4 @@ ENV/
 *.pyc
 rsync.sh
 !/datasets/test
+data/*

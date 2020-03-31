@@ -51,7 +51,7 @@ python3 wsl_survey/segmentation/irn/main.py \
     --irn_network_module=wsl_survey.segmentation.irn.net.resnet_irn \
     --cam_batch_size=1 \
     --irn_batch_size=1 \
-    --num_classes=75
+    --num_classes=431
 
 python3 wsl_survey/segmentation/irn/main.py \
     --class_label_dict_path=./data/compcars/train/cls_labels_${CATEGORY}.npy \
@@ -75,5 +75,5 @@ python3 wsl_survey/segmentation/irn/main.py \
     --irn_network_module=wsl_survey.segmentation.irn.net.resnet_irn \
     --cam_batch_size=1 \
     --irn_batch_size=1 \
-    --num_classes=75
+    --num_classes=431
 

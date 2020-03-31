@@ -64,7 +64,7 @@ def load_image_label_list_from_npy(img_name_list, class_label_dict_path):
 def get_img_path(img_name, voc12_root):
     if not isinstance(img_name, str):
         img_name = decode_int_filename(img_name)
-    if 'compcars' in voc12_root:
+    if 'compcars' in voc12_root or 'disfa' in voc12_root:
         return os.path.join(voc12_root, img_name + '.jpg')
     return os.path.join(voc12_root, IMG_FOLDER_NAME, img_name + '.jpg')
 

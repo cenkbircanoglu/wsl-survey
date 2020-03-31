@@ -3,21 +3,19 @@ import random
 
 import cv2
 
-from scripts.experiments_on_compcars import calculate_yolo_accuracy
-from wsl_survey.segmentation.irn.step.eval_bbox import bb_intersection_over_union
-
 choices = []
 with open('/Users/cenk.bircanoglu/wsl/wsl_survey/data/compcars/arxiv_data/train_test_split/classification_test.txt',
           mode='r') as f:
     lines = f.readlines()
-    for _ in range(10):
-        value = random.choice(lines)
-        choices.append(value)
-
+    #for _ in range(1500):
+    #    value = random.choice(lines)
+    #    choices.append(value)
+    for i in lines:
+        choices.append(i)
 for value in choices:
     value = value.strip()
-    value = '54/188/2013/57b643c9bf2b48.jpg'
     path = os.path.join('/Users/cenk.bircanoglu/wsl/wsl_survey/data/compcars/data/image', value)
+    result_path = '/Users/cenk.bircanoglu/wsl/wsl_survey/compcars_outputs/compcars/results/'
     gt_path_bbox = os.path.join('/Users/cenk.bircanoglu/wsl/wsl_survey/data/compcars/data/label/',
                                 value.replace('jpg', 'txt'))
     make_path_bbox = os.path.join(
@@ -32,8 +30,11 @@ for value in choices:
     make_year_path_bbox = os.path.join(
         '/Users/cenk.bircanoglu/wsl/wsl_survey/compcars_outputs/compcars/make_year/results/resnet50/bbox/data/image/',
         value.replace('jpg', 'txt'))
-    random_path_bbox = os.path.join(
-        '/Users/cenk.bircanoglu/wsl/wsl_survey/compcars_outputs/compcars/random_75/results/resnet50/bbox/data/image/',
+    kmeans75_path_bbox = os.path.join(
+        '/Users/cenk.bircanoglu/wsl/wsl_survey/compcars_outputs/compcars/kmeans_75/results/resnet50/bbox/data/image/',
+        value.replace('jpg', 'txt'))
+    kmeans431_path_bbox = os.path.join(
+        '/Users/cenk.bircanoglu/wsl/wsl_survey/compcars_outputs/compcars/kmeans_431/results/resnet50/bbox/data/image/',
         value.replace('jpg', 'txt'))
     yolo_path_bbox = os.path.join(
         '/Users/cenk.bircanoglu/wsl/wsl_survey/compcars_outputs/compcars/yolo/bbox',
@@ -41,56 +42,76 @@ for value in choices:
 
     print(path)
     im = cv2.imread(path)
-
-    with open(gt_path_bbox, mode='r') as f:
-        bbox = f.readlines()[2].split(' ')
-        x, y, w, h = map(int, bbox)
-        boxb = (x, y, w, h)
-        cv2.rectangle(im, (x, y), (w, h), (255, 0, 0), 1)
-        cv2.putText(im, 'Ground Truth', (x, y + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
-
-    with open(yolo_path_bbox, mode='r') as f:
-        bbox = f.readlines()[0].strip().split('\t')
-        x, y, w, h = map(lambda x: int(float(x)), bbox)
-        boxa = (x, y,w,h)
-        cv2.rectangle(im, (int(x - w / 2), int(y - h / 2)), (int(x + w / 2), int(y + h / 2)), (0, 0, 0), 1)
-        cv2.putText(im, 'Yolo', (int(x - w / 2), int(y - h / 2) + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 0), 2)
-    print('Yolo',calculate_yolo_accuracy.bb_intersection_over_union(boxa, boxb))
-    with open(make_path_bbox, mode='r') as f:
-        bbox = f.readlines()[0].strip().split('\t')
-        x, y, w, h = map(int, bbox)
-        boxa = (x, y, w, h)
-        print(im.shape)
-        print((x, y),( x+w,  y+h))
-        cv2.rectangle(im, (x, y), (x+w, h+ y), (0, 255, 0), 1)
-        cv2.putText(im, 'Make', (x, y + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
-    print('Make', bb_intersection_over_union(boxa, boxb))
-    with open(model_path_bbox, mode='r') as f:
-        bbox = f.readlines()[0].strip().split('\t')
-        x, y, w, h = map(int, bbox)
-        boxa = (x, y, w, h)
-        cv2.rectangle(im, (x, y), (w + x, h + y), (0, 0, 255), 2)
-        cv2.putText(im, 'Model', (x, y + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
-    print('Model', bb_intersection_over_union(boxa, boxb))
-    with open(year_path_bbox, mode='r') as f:
-        bbox = f.readlines()[0].strip().split('\t')
-        x, y, w, h = map(int, bbox)
-        cv2.rectangle(im, (x, y), (w + x, h + y), (255, 255, 0), 2)
-        cv2.putText(im, 'Year', (x, y + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 255, 0), 2)
-
-    with open(make_year_path_bbox, mode='r') as f:
-        bbox = f.readlines()[0].strip().split('\t')
-        x, y, w, h = map(int, bbox)
-        cv2.rectangle(im, (x, y), (w + x, h + y), (255, 0, 255), 2)
-        cv2.putText(im, 'Make Year', (x, y + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 255), 2)
     try:
-        with open(random_path_bbox, mode='r') as f:
+        with open(gt_path_bbox, mode='r') as f:
+            bbox = f.readlines()[2].split(' ')
+            x, y, w, h = map(int, bbox)
+            color_code = (255, 0, 0)
+            text = 'Ground Truth'
+            cv2.rectangle(im, (x, y), (w, h), color_code, 1)
+            cv2.putText(im, text, (x, y + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_code, 2)
+
+        with open(yolo_path_bbox, mode='r') as f:
+            bbox = f.readlines()[0].strip().split('\t')
+            x, y, w, h = map(lambda x: int(float(x)), bbox)
+            color_code = (0, 255, 0)
+            text = 'Yolo'
+            cv2.rectangle(im, (x, y), (x + w, h + y), color_code, 1)
+            cv2.putText(im, text, (x, y + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_code, 2)
+
+        with open(make_path_bbox, mode='r') as f:
             bbox = f.readlines()[0].strip().split('\t')
             x, y, w, h = map(int, bbox)
-            cv2.rectangle(im, (x, y), (w + x, h + y), (0, 255, 255), 2)
-            cv2.putText(im, 'Random 75', (x, y + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 255), 2)
+            color_code = (0, 0, 255)
+            text = 'Make'
+            cv2.rectangle(im, (x, y), (x + w, h + y), color_code, 1)
+            cv2.putText(im, text, (x, y + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_code, 2)
+
+        with open(model_path_bbox, mode='r') as f:
+            bbox = f.readlines()[0].strip().split('\t')
+            x, y, w, h = map(int, bbox)
+            color_code = (255, 128, 0)
+            text = 'Model'
+            cv2.rectangle(im, (x, y), (x + w, h + y), color_code, 1)
+            cv2.putText(im, text, (x, y + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_code, 2)
+
+        with open(year_path_bbox, mode='r') as f:
+            bbox = f.readlines()[0].strip().split('\t')
+            x, y, w, h = map(int, bbox)
+            color_code = (255, 0, 128)
+            text = 'Year'
+            cv2.rectangle(im, (x, y), (x + w, h + y), color_code, 1)
+            cv2.putText(im, text, (x, y + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_code, 2)
+
+        with open(make_year_path_bbox, mode='r') as f:
+            bbox = f.readlines()[0].strip().split('\t')
+            x, y, w, h = map(int, bbox)
+            color_code = (0, 255, 128)
+            text = 'Make Year'
+            cv2.rectangle(im, (x, y), (x + w, h + y), color_code, 1)
+            cv2.putText(im, text, (x, y + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_code, 2)
+
+        with open(kmeans75_path_bbox, mode='r') as f:
+            bbox = f.readlines()[0].strip().split('\t')
+            x, y, w, h = map(int, bbox)
+            color_code = (0, 255, 128)
+            text = 'KMeans 75'
+            cv2.rectangle(im, (x, y), (x + w, h + y), color_code, 1)
+            cv2.putText(im, text, (x, y + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_code, 2)
+
+        with open(kmeans431_path_bbox, mode='r') as f:
+            bbox = f.readlines()[0].strip().split('\t')
+            x, y, w, h = map(int, bbox)
+            color_code = (128, 255, 0)
+            text = 'KMeans 431'
+            cv2.rectangle(im, (x, y), (x + w, h + y), color_code, 1)
+            cv2.putText(im, text, (x, y + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_code, 2)
+
+        cv2.imshow("Show", im)
+        cv2.waitKey()
+        output_value = value.replace('/', '_')
+        path = os.path.join(result_path, output_value)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        cv2.imwrite(path, im)
     except:
         pass
-
-    cv2.imshow("Show", im)
-    cv2.waitKey()

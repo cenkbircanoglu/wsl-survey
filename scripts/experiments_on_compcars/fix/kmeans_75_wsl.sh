@@ -26,8 +26,8 @@ python3 wsl_survey/segmentation/irn/main.py \
     --num_workers=8 \
     --cam_network_module=wsl_survey.segmentation.irn.net.resnet_cam \
     --irn_network_module=wsl_survey.segmentation.irn.net.resnet_irn \
-    --cam_batch_size=16 \
-    --irn_batch_size=16 \
+    --cam_batch_size=32 \
+    --irn_batch_size=32 \
     --num_classes=75
 
 python3 wsl_survey/segmentation/irn/main.py \

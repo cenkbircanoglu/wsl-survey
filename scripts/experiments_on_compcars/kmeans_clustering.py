@@ -24,12 +24,12 @@ def cluster_it(n_clusters):
         cluster_label[label] = 1
         label_d[img_name] = cluster_label
 
-    np.save('./data/compcars/cls_kmeans_%s_labels.npy' % n_clusters, label_d)
+    np.save('./data/compcars/train/cls_labels_kmeans_%s.npy' % n_clusters, label_d)
 
     with open('./data/compcars/category_size.txt', mode='a') as f:
         f.write('%s %s\n' % ('kmeans_%s_id' % n_clusters, category_size))
 
 
 if __name__ == '__main__':
-    cluster_it(75)
-    cluster_it(431)
+    cluster_it(16)
+    #cluster_it(431)
