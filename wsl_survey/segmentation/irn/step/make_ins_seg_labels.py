@@ -64,7 +64,7 @@ def find_centroids_with_refinement(displacement, iterations=300):
 def cluster_centroids(centroids, displacement, thres=2.5):
     # thres: threshold for grouping centroid (see supp)
 
-    dp_strength = np.sqrt(displacement[1]**2 + displacement[0]**2)
+    dp_strength = np.sqrt(displacement[1] ** 2 + displacement[0] ** 2)
     height, width = dp_strength.shape
 
     weak_dp_region = dp_strength < thres
@@ -133,59 +133,62 @@ def _work_cpu(process_id, model, dataset, args):
 
         for iter, pack in tqdm(enumerate(data_loader), total=len(databin)):
             img_name = pack['name'][0]
-            size = np.asarray(pack['size'])
+            path = os.path.join(args.ins_seg_out_dir, img_name + '.npy')
+            if not os.path.exists(path):
+                os.makedirs(os.path.dirname(path), exist_ok=True)
+                size = np.asarray(pack['size'])
 
-            edge, dp = model(pack['img'][0])
+                edge, dp = model(pack['img'][0])
 
-            dp = dp.cpu().numpy()
+                dp = dp.cpu().numpy()
 
-            cam_dict = np.load(args.cam_out_dir + '/' + img_name + '.npy',
-                               allow_pickle=True).item()
+                cam_dict = np.load(args.cam_out_dir + '/' + img_name + '.npy',
+                                   allow_pickle=True).item()
 
-            cams = cam_dict['cam']
-            keys = cam_dict['keys']
+                cams = cam_dict['cam']
+                keys = cam_dict['keys']
 
-            centroids = find_centroids_with_refinement(dp)
-            instance_map = cluster_centroids(centroids, dp)
-            instance_cam = separte_score_by_mask(cams, instance_map)
+                centroids = find_centroids_with_refinement(dp)
+                instance_map = cluster_centroids(centroids, dp)
+                instance_cam = separte_score_by_mask(cams, instance_map)
 
-            rw = indexing.propagate_to_edge(instance_cam,
-                                            edge,
-                                            beta=args.beta,
-                                            exp_times=args.exp_times,
-                                            radius=5)
+                rw = indexing.propagate_to_edge(instance_cam,
+                                                edge,
+                                                beta=args.beta,
+                                                exp_times=args.exp_times,
+                                                radius=5)
 
-            rw_up = F.interpolate(rw,
-                                  scale_factor=4,
-                                  mode='bilinear',
-                                  align_corners=False)[:,
-                                                       0, :size[0], :size[1]]
-            rw_up = rw_up / torch.max(rw_up)
+                rw_up = F.interpolate(rw,
+                                      scale_factor=4,
+                                      mode='bilinear',
+                                      align_corners=False)[:,
+                        0, :size[0], :size[1]]
+                rw_up = rw_up / torch.max(rw_up)
 
-            rw_up_bg = F.pad(rw_up, (0, 0, 0, 0, 1, 0),
-                             value=args.ins_seg_bg_thres)
+                rw_up_bg = F.pad(rw_up, (0, 0, 0, 0, 1, 0),
+                                 value=args.ins_seg_bg_thres)
 
-            num_classes = len(keys)
-            num_instances = instance_map.shape[0]
+                num_classes = len(keys)
+                num_instances = instance_map.shape[0]
 
-            instance_shape = torch.argmax(rw_up_bg, 0).cpu().numpy()
-            instance_shape = pyutils.to_one_hot(
-                instance_shape,
-                maximum_val=num_instances * num_classes + 1)[1:]
-            instance_class_id = np.repeat(keys, num_instances)
+                instance_shape = torch.argmax(rw_up_bg, 0).cpu().numpy()
+                instance_shape = pyutils.to_one_hot(
+                    instance_shape,
+                    maximum_val=num_instances * num_classes + 1)[1:]
+                instance_class_id = np.repeat(keys, num_instances)
 
-            detected = detect_instance(rw_up.cpu().numpy(),
-                                       instance_shape,
-                                       instance_class_id,
-                                       max_fragment_size=size[0] * size[1] *
-                                       0.01)
+                detected = detect_instance(rw_up.cpu().numpy(),
+                                           instance_shape,
+                                           instance_class_id,
+                                           max_fragment_size=size[0] * size[1] *
+                                                             0.01)
 
-            np.save(os.path.join(args.ins_seg_out_dir, img_name + '.npy'),
-                    detected)
+                np.save(path,
+                        detected)
 
-            if process_id == args.num_workers - 1 and iter % (len(databin) //
-                                                              4) == 0:
-                print("%d " % ((5 * iter + 1) // (len(databin) // 4)), end='')
+                if process_id == args.num_workers - 1 and iter % (len(databin) //
+                                                                  4) == 0:
+                    print("%d " % ((5 * iter + 1) // (len(databin) // 4)), end='')
 
 
 def _work_gpu(process_id, model, dataset, args):
@@ -202,58 +205,61 @@ def _work_gpu(process_id, model, dataset, args):
 
         for iter, pack in tqdm(enumerate(data_loader), total=len(databin)):
             img_name = pack['name'][0]
-            size = np.asarray(pack['size'])
+            path = os.path.join(args.ins_seg_out_dir, img_name + '.npy')
+            if not os.path.exists(path):
+                os.makedirs(os.path.dirname(path), exist_ok=True)
+                size = np.asarray(pack['size'])
 
-            edge, dp = model(pack['img'][0].cuda(non_blocking=True))
+                edge, dp = model(pack['img'][0].cuda(non_blocking=True))
 
-            dp = dp.cpu().numpy()
+                dp = dp.cpu().numpy()
 
-            cam_dict = np.load(args.cam_out_dir + '/' + img_name + '.npy',
-                               allow_pickle=True).item()
+                cam_dict = np.load(args.cam_out_dir + '/' + img_name + '.npy',
+                                   allow_pickle=True).item()
 
-            cams = cam_dict['cam'].cuda()
-            keys = cam_dict['keys']
+                cams = cam_dict['cam'].cuda()
+                keys = cam_dict['keys']
 
-            centroids = find_centroids_with_refinement(dp)
-            instance_map = cluster_centroids(centroids, dp)
-            instance_cam = separte_score_by_mask(cams, instance_map)
+                centroids = find_centroids_with_refinement(dp)
+                instance_map = cluster_centroids(centroids, dp)
+                instance_cam = separte_score_by_mask(cams, instance_map)
 
-            rw = indexing.propagate_to_edge(instance_cam,
-                                            edge,
-                                            beta=args.beta,
-                                            exp_times=args.exp_times,
-                                            radius=5)
+                rw = indexing.propagate_to_edge(instance_cam,
+                                                edge,
+                                                beta=args.beta,
+                                                exp_times=args.exp_times,
+                                                radius=5)
 
-            rw_up = F.interpolate(rw,
-                                  scale_factor=4,
-                                  mode='bilinear',
-                                  align_corners=False)[:,
-                                                       0, :size[0], :size[1]]
-            rw_up = rw_up / torch.max(rw_up)
+                rw_up = F.interpolate(rw,
+                                      scale_factor=4,
+                                      mode='bilinear',
+                                      align_corners=False)[:,
+                        0, :size[0], :size[1]]
+                rw_up = rw_up / torch.max(rw_up)
 
-            rw_up_bg = F.pad(rw_up, (0, 0, 0, 0, 1, 0),
-                             value=args.ins_seg_bg_thres)
+                rw_up_bg = F.pad(rw_up, (0, 0, 0, 0, 1, 0),
+                                 value=args.ins_seg_bg_thres)
 
-            num_classes = len(keys)
-            num_instances = instance_map.shape[0]
+                num_classes = len(keys)
+                num_instances = instance_map.shape[0]
 
-            instance_shape = torch.argmax(rw_up_bg, 0).cpu().numpy()
-            instance_shape = pyutils.to_one_hot(
-                instance_shape,
-                maximum_val=num_instances * num_classes + 1)[1:]
-            instance_class_id = np.repeat(keys, num_instances)
+                instance_shape = torch.argmax(rw_up_bg, 0).cpu().numpy()
+                instance_shape = pyutils.to_one_hot(
+                    instance_shape,
+                    maximum_val=num_instances * num_classes + 1)[1:]
+                instance_class_id = np.repeat(keys, num_instances)
 
-            detected = detect_instance(rw_up.cpu().numpy(),
-                                       instance_shape,
-                                       instance_class_id,
-                                       max_fragment_size=size[0] * size[1] *
-                                       0.01)
+                detected = detect_instance(rw_up.cpu().numpy(),
+                                           instance_shape,
+                                           instance_class_id,
+                                           max_fragment_size=size[0] * size[1] *
+                                                             0.01)
 
-            np.save(os.path.join(args.ins_seg_out_dir, img_name + '.npy'),
-                    detected)
+                np.save(path,
+                        detected)
 
-            if process_id == n_gpus - 1 and iter % (len(databin) // 4) == 0:
-                print("%d " % ((5 * iter + 1) // (len(databin) // 4)), end='')
+                if process_id == n_gpus - 1 and iter % (len(databin) // 4) == 0:
+                    print("%d " % ((5 * iter + 1) // (len(databin) // 4)), end='')
 
 
 def run(args):
@@ -274,7 +280,7 @@ def run(args):
     dataset = dataloader.VOC12ClassificationDatasetMSF(
         args.infer_list,
         voc12_root=args.voc12_root,
-        scales=(1.0, ),
+        scales=(1.0,),
         class_label_dict_path=args.class_label_dict_path)
 
     if use_gpu:

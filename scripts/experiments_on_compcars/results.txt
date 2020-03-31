@@ -1,0 +1,15 @@
+make    test    0.42122678540019826 75
+model   test    0.5306687710270993  431
+year    test    0.4684274843597242  16
+make_year   test        492
+model_year   test        1631
+random   test        100
+
+
+{'miou': 0.43770527503068724} 15625 2 ./compcars_outputs/compcars/make/results/resnet50/bbox
+{'miou': 0.5421533463137084} 15619 8 ./compcars_outputs/compcars/model/results/resnet50/bbox
+{'miou': 0.48245752353744853} 15584 43 ./compcars_outputs/compcars/year/results/resnet50/bbox
+{'miou': 0.36069807406300364} 14754 873 ./compcars_outputs/compcars/make_year/results/resnet50/bbox
+0 Random 75
+0 Random 100
+0 Random 431

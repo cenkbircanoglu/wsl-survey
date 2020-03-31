@@ -37,8 +37,8 @@ def create_class_labels(source, target):
     trainval = load_csv(source, 'trainval')
     train = load_csv(source, 'train')
     val = load_csv(source, 'val')
-    test = load_csv(source, 'test')
-    items = trainval + train + val + test
+    #test = load_csv(source, 'test')
+    items = trainval + train + val #+ test
     mapping = one_hot_mappings(items)
     np.save(filename, mapping)
 

@@ -1,7 +1,12 @@
 import argparse
 import importlib
 
+import torch
+from torch.autograd import Variable
 from torchsummary import summary
+from torchviz import make_dot, make_dot_from_trace
+
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -13,3 +18,8 @@ if __name__ == '__main__':
                     args.network_name)()
 
     summary(model, input_size=(3, 512, 512))
+
+    model.eval()
+    x = torch.randn(1, 3, 512, 512)
+    grp = make_dot(model(x), params=dict(model.named_parameters()))
+    grp.view()

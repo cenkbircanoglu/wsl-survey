@@ -51,7 +51,7 @@ def run(args):
     assert args.cam_network_module is not None
 
     model = getattr(importlib.import_module(args.cam_network_module),
-                    args.cam_network)()
+                    args.cam_network)(num_classes=args.num_classes)
 
     train_dataset = dataloader.VOC12ClassificationDataset(
         args.train_list,

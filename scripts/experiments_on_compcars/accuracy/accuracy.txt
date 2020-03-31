@@ -1,0 +1,12 @@
+make tr 89.7301
+make te 86.3889
+model tr 29.4426
+model te 29.5450
+year tr 49.5617
+year te 49.1201
+make year tr 15.4412
+make year te 15.5116
+model year tr 1.2606
+model year te 1.2350
+random tr 0.9983
+random te 0.9599
