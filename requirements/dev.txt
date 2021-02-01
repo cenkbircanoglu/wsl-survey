@@ -14,7 +14,7 @@ pytest-runner==5.2
 Cython==0.29.21
 torch==1.7.1
 torchnet==0.0.4
-torchvision==0.5.0
+torchvision==0.8.2
 tqdm==4.44.1
 yapf==0.29.0
 xmltodict==0.12.0
