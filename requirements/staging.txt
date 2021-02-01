@@ -11,7 +11,7 @@ matplotlib==3.3.4
 tensorboard==2.4.1
 terminaltables==3.1.0
 colorama==0.4.4
-opencv-python==4.2.0.32
+opencv-python==4.5.1.48
 scikit-learn==0.22.2.post1
 git+git://github.com/waspinator/coco.git@2.1.0
 pydensecrf==1.0rc3
