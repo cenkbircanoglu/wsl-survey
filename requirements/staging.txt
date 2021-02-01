@@ -1,4 +1,4 @@
-Cython==0.29.16
+Cython==0.29.21
 numpy==1.18.2
 pip==21.0.1
 torch==1.4.0
